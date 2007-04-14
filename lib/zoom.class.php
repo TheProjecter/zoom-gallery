@@ -2135,7 +2135,7 @@ class zoom {
          . "\tvar id = '".md5($this->_CONFIG['secret'])."';\n"
          . "\tvar IS_BACKEND = ".(($this->_isBackend) ? "true" : "false")."\n"
          . "\tif (Zoom) {\n"
-         . "\t\tZoom.site_uri = '".$mosConfig_live_site."';\n"
+         . "\t\tZoom.site_uri = document.location.protocol + '//' + document.location.host + document.location.pathname.replace(/\/(administrator\/)?index(2)?\.php$/i, '');//'".$mosConfig_live_site."';\n"
          . "\t\tZoom.req_uri = Zoom.site_uri + \"/components/com_zoom/www/ajaxcallback.php\";\n"
          . "\t\tZoom.uid = '".$my->id."';\n"
          . "\t\tZoom.charset = '".$iso[1]."';\n"
