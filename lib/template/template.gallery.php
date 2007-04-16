@@ -20,6 +20,7 @@
 -----------------------------------------------------------------------
 * @version $Id:template.gallery.php 106 2007-02-10 22:30:30Z kevinuru $
 * @package zOOmGallery
+* @subpackage Template
 * @author Mike de Boer <mailme@mikedeboer.nl> 
 **/
 // MOS Intruder Alerts
