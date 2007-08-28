@@ -35,7 +35,12 @@ $zoom->EditMon->updateEditMon();
 //start processing the AJAX callback:
 $id = $zoom->getParam($_REQUEST, 'id', 0);
 if (md5($zoom->_CONFIG['secret']) == $id) {
-	$task = $zoom->getParam($_REQUEST, 'task');
+	
+    $task = $zoom->getParam($_REQUEST, 'task');
+    if (!in_array($task,array('view_vote','view_lightbox')) && !$zoom->_isAdmin ) {
+        die('Invalid Request!!');
+    }
+    
     echo $zoom->startXML($task);
 	switch ($task) {
 	    case 'view_vote' :
