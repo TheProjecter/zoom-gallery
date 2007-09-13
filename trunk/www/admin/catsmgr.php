@@ -45,7 +45,7 @@ $zoom->prepareAjax(array(
     "LANG_BTN_BACK"      => _ZOOM_BACK
 ));
 ?>
-<script language="Javasript" type="text/javascript">
+<script language="Javascript" type="text/javascript">
   <!--
   /* setting the new description is a little bit more difficult, because we have to deal
    * with the Editor mosBot. So, we have to support the following flavors:
