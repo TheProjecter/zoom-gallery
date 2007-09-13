@@ -599,8 +599,10 @@ class image extends gallery {
 			$database->query();
 			$zoom->EditMon->setEditMon($this->_id, 'comment');
 			$subject = "New comments added!";
-			$body = "Name: ".$uname."\n\nComment: ".$comment."\n\nLink: ".sefReltoAbs($mosConfig_live_site."/index.php?option=com_zoom&amp;Itemid=".$Itemid."&amp;page=view&amp;catid=".$catid."&amp;key=".$key);
-			$mainframe->mosCreateMail($subject, $body);
+			$body = "Name: ".$uname."\n\nComment: ".$comment."\n\nLink: ".sefReltoAbs($mosConfig_live_site."/index.php?option=com_zoom&Itemid=".$Itemid."&page=view&catid=".$catid."&key=".$key);
+			$database->setQuery("SELECT b.email AS email FROM #__zoomfiles a, #__users b WHERE a.imgid=".$this->_id." AND a.uid=b.id");
+			$result = $database->loadResult();
+			$sentmail = mosMail('', '', $result, $subject, $body);
 			
             echo "<script language=\"JavaScript\" type=\"text/JavaScript\"> alert('" . html_entity_decode( _ZOOM_ALERT_COMMENTOK ) . "'); </script>";
 		} else {
@@ -672,9 +674,8 @@ class image extends gallery {
 	function getDir(){
 		global $database;
 		$database->setQuery("SELECT catdir FROM #__zoom WHERE catid=".$this->_catid);
-		$this->_result = $database->query();
-		$row = mysql_fetch_object($this->_result);
-		return $row->catdir;
+		$catdir = $database->loadResult();
+		return $catdir;
 	}
 	/**
 	* Get the keywords of a medium in a HTML formatted string.
@@ -721,17 +722,16 @@ class image extends gallery {
 	function getUsername($method = 1) {
 	    global $database, $Itemid, $zoom;
 	    $database->setQuery("SELECT username FROM #__users WHERE id = $this->_uid LIMIT 1");
-	    $result = $database->query();
-	    $row = mysql_fetch_object($result);
+	    $user = $database->loadResult();
 	    $username = "";
 	    if ($method == 1) {
-		    $username = $row->username;
+		    $username = $user;
 	    } elseif ($method == 2) {
 		    if ($zoom->_CONFIG['popUpImages']) {    		
-			    $username = "<a href=\"javascript:void(0);\" onclick=\"searchKeyword('".$row->username."')\">".$row->username."</a>";
+			    $username = "<a href=\"javascript:void(0);\" onclick=\"searchKeyword('".$user."')\">".$user."</a>";
 		    } else {
-		    	$username_uri = sefRelToAbs("index.php?option=com_zoom&amp;page=search&amp;type=quicksearch&amp;sstring=".$row->username."&amp;Itemid=".$Itemid."");
-			    $username = "<a href=\"".$username_uri."\">".$row->username."</a>";
+		    	$username_uri = sefRelToAbs("index.php?option=com_zoom&amp;page=search&amp;type=quicksearch&amp;sstring=".$user."&amp;Itemid=".$Itemid."");
+			    $username = "<a href=\"".$username_uri."\">".$user."</a>";
 		    }
 	    }
 	    return $username;
