@@ -628,8 +628,8 @@ class gallery extends zoom {
         } else {
 		  $registered = false;
         }
-    	if (in_array("1", $this->_members) || (in_array("2", $this->_members) && $registered) 
-          || in_array($my->id, $this->_members) || $zoom->_isAdmin) {
+        // Don't forget strict mode looking for $my->id.  It will be 0 for unregistered!
+    	if (in_array("1", $this->_members) || (in_array("2", $this->_members) && $registered) || in_array($my->id, $this->_members, true) || $zoom->_isAdmin) {
     		return true;
         } else {
         	$res = false;
