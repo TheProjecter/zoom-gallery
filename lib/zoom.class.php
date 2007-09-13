@@ -1896,7 +1896,8 @@ class zoom {
 	*/
 	function getItemid($option) {
 		global $database;
-		$database->setQuery("SELECT id FROM #__menu WHERE link = 'index.php?option=".$this->escapeString($option)."' AND published = 1");
+		//$database->setQuery("SELECT id FROM #__menu WHERE link = 'index.php?option=".$this->escapeString($option)."' AND published = 1");
+		$database->setQuery("SELECT id FROM #__components j WHERE j.option=\"com_zoom\" LIMIT 1"); // We need the ItemId, not a menu id
 		if ($this->_result = $database->query()) {
 			$row = mysql_fetch_object($this->_result);
 			return $row->id;
