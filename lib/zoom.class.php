@@ -2679,7 +2679,7 @@ class zoom {
 		$startRow = ($PageNo - 1) * $PageSize;
 		//Total of record
 		$RecordCount = $this->_gallery->getNumOfImages();//Number of files in gallery
-		$endRow = $startRow + $PageSize;
+		$endRow = $startRow + $PageSize - 1; // subtract one or it's one more than requested
 		if ($endRow >= $RecordCount) {
 			$endRow = $RecordCount - 1;
 		}
