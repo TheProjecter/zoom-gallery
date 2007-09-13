@@ -24,7 +24,8 @@
 **/
 // Turn off Magic quotes runtime, because it interferes with saving info to the 
 // database and vice versa.
-define( "_VALID_MOS", 1 );
+// MOS Intruder Alerts
+defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.' );
 if (file_exists($mosConfig_absolute_path."/includes/joomla.php")) {
 	require_once($mosConfig_absolute_path."/includes/joomla.php");
 }
