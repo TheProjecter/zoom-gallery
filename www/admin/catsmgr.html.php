@@ -206,7 +206,7 @@ class HTML_catsmgr {
         </style>
         <link href="'.$live_site.'/components/com_zoom/www/dhtmlgoodies/contextmenu.css" type="text/css" rel="stylesheet" media="screen" />
         <link href="'.$live_site.'/components/com_zoom/www/dhtmlgoodies/tree.css" type="text/css" rel="stylesheet" media="screen" />
-        <script language="javascript" type="text/javascript" src="'.$live_site.'/includes/js/dhtml.js"></script> 	
+        <script language="javascript" type="text/javascript" src="'.$live_site.'/includes/js/joomla.javascript.js"></script> 	
         <script language="javascript" type="text/javascript" src="'.$live_site.'/components/com_zoom/lib/js/prototype.js"></script>
         <script language="javascript" type="text/javascript" src="'.$live_site.'/components/com_zoom/lib/js/scriptaculous.js?load=button,effects,dragdrop,mm,contextmenu,tree"></script>
         ');
