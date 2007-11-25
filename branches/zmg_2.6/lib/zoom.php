@@ -1,102 +1,81 @@
 <?php
 /**
- * Jersey, doing scrum the easy way.
+ * zOOm Media Gallery! - a multi-gallery component 
  * 
- * @package jersey
+ * @package zmg
  * @version $Revision$
  * @author Mike de Boer <mdeboer AT ebuddy.com>
- * @copyright Copyright &copy; 2007, Mike de Boer.
+ * @copyright Copyright &copy; 2007, Mike de Boer. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GPL
  */
 
-defined("_VALID_JERSEY") or die("Direct access.");
-
-//load compatibility file to bridge different PHP versions
-require_once(ABS_PATH . '/lib/compat.php');
+defined('_ZMG_EXEC') or die('Restricted access');
 
 //load the error handling base class
-require_once(ABS_PATH . '/lib/error.class.php');
+require_once(ZMG_ABS_PATH . '/lib/error.class.php');
 
 //load the configuration file
-require(ABS_PATH . '/etc/app.config.php');
+require(ZMG_ABS_PATH . '/etc/app.config.php');
+
+//initialize the zoom (app) class
+require_once(ZMG_ABS_PATH . '/lib/zoom.class.php');
+$zoom = new zoom();
+
+$zoom->hasAccess() or die('Restricted access');
 
 //load application classes
-require_once(ABS_PATH . '/lib/phpInputFilter/class.inputfilter.php');
-require_once(ABS_PATH . '/lib/table.class.php');
-require_once(ABS_PATH . '/lib/notifier.class.php');
-require_once(ABS_PATH . '/lib/postit.class.php');
-require_once(ABS_PATH . '/lib/project.class.php');
-require_once(ABS_PATH . '/lib/user.class.php');
+require_once(ZMG_ABS_PATH . '/lib/phpInputFilter/class.inputfilter.php');
+require_once(ZMG_ABS_PATH . '/lib/table.class.php');
+require_once(ZMG_ABS_PATH . '/lib/notifier.class.php');
+require_once(ZMG_ABS_PATH . '/lib/postit.class.php');
+require_once(ZMG_ABS_PATH . '/lib/project.class.php');
+require_once(ZMG_ABS_PATH . '/lib/user.class.php');
 
-//initialize the jersey (app) class
-require_once(ABS_PATH . '/lib/jersey.class.php');
-$jersey = new jersey();
-
-$jersey->fireEvents('onstartup');
+$zoom->fireEvents('onstartup');
 
 //set error handling options
-jsyError::setErrorHandling($jersey->getConfig('app/errors/defaultmode'),
-  $jersey->getConfig('app/errors/defaultoption'));
+jsyError::setErrorHandling($zoom->getConfig('app/errors/defaultmode'),
+  $zoom->getConfig('app/errors/defaultoption'));
 
-//initialize the database connection
-require_once(ABS_PATH . '/lib/adodb/adodb.inc.php');
-$ADODB_CACHE_DIR = ABS_PATH . "/etc/cache/";
-$jersey->db = NewADOConnection($jersey->getConfig('db/driver'));
-$jersey->db->PConnect($jersey->getConfig('db/host'), $jersey->getConfig('db/user'),
-    $jersey->getConfig('db/password'), $jersey->getConfig('db/database'));
-
-//initialize phpGACL (Access Control Lists)
-require_once(ABS_PATH . '/lib/phpgacl/gacl.class.php');
-$jersey->acl = new gacl(array(
-    'db'                 => &$jersey->db,
-    'caching'            => false,
-    'force_cache_expire' => true,
-    'cache_dir'          => ABS_PATH . "/etc/cache",
-    'cache_expire_time'  => 600
-));
-
-//load GeSHi
-require_once(ABS_PATH . '/lib/geshi/geshi.php');
-
-//load php-gettext (used in Jersey in 'fallback mode')
-require_once(ABS_PATH . '/lib/phpgettext/gettext.inc');
+//load php-gettext (used in zoom in 'fallback mode')
+require_once(ZMG_ABS_PATH . '/lib/phpgettext/gettext.inc');
 // gettext setup
-T_setlocale(LC_MESSAGES, $jersey->getConfig('locale/default'));
+T_setlocale(LC_MESSAGES, $zoom->getConfig('locale/default'));
 // Set the text domain as 'messages'
-$domain = $jersey->getConfig('locale/domain');
-T_bindtextdomain($domain, ABS_PATH . '/locale');
-T_bind_textdomain_codeset($domain, $jersey->getConfig('locale/encoding'));
+$domain = $zoom->getConfig('locale/domain');
+T_bindtextdomain($domain, ZMG_ABS_PATH . '/locale');
+T_bind_textdomain_codeset($domain, $zoom->getConfig('locale/encoding'));
 T_textdomain($domain);
 
 //start the session
-session_name(md5(ABS_PATH));
+session_name('ZMG_' . md5(ZMG_ABS_PATH));
 session_start();
 
 //restore session data
-$jersey->restoreSession();
-if (!$jersey->user) {
-    $jersey->login('mdeboer', 'mike1324');
+$zoom->restoreSession();
+if (!$zoom->user) {
+    $zoom->login('mdeboer', 'mike1324');
 }
 
-$jersey->fireEvents('oncontentstart');
+$zoom->fireEvents('oncontentstart');
 
 //initialize Smarty template engine
-require_once(ABS_PATH . '/lib/smarty/Smarty.class.php');
-$jersey->template = new Smarty();
+require_once(ZMG_ABS_PATH . '/lib/smarty/Smarty.class.php');
+$zoom->template = new Smarty();
 
-$jersey->template->template_dir = $jersey->getConfig('smarty/template_dir');
-$jersey->template->compile_dir  = $jersey->getConfig('smarty/compile_dir');
-$jersey->template->cache_dir    = $jersey->getConfig('smarty/cache_dir');
-$jersey->template->config_dir   = $jersey->getConfig('smarty/config_dir');
+$zoom->template->template_dir = $zoom->getConfig('smarty/template_dir');
+$zoom->template->compile_dir  = $zoom->getConfig('smarty/compile_dir');
+$zoom->template->cache_dir    = $zoom->getConfig('smarty/cache_dir');
+$zoom->template->config_dir   = $zoom->getConfig('smarty/config_dir');
 
-$jersey->template->assign('pagetitle',    $jersey->getConfig('meta/title'));
-$jersey->template->assign('pagedescr',    $jersey->getConfig('meta/description'));
-$jersey->template->assign('pagekeywords', $jersey->getConfig('meta/keywords'));
-$jersey->template->assign('pageauthor',   $jersey->getConfig('meta/author'));
-$jersey->template->assign('pageencoding', $jersey->getConfig('locale/encoding'));
-$jersey->template->assign('username',     $jersey->user->get('username'));
+$zoom->template->assign('pagetitle',    $zoom->getConfig('meta/title'));
+$zoom->template->assign('pagedescr',    $zoom->getConfig('meta/description'));
+//$zoom->template->assign('pagekeywords', $zoom->getConfig('meta/keywords'));
+//$zoom->template->assign('pageauthor',   $zoom->getConfig('meta/author'));
+//$zoom->template->assign('pageencoding', $zoom->getConfig('locale/encoding'));
+//$zoom->template->assign('username',     $zoom->user->get('username'));
 
-$jersey->fireEvents('oncontent');
+$zoom->fireEvents('oncontent');
 
 /**
  * Utility function to return a value from a named array or a specified default
@@ -105,22 +84,22 @@ $jersey->fireEvents('oncontent');
  * @param mixed The default value to give if no key found
  * @param int An options mask: _JSY_NOTRIM prevents trim, _JSY_ALLOWHTML allows safe html, _JSY_ALLOWRAW allows raw input
  */
-define( "_JSY_NOTRIM",    0x0001 );
-define( "_JSY_ALLOWHTML", 0x0002 );
-define( "_JSY_ALLOWRAW",  0x0004 );
-function jsyGetParam( &$arr, $name, $def=null, $mask=0 ) {
+define( "_ZMG_NOTRIM",    0x0001 );
+define( "_ZMG_ALLOWHTML", 0x0002 );
+define( "_ZMG_ALLOWRAW",  0x0004 );
+function zmgGetParam( &$arr, $name, $def=null, $mask=0 ) {
     static $noHtmlFilter = null;
     static $safeHtmlFilter = null;
 
     $return = null;
     if (isset( $arr[$name] )) {
         if (is_string( $arr[$name] )) {
-            if (!($mask&_JSY_NOTRIM)) {
+            if (!($mask&_ZMG_NOTRIM)) {
                 $arr[$name] = trim( $arr[$name] );
             }
-            if ($mask&_JSY_ALLOWRAW) {
+            if ($mask&_ZMG_ALLOWRAW) {
                 // do nothing
-            } else if ($mask&_JSY_ALLOWHTML) {
+            } else if ($mask&_ZMG_ALLOWHTML) {
                 // do nothing - compatibility mode
             } else {
                 if (is_null( $noHtmlFilter )) {
@@ -143,7 +122,7 @@ function jsyGetParam( &$arr, $name, $def=null, $mask=0 ) {
  * @param mixed The input string or array
  * @return mixed String or array stripped of slashes
  */
-function jsyStripslashes( &$value ) {
+function zmgStripslashes( &$value ) {
     $ret = '';
     if (is_string( $value )) {
         $ret = stripslashes( $value );
@@ -151,7 +130,7 @@ function jsyStripslashes( &$value ) {
         if (is_array( $value )) {
             $ret = array();
             foreach ($value as $key => $val) {
-                $ret[$key] = jsyStripslashes( $val );
+                $ret[$key] = zmgStripslashes( $val );
             }
         } else {
             $ret = $value;
@@ -168,7 +147,7 @@ function jsyStripslashes( &$value ) {
 * @param string
 * @param boolean
 */
-function jsyBindArrayToObject( $array, &$obj, $ignore='', $prefix=NULL, $checkSlashes=true ) {
+function zmgBindArrayToObject( $array, &$obj, $ignore='', $prefix=NULL, $checkSlashes=true ) {
     if (!is_array( $array ) || !is_object( $obj )) {
         return (false);
     }
@@ -182,7 +161,7 @@ function jsyBindArrayToObject( $array, &$obj, $ignore='', $prefix=NULL, $checkSl
                     $ak = $k;
                 }
                 if (isset($array[$ak])) {
-                    $obj->$k = ($checkSlashes && get_magic_quotes_gpc()) ? jsyStripslashes( $array[$ak] ) : $array[$ak];
+                    $obj->$k = ($checkSlashes && get_magic_quotes_gpc()) ? zmgStripslashes( $array[$ak] ) : $array[$ak];
                 }
             }
         }
@@ -198,7 +177,7 @@ function jsyBindArrayToObject( $array, &$obj, $ignore='', $prefix=NULL, $checkSl
  * @param boolean Recurse search into sub-directories
  * @param boolean True if to prepend the full path to the file name
  */
-function jsyReadDirectory( $path, $filter='.', $recurse=false, $fullpath=false  ) {
+function zmgReadDirectory( $path, $filter='.', $recurse=false, $fullpath=false  ) {
     $arr = array();
     if (!@is_dir( $path )) {
         return $arr;
@@ -206,18 +185,18 @@ function jsyReadDirectory( $path, $filter='.', $recurse=false, $fullpath=false  
     $handle = opendir( $path );
 
     while ($file = readdir($handle)) {
-        $dir = jsyPathName( $path.'/'.$file, false );
+        $dir = zmgPathName( $path.'/'.$file, false );
         $isDir = is_dir( $dir );
         if (($file != ".") && ($file != "..")) {
             if (preg_match( "/$filter/", $file )) {
                 if ($fullpath) {
-                    $arr[] = trim( jsyPathName( $path.'/'.$file, false ) );
+                    $arr[] = trim( zmgPathName( $path.'/'.$file, false ) );
                 } else {
                     $arr[] = trim( $file );
                 }
             }
             if ($recurse && $isDir) {
-                $arr2 = jsyReadDirectory( $dir, $filter, $recurse, $fullpath );
+                $arr2 = zmgReadDirectory( $dir, $filter, $recurse, $fullpath );
                 $arr = array_merge( $arr, $arr2 );
             }
         }
@@ -234,7 +213,7 @@ function jsyReadDirectory( $path, $filter='.', $recurse=false, $fullpath=false  
  * @param string The file system path
  * @param string A filter for the names
  */
-function jsyRedirect( $url, $msg='' ) {
+function zmgRedirect( $url, $msg='' ) {
     // specific filters
     $iFilter = new InputFilter();
     $url = $iFilter->process( $url );
@@ -248,9 +227,9 @@ function jsyRedirect( $url, $msg='' ) {
 
     if (trim( $msg )) {
         if (strpos( $url, '?' )) {
-            $url .= '&jsymsg=' . urlencode( $msg );
+            $url .= '&zmgmsg=' . urlencode( $msg );
         } else {
-            $url .= '?jsymsg=' . urlencode( $msg );
+            $url .= '?zmgmsg=' . urlencode( $msg );
         }
     }
 
@@ -269,7 +248,7 @@ function jsyRedirect( $url, $msg='' ) {
  * @param string The path
  * @param boolean Add trailing slash
  */
-function jsyPathName($p_path, $p_addtrailingslash = true) {
+function zmgPathName($p_path, $p_addtrailingslash = true) {
     $retval = "";
 
     $isWin = (substr(PHP_OS, 0, 3) == 'WIN');
@@ -302,7 +281,7 @@ function jsyPathName($p_path, $p_addtrailingslash = true) {
  *
  * Needed to handle unicode conflicts due to unicode conflicts
  */
-function jsyAmpReplace( $text ) {
+function zmgAmpReplace( $text ) {
     $text = str_replace( '&&', '*--*', $text );
     $text = str_replace( '&#', '*-*', $text );
     $text = str_replace( '&amp;', '&', $text );
@@ -320,7 +299,7 @@ function jsyAmpReplace( $text ) {
  * @param dirmode Integer value to chmod directories. NULL = dont chmod directories.
  * @return TRUE=all succeeded FALSE=one or more chmods failed
  */
-function jsyChmodRecursive($path, $filemode=NULL, $dirmode=NULL)
+function zmgChmodRecursive($path, $filemode=NULL, $dirmode=NULL)
 {
     $ret = TRUE;
     if (is_dir($path)) {
@@ -329,7 +308,7 @@ function jsyChmodRecursive($path, $filemode=NULL, $dirmode=NULL)
             if ($file != '.' && $file != '..') {
                 $fullpath = $path.'/'.$file;
                 if (is_dir($fullpath)) {
-                    if (!jsyChmodRecursive($fullpath, $filemode, $dirmode))
+                    if (!zmgChmodRecursive($fullpath, $filemode, $dirmode))
                         $ret = FALSE;
                 } else {
                     if (isset($filemode))
@@ -350,31 +329,31 @@ function jsyChmodRecursive($path, $filemode=NULL, $dirmode=NULL)
 }
 
 /**
- * Chmods files and directories recursively to Jersey global permissions. Available from 1.0.0 up.
+ * Chmods files and directories recursively to Zoom global permissions. Available from 1.0.0 up.
  * @param path The starting file or directory (no trailing slash)
  * @param filemode Integer value to chmod files. NULL = dont chmod files.
  * @param dirmode Integer value to chmod directories. NULL = dont chmod directories.
  * @return TRUE=all succeeded FALSE=one or more chmods failed
  */
-function jsyChmod($path) {
-    global $jersey;
-    $fileperms = $jersey->getConfig('filesystem/fileperms');
+function zmgChmod($path) {
+    global $zoom;
+    $fileperms = $zoom->getConfig('filesystem/fileperms');
     $filemode  = NULL;
     if ($fileperms != '')
         $filemode = octdec($fileperms);
-    $dirperms  = $jersey->getConfig('filesystem/dirperms');
+    $dirperms  = $zoom->getConfig('filesystem/dirperms');
     $dirmode   = NULL;
     if ($dirperms != '')
         $dirmode = octdec($dirperms);
     if (isset($filemode) || isset($dirmode))
-        return jsyChmodRecursive($path, $filemode, $dirmode);
+        return zmgChmodRecursive($path, $filemode, $dirmode);
     return TRUE;
 }
 
 /**
  * Format a backtrace error
  */
-function jsyBackTrace() {
+function zmgBackTrace() {
     if (function_exists( 'debug_backtrace' )) {
         echo '<div align="left">';
         foreach( debug_backtrace() as $back) {

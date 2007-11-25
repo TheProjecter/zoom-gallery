@@ -1,21 +1,21 @@
 <?php
 /**
- * Jersey, doing scrum the easy way.
+ * zOOm Media Gallery! - a multi-gallery component 
  * 
- * @package jersey
+ * @package zmg
  * @version $Revision$
  * @author Mike de Boer <mdeboer AT ebuddy.com>
- * @copyright Copyright &copy; 2007, Mike de Boer.
+ * @copyright Copyright &copy; 2007, Mike de Boer. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GPL
  */
 
-defined("_VALID_JERSEY") or die("Direct access.");
+defined('_ZMG_EXEC') or die('Restricted access');
 
 /**
  * Main application class
- * @package jersey
+ * @package zmg
  */
-class jersey extends jsyError {
+class zoom extends zmgError {
 	/**
      * Internal variable for the configuration array.
      *
@@ -23,39 +23,21 @@ class jersey extends jsyError {
      */
 	var $_config = null;
     /**
-     * Public variable, containing the ADODB database engine class.
-     *
-     * @var ADODB
-     */
-    var $db = null;
-    /**
-     * Public variable, containing the phpGACL Access Control List class.
-     *
-     * @var gacl
-     */
-    var $acl = null;
-    /**
      * Public variable, containing the Smarty templating engine class.
      *
      * @var Smarty
      */
     var $template = null;
     /**
-     * Public variable, containing the Project objects.
-     *
-     * @var array
-     */
-    var $projects = null;
-    /**
      * Public variable, containing the current user.
      * 
-     * @var jsyUser
+     * @var zmgUser
      */
     var $user = null;
 	/**
      * The class constructor.
      */
-	function jersey() {
+	function zoom() {
 		$this->loadConfig();
 	}
 	/**
@@ -63,52 +45,33 @@ class jersey extends jsyError {
 	 * a class variable (scoped). 
 	 */
     function loadConfig() {
-    	global $jersey_config;
-        $this->_config = $jersey_config;
-        $jersey_config = null;
+    	global $zoom_config;
+        $this->_config = $zoom_config;
+        $zoom_config = null;
     }
     function login($username, $password, $remember = false) {
-        if (!empty($username) && !empty($password)) {
-            $this->db->SetFetchMode(ADODB_FETCH_ASSOC);
-            $password = md5($password);
-            $recordSet = $this->db->Execute( "SELECT id FROM jersey_users
-              WHERE username = '$username'
-                AND password = '$password'" );
-            if (!$recordSet) {
-                jsyError::throwError('Incorrect username and/ or password');
-                $ret = false;
-            } else {
-                while (!$recordSet->EOF) {
-                    $this->user = new jsyUser(&$this->db);
-                    $this->user->load($recordSet->fields['id']);
-                    $recordSet->MoveNext();
-                }
-                $this->storeSession();
-            }
-        } else {
-            return jsyError::throwError('No username and password specified');
-        }
+        
     }
     function logout() {
         
     }
     function restoreSession() {
-        $username = jsyGetParam($_SESSION, 'jersey.session.username', '');
+        $username = zmgGetParam($_SESSION, 'zmg.session.username', '');
         if (!empty($username)) {
-            $this->user = new jsyUser(&$this->db);
-            $this->user->id       = jsyGetParam($_SESSION, 'jersey.session.id', '');
+            $this->user = new zmgUser(&$this->db);
+            $this->user->id       = zmgGetParam($_SESSION, 'zmg.session.id', '');
             $this->user->username = $username;
-            $this->user->usertype = jsyGetParam($_SESSION, 'jersey.session.usertype', '');
-            $this->user->gid      = jsyGetParam($_SESSION, 'jersey.session.gid', '');
-            $this->user->params   = jsyGetParam($_SESSION, 'jersey.session.params', '');
+            $this->user->usertype = zmgGetParam($_SESSION, 'zmg.session.usertype', '');
+            $this->user->gid      = zmgGetParam($_SESSION, 'zmg.session.gid', '');
+            $this->user->params   = zmgGetParam($_SESSION, 'zmg.session.params', '');
         }
     }
     function storeSession() {
-        $_SESSION['jersey.session.id']       = $this->user->id;
-        $_SESSION['jersey.session.username'] = $this->user->username;
-        $_SESSION['jersey.session.usertype'] = $this->user->usertype;
-        $_SESSION['jersey.session.gid']      = $this->user->gid;
-        $_SESSION['jersey.session.params']   = $this->user->params; 
+        $_SESSION['zmg.session.id']       = $this->user->id;
+        $_SESSION['zmg.session.username'] = $this->user->username;
+        $_SESSION['zmg.session.usertype'] = $this->user->usertype;
+        $_SESSION['zmg.session.gid']      = $this->user->gid;
+        $_SESSION['zmg.session.params']   = $this->user->params; 
     }
     /**
      * Retrieve a specific configuration setting.
@@ -128,11 +91,11 @@ class jersey extends jsyError {
      * Load all available custom events from the /var/events folder.
      */
     function loadEvents() {
-        $event_cats = jsyReadDirectory(ABS_PATH . '/var/events');
+        $event_cats = zmgReadDirectory(ABS_PATH . '/var/events');
         $this->events = array();
         foreach ($event_cats as $cat) {
             if ($cat != "shared") {
-                $events = jsyReadDirectory(ABS_PATH . '/var/events/' . $cat);
+                $events = zmgReadDirectory(ABS_PATH . '/var/events/' . $cat);
                 if (count($events) > 0) {
                     $this->events[$cat] = $events;
                 }
@@ -146,7 +109,7 @@ class jersey extends jsyError {
     function fireEvents($event) {
         if (!empty($this->events[$event])) {
             foreach ($this->events[$event] as $cmp) {
-                require_once(ABS_PATH . "/var/events/$event/$cmp/$cmp.php");
+                require_once(ZMG_ABS_PATH . "/var/events/$event/$cmp/$cmp.php");
                 if (class_exists($cmp)) { 
                     eval($cmp . '::start();');
                 }
@@ -173,10 +136,10 @@ class jersey extends jsyError {
         $encoding = $this->getConfig('locale/encoding');
         
         if ($error) {
-            echo @header("jersey_result: KO");
-            echo @header("jersey_msg: " + $error_msg);
+            echo @header("zmg_result: KO");
+            echo @header("zmg_msg: " + $error_msg);
         } else {
-            echo @header("jersey_result: OK");
+            echo @header("zmg_result: OK");
         }
         
         if ($type == "xml") {
