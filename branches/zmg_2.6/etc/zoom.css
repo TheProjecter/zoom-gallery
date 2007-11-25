@@ -1,0 +1,163 @@
+.blockContainer {
+	width: 100%;
+	visibility: visible;
+	border: none;
+}
+.blockHeader {
+	background-image: url('../www/images/blocks/header.png');
+	background-repeat: repeat-x;
+	height: 21px;
+	font-size: 6px;
+	font-weight: bold;
+	color: #D9E1F6;
+	text-align: center;
+	vertical-align: middle;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	text-decoration: none;
+}
+.blockBody {
+	border: 1px solid #0F367B;
+	padding: 4px;
+	text-align: left;
+}
+a.blockHeader {
+	font-size: 9pt;
+	font-weight: bold;
+	color: #D9E1F6;
+	text-align: center;
+	vertical-align: middle;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	text-decoration: none;
+}
+a.blockHeader:hover {
+	color: #FFFFFF;
+}
+/* Shadow for thumbnail images */
+.img-shadow {
+  float:left;
+  background: url(../www/images/shadowAlpha.png) no-repeat bottom right !important;
+  background: url(../www/images/shadow.gif) no-repeat bottom right;
+  margin: 10px 0 0 10px !important;
+  margin: 10px 0 0 5px;
+}
+.img-shadow img {
+  display: block;
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #a9a9a9;
+  margin: -6px 6px 6px -6px;
+  padding: 3px;
+}
+/*For full size img (zoom gallery) */
+.img-shadow-full {
+	float: right;
+}
+.img-shadow-full-border {
+  background: url(../www/images/shadowAlpha.png) no-repeat bottom right !important;
+  background: url(../www/images/shadow.gif) no-repeat bottom right;
+  margin: 10px 0 0 10px !important;
+  margin: 10px 0 0 5px;
+  float:left; /* RC4 Release */
+}
+
+.img-shadow-full {
+  display: block;
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #a9a9a9;
+  margin: -6px 6px 6px -6px;
+  padding: 6px;
+  }
+  
+
+/*Custom Zoom Media Gallery CSS*/
+/*For galleryshow.php */
+.zoom-logo {text-align:left;}
+.zoom-wrap-search {}
+.zoom-keywords {float:left;clear:right;margin-top:20px;}
+.zoom-search {float:right;clear:left;margin:0;padding:0;margin-top:-26px;}
+.search-zg{font-size:1em;}
+.search-zg label {font-weight:bold;color:#666;padding-left:5px;}
+/* ZMG Album */
+.zmg-album {width:100%;text-align:center;margin-left:0%;margin-right:0%;padding-top:20px;}
+.zmg-album-inner {float:left;}
+.zmg-album-inner a {font-weight:bold;}
+.zmg-album-image {font-size:0.8em;line-height:16px;color:#777;background-color:#eee;border:1px solid #ddd; margin:5px 15px 15px 5px;padding:8px;}
+.zmg-image-of-album {background-color:#fff;border:1px solid #ddd;padding:4px;} /*Style the actual image album*/
+/* ZMG SubAlbum */
+.zmg-sub-album {width:100%;text-align:center;margin-left:0%;margin-right:0%;padding-top:20px;}
+.zmg-sub-album-inner {float:left;}
+.zmg-sub-album-inner a {font-weight:bold;border:0px;}
+.zmg-sub-album-image {font-size:0.8em;line-height:16px;color:#777;background-color:#eee;border:1px solid #ddd; margin:5px 15px 15px 5px;padding:8px;}
+.zmg-image-of-sub-album {background-color:#fff;border:1px solid #ddd;padding:4px;} /*Style the actual image album*/
+/*ZMG Thumbnail display*/
+.zmg-image-thumb {background-color:#fff;border:1px solid #ddd;padding:4px;} /*Style the actual image thumbnail*/
+.zmg-image-thumb-outer {margin-bottom:20px;}
+.zmg-unpublished {color:red;} /*unpublished text*/
+/*Details shown on thumbnails page*/
+.zmg-comments-on {margin:0;font-size:0.8em;}
+.zmg-hits {margin:0;font-size:0.8em;}
+.zmg-bar {width:100%; float:right; padding-top:20px; display:inline; text-align:right;font-size:0.8em;margin:10px 0;} /* For the - Top | Last submitted | Last Coomented | Top Rate | */ 
+.zmg-bar-left {float:left; clear:left; }
+.zmg-bar-right {float:right; clear:right; }
+.zmg-bar a {font-weight:bold;}
+.zmg-admin-system a {font-weight:bold;}
+/* Styles for ZMG full size image */
+.zmg-image-full-outer {margin:30px auto 0px auto;}
+.zmg-image-full {background-color:#fff;text-align:center;border:1px solid #ddd; padding:6px;}
+/*Zoom Gallery slide show control*/
+h3.zmg-slideshow-control-title {margin:0;font-size:0.9em;}
+.zmg-slideshow-control {text-align:center;}
+/*For the search.php (zoom)*/
+.zoom-search-page {float:right;margin:0;padding:0;margin-top:-16px;}
+/*Add to Lightbox link*/
+a.add-to-lightbox {font-size:0.8em;}
+/*For top of full image page where lightbox and ecard is*/
+.top-full-image-lightbox {float:right;}
+.top-full-image-ecard {float:right;}
+/*Zoom Gallery Properties box details */
+#details {clear:both;}
+.detail-box {}
+.detail-box-img-name-title {font-weight:bold;width:100px;text-align:left;}
+.detail-box-img-name {text-align:left;}
+.detail-box-filename-title {font-weight:bold;width:100px;text-align:left;}
+.detail-box-filename {text-align:left;}
+.detail-box-keyword-title {font-weight:bold;width:100px;text-align:left;}
+.detail-box-keyword {text-align:left;}
+.detail-box-date-title {font-weight:bold;width:100px;text-align:left;}
+.detail-box-date {text-align:left;}
+.detail-box-username-title {font-weight:bold;width:100px;text-align:left;}
+.detail-box-username {text-align:left;}
+.detail-box-desc-title {font-weight:bold;width:100px;text-align:left;}
+.detail-box-desc {text-align:left;}
+.detail-box-hits-title {font-weight:bold;width:100px;text-align:left;}
+.detail-box-hits {text-align:left;}
+.detail-box-ratings-title {font-weight:bold;width:100px;text-align:left;}
+.detail-box-ratings {text-align:left;}
+/*Zoom Gallery Commments*/
+.zmg-comment-block {padding:10px;margin:10px;border:1px solid #ddd;background-color:#fefefe;}
+h4.zmg-comment-intro {font-weight:bold;padding-bottom:10px;padding-left:10px;margin:0;}
+.comments-added-date {font-size:0.9em}
+.zmg-comments-added-name {font-weight:bold;padding-bottom:10px;}
+.zmg-comments-says {font-weight:normal;}
+.zmg-comments-added-text {padding-bottom:20px;}
+.zmg-comments {padding-top:20px;}
+.zmg-comments-name {text-align: right;margin-left:35px;}
+.inputbox-zmg-comment {width:280px}
+.zmg-comments-textarea {vertical-align:top;margin-top:10px;margin-left:10px}
+.zmg-comments-submit {margin:20px 0 10px 85px;}
+.zmg-comment-button {}
+.zmg-comments-emoticons {margin-left:10px;padding:5px;border-top:1px solid #ddd;border-bottom:1px solid #ddd;}
+/* Zoom Gallery Ecard */
+h3.zmg-ecard-title {}
+#zmg-ecard form {margin:0;margin-top:20px;float:left;}
+#zmg-ecard label {text-align:right;}
+#zmg-ecard p {margin:0;padding-bottom:5px;}
+.zmg-ecard-name {margin-left:103px;}
+.zmg-ecard-email {margin-left:50px;}
+.zmg-ecard-friendsname {margin-left:53px;}
+.zmg-ecard-friendsendemail {}
+.zmg-ecard-msg {vertical-align:top;margin-left:114px;}
+.inputbox-zmg-ecard {width:250px;}
+.zmg-ecard-submit {padding-left:178px;padding-top:10px;}
+.clr {clear: both;}

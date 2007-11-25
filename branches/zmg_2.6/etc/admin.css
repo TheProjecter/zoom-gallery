@@ -1,0 +1,85 @@
+/* header block */
+table.zmg-admin-adminheading {
+	background-color: #FFF;
+	font-family : Arial, Helvetica, sans-serif;
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+	width: 100%;
+	border-collapse: collapse;
+	color: #C64934;
+	font-size : 18px;
+	font-weight: bold;
+	text-align: left;
+}
+table.zmg-admin-adminheading th {
+	background: url(../www/images/admin/logo_swirl.png) no-repeat left;
+	text-align: left;
+	height: 60px;
+	padding-left: 50px;
+	border-bottom: 5px solid #fff;
+}
+.zmg-admin-adminform {
+	background: #f9f9f9 url(../www/images/zoom_logo_faded.gif) no-repeat right;
+	border: solid 1px #d5d5d5;
+	width: 100%;
+	margin: 2px;
+	padding: 10px;
+	border-collapse: collapse;
+}
+.zmg-admin-adminform tr.row0 {
+	background-color: #f9f9f9;
+}
+.zmg-admin-adminform tr.row1 {
+	background-color: #eeeeee;
+}
+.zmg-admin-adminform th {
+	font-size: 11px;
+	padding-top: 6px;
+	padding-bottom: 2px;
+	padding-left: 4px;
+	padding-right: 4px;
+	text-align: left;
+	height: 25px;
+	background: url(../images/background.jpg);
+	color: #000;
+	background-repeat: repeat;
+}
+.zmg-admin-adminform td {
+	padding: 3px;
+	text-align: left;
+}
+.zmg-admin-adminform td.editor {
+	font-size: 9px;
+}
+
+#zmg-admin-cpanel td {
+	text-align: center;
+}
+#zmg-admin-cpanel {  text-align: center;  vertical-align: middle; }
+
+#zmg-admin-cpanel div.icon   { margin: 3px; }
+#zmg-admin-cpanel div.icon a { 
+	display: block; float: left;
+	height: 97px !important;
+	height: 100px; 
+	width: 108px !important;
+	width: 110px; 
+	vertical-align: middle; 
+	text-decoration : none;
+	border: 1px solid #DDD;
+	padding: 2px 5px 1px 5px;
+}
+
+#zmg-admin-cpanel div.icon a:link    {  color : #808080;  }
+#zmg-admin-cpanel div.icon a:hover   { 
+	color : #333; 
+	background-color: #f1e8e6;  
+	border: 1px solid #c24733;
+	padding: 3px 4px 0px 6px; 
+}
+#zmg-admin-cpanel div.icon a:active  {  color : #808080;  }
+#zmg-admin-cpanel div.icon a:visited {  color : #808080;  }
+
+#zmg-admin-cpanel div.icon img { margin-top: 13px; }
+#zmg-admin-cpanel div.icon span { display: block; padding-top: 3px;}

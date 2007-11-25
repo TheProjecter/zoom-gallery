@@ -1,0 +1,494 @@
+//zOOm Media Gallery//
+/** 
+-----------------------------------------------------------------------
+|  zOOm Media Gallery! by Mike de Boer - a multi-gallery component    |
+-----------------------------------------------------------------------
+
+-----------------------------------------------------------------------
+|                                                                     |
+| Author: Mike de Boer, <http://www.mikedeboer.nl>                    |
+| Copyright: copyright (C) 2007 by Mike de Boer                       |
+| Description: zOOm Media Gallery, a multi-gallery component for      |
+|              Mambo. It's the most feature-rich gallery component    |
+|              for Mambo! For documentation and a detailed list       |
+|              of features, check the zOOm homepage:                  |
+|              http://zoomfactory.org                                 |
+| License: GPL                                                        |
+| Filename: Changelog.txt                                             |
+|                                                                     |
+-----------------------------------------------------------------------
+
+zOOm Media Gallery - Change Log
+------------
+This is a non-exhaustive (but still near complete) changelog for
+zOOm Media Gallery, including beta and release candidate versions.
+Our thanks to all those people who've contributed bug reports and
+code fixes.
+
+Legend:
+
+# -> Bug Fix
++ -> Addition
+! -> Change
+- -> Removed
+! -> Note
+
+zOOm Media Gallery - 2.5.1 Stable - SVN
+=======================================
+# 0000912: Install does not work (Kevin8020)
+# 0000910: Entire Gallery isappeared after upgrade (Kevin8020)
+# 0000897: Problem with gallery manager (Kevin8020)
+
+zOOm Media Gallery - 2.5.1 RC4
+==============================
++ New ACL levels for gallery's and images
++ New Tree for the Gallery Manager - This one works on all major browsers
++ NEW Lightbox JS script implementation.
++ Better support for Multi - Language sites.
++ Fixed hotlink and file-type thumbs
+! Cleaned the code base.
+! Updated database for minor problems
+# 0000881: no overdiv-popups while hovering over albumname or albumpicture or picture (Kevin8020)
+# 0000851: No page-navigation possible in frontend (Kevin8020)
+# 0000882: zOOM is not fully multi-ligual - bugfix (spignataro)
+# 0000877: Zoom chmod files and directorys 777
+# 0000511: E-Mail on new comment (Kevin8020)
+# 0000214: Slow screens with userlist (Kevin8020)
+# 0000271: Fatal error: Call to a member function on a non-object in /web/htdocs/www.alisultevere.it/home/components/com_zoom/www/admin/edi (Kevin8020)
+# 0000595: frontend and backend Error in IE (spignataro)
+# 0000156: Javascript error with explorer (administrator)
+# 0000261: Only admin users can modify gallery in front office (rights are set also for registred users) (Kevin8020)
+# 0000717: can't view image -- Call to a member function on a non-object on line 99 of view.php (Kevin8020)
+# 0000869: Slideshow problems with pictures for registered useres only (Kevin8020)
+# 0000825: shows always the filename and category (Kevin8020)
+# 0000585: zoom slideshow error message (spignataro)
+# 0000709: show description of the galery in the galery too (Kevin8020)
+# 0000299: Feature Request: Ability to show albumdescription in the Albums beyond the tumbs. (Kevin8020)
+# 0000245: Upload fails (spignataro)
+# 0000724: After Upload ZMG says "Wrong Mediatype" (spignataro)
+# 0000478: CGI error when selecting configuration settings (spignataro)
+# 0000873: Gallery manager error (spignataro)
+# 0000866: Users permissions (spignataro)
+# 0000870: some pictures not visible for non registered useres
+# 0000867: error on load xml file
+# 0000868: error on load xml file
+# 0000298: Feature Request: Ability to move Gallerys to Subgallerys
+# 0000251: Slideshow not working
+# 0000571: keywords do not display (Kevin8020)
+# 0000560: Watermarks still not displayed (Kevin8020)
+# 0000590: Language support in full screen image (Kevin8020)
+# 0000797: php 5.1 bug (administrator)
+# 0000789: safemode settings not loaded (administrator)
+# 0000672: FFmpeg deprecated -f singlejpeg (administrator)
+# 0000594: keyword without password (administrator)
+# 0000588: new version of FFmpeg requires code change in toolbox.case.php (administrator)
+# 0000367: GD installed but Zoom can´t detect it? (Kevin8020)
+# 0000203: No video thumpnail when FFMPEG is auto detected. (administrator)
+# 0000601: Watermarks and EXIF-Infos (Kevin8020)
+# 0000726: Searching pictures from frontend (Kevin8020)
+# 0000752: Voting problem (Kevin8020)
+# 0000636: [] Title not assigned when load a zip file (Kevin8020)
+# 0000864: [] Error Type LoadXML (Kevin8020)
+# 0000534: [] custom order fails with >= 10 galleries (Kevin8020)
+# 0000272: [] Language module english.php missing keys (Kevin8020)
+# 0000625: [] I cannot create gallery in Thai language. (Kevin8020)
+# 0000769: [] UT-8 support (Kevin8020)
+# 0000806: [] After the name of the comment's author an english string (Kevin8020)
+# 0000024: [] Security Feature (Kevin8020)
+# 0000222: [] length of imgname column in #__zoomfiles (Kevin8020)
+# 0000811: [] ISO 8859-2 (latin 2) characters are displayed wrong in media manager and frontpage (Kevin8020)
+# 0000819: [] album description not working w. special charachters (äüö....) anymore (Kevin8020)
+# 0000823: [] build W51 (Kevin8020)
+# 0000828: [] Joomla 1.0.12 and SSL switchover against Hotlink Protection (Kevin8020)
+# 0000830: [] Optimize Tables destroy formating (Kevin8020)
+# 0000829: [] Errors in server response after pressing the upload files button (Kevin8020)
+# 0000837: [] Text is truncated when HTML encoded characters are used (Kevin8020)
+# 0000630: [] Problem with international characters in gallery titles (Kevin8020)
+# 0000851: [] No page-navigation possible in frontend (Kevin8020)
+# 0000855: [] Warning: Division by zero (Kevin8020)
+# 0000857: [] sudamerican accents (Kevin8020)
+# 0000858: [] Descriptions are corrupted on editing and do not format correctly (Kevin8020)
+# 0000861: [] ecard (Kevin8020)
+# 0000850: [] Deletion, creation or editing won't work.
+# 0000846: [] Can't create gallery
+# 0000845: [] When running back end, the app half-loads and stops with the progress bar
+# 0000843: [] Delete category
+# 0000238: [] Long filenames are trunc'ed and images not showing up.
+# 0000798: [] no SaveIcon in the Album-Manager after Installation
+# 0000840: [] Cant add/edit my Galleries, zoom gallery says: Your request is being processed...please be patient!
+# 0000832: [] In Media Manager (backend), last pagination link is broken
+# 0000831: [] Can't select gallery in tree
+# 0000827: [] Not granting Delete Gallery and Edit Gallery has no effect
+# 0000824: [] Galery manager
+# 0000821: [] Categories cannot be created, no zoom feature after upgrade
+# 0000822: [] browser error [createselect]: can't find the requested dropdown definition
+# 0000275: [] movies thumbnails with zoomthumb
+# 0000764: [] Pictures and thumbs do not display
+# 0000814: [] No gallery creation, no save icon, no directory tree with joomla 1.0.12
+# 0000804: [] Cannot change/save existing galleries that have an ampersand in description or name
+# 0000802: [] can´t make the first album
+# 0000772: [] safeMode support broken
+# 0000793: [] Ajax Gallery ordering not working.
+# 0000792: [] Viewsize images floats to the left
+# 0000791: [] be patient
+# 0000777: [] Error in line 663 of image.class.php, and no images found when sorting the latest comments
+# 0000753: [] No pictures to view and edit after upload from admin backend
+# 0000761: [] No new gallery creation possible
+# 0000532: [] slideshow "play" not working
+# 0000736: [] Picture Rating not working
+# 0000732: [] Gallery manager empty in firefox
+# 0000738: [] Can't rename, delete or change an existing gallery subject
+# 0000719: [] picture description is maximized to 255 characters
+# 0000562: [] Keywords dissapear from edit fields
+# 0000635: [] Tooltips issue
+# 0000862: [] Unable to view last page in admin panel
+# 0000715: [] Drag'n'drop function not working
+# 0000631: [] Impossible to create gallery with TMEdit 1.0 RC2 (Editor)
+# 0000621: [] No control over the membership of files (as oposed to folder membership which is active)
+# 0000617: [] short_open_tag & Call to a member function getInfo() inside editimg.php (Kevin8020)
+# 0000609: [] Logic bug in zoom.php: line 90-94
+# 0000597: [] change directory name in Gallery Manager
+# 0000510: [] Unable to upload video
+# 0000345: [] Creating New Gallery (administrator)
+# 0000313: [] bugs with upload
+# 0000309: [] Tiny MCE Editor Failure
+# 0000707: [] Name and description filed not considered uploading photos (Kevin8020)
+# 0000744: [] gallery ordering not working, opensef alias not working, zip upload not working, warning in multiple upload (Kevin8020)
+# 0000775: [] Users can not view pictures in full (Kevin8020)
+# 0000750: [] Not working with latest patch from Byostech JCALPlus (Kevin8020)
+# 0000257: [] Does not work with JACLPlus (Kevin8020)
+# 0000545: [] Drag & Drop still not working (Kevin8020)
+# 0000800: [] Bug with "Enter your comments below" and submit button (Kevin8020)
+# 0000751: [] Zoomthumb codegenerator delivers wrong code (Kevin8020)
+
+zOOm Media Gallery - 2.5.1 RC3
+==============================
++ Optional image hotlink protection
++ Refreshed settings and admin panels
++ Greatly improved openSEF support
++ Completely revised gallery tree
++ Upgraded and enhanced MP3 player
++ New theme system with "Modern" and "Classic" layouts available
+! Upgraded all the included JavaScript libraries
+! Upgraded the getID3 library
+! Highly improved support for UTF-8 languages
+# 0000769: [] UT-8 support (Kevin8020)
+# 0000760: [] French special caracters in the image properties (Kevin8020)
+# 0000783: [] Last commented page shows "No media found!" (Kevin8020)
+# 0000773: [] Error message while navigating "Top ten", "Last submitted" of Zoom gallery (Kevin8020)
+# 0000100: [] Scan Directory upload from FTP only uploads 5 pictures (administrator)
+# 0000755: [] MOVIE UPLOAD IMPOSSIBLE !!! (Kevin8020)
+# 0000763: [] misc bugs in 2.5.1 RC3 (Kevin8020)
+# 0000765: [] SQL Error in image.class.php (Kevin8020)
+# 0000770: [] Last submitted and (Kevin8020)
+# 0000774: [] Function is ok.: but Error messages (Kevin8020)
+# 0000758: [] No Category Manager Icon FIREFOX (Kevin8020)
+# 0000695: [] Cannot edit images (Kevin8020)
+# 0000754: [] Error when creating new gallery (Kevin8020)
+# 0000741: [] CVS 26 Nov 2006 (Kevin8020)
+# 0000744: [] gallery ordering not working, opensef alias not working, zip upload not working, warning in multiple upload (Kevin8020)
+# 0000706: [] Cannot upload using scan directory (Kevin8020)
+# 0000462: [] Slideshow does not work (Kevin8020)
+# 0000702: [] Cannot Upload at all - 0 Media Uploaded Successfully (Kevin8020)
+# 0000749: [] "Search" shows pics and galeries set to "Members only" (Kevin8020)
+# 0000733: [] Gallery view failed to load (Kevin8020)
+# 0000740: [] Upgrade to CVS 24 Nov 2006 (Kevin8020)
+# 0000619: [] Ordering of categories on manager (Kevin8020)
+# 0000578: [] Unable to select a gallery from the mediamanager. (Kevin8020)
+# 0000701: [] Opensef RC5 does not allow upload for ZMG (Kevin8020)
+# 0000710: [] Cannot Upload Media When Opensef is Installed (Kevin8020)
+# 0000718: [] Lightbox not functioning (Kevin8020)
+# 0000725: [] Joomfish Compatibility is still not implemented (Kevin8020)
+# 0000705: [] Joomfish compatability (Kevin8020)
+# 0000620: [] Zoom Factory & Joomfish interaction (Kevin8020)
+# 0000720: [] Media rating not working (Kevin8020)
+# 0000627: [] Not possible to create new gallery (Kevin8020)
+# 0000727: [] No Thumbnail Sorting possible (Kevin8020)
+# 0000713: [] No Gallery Save Button (Kevin8020)
+# 0000692: [] Rotate delete the file. (Kevin8020)
+# 0000024: [] Security Feature (Kevin8020)
+# 0000683: [] It's possible to assign a gallery as its own parent! This breaks many things (administrator)
+# 0000215: [] Validity (administrator)
+# 0000575: [] Gallery Manager Width (administrator)
+# 0000665: [] no save button in frontend gallery edit function (administrator)
+# 0000712: [] I always get the following bug report on my zoom gallery page (Kevin8020)
+# 0000711: [] I always get the bug report as i view my gallery photos (Kevin8020)
+# 0000415: [] User rights not right (Kevin8020)
+# 0000379: [] ecard permisions problem (Kevin8020)
+# 0000277: [] Don`t show the Username on the PopUp Pictures Features, why not? (Kevin8020)
+# 0000688: [] SEF and Javascript (Kevin8020)
+# 0000704: [] No SAVE button in Gallery Manager (Kevin8020)
+# 0000267: [] security issues - possible to bypass the security functions within zOOM (administrator)
+# 0000557: [] Comment Errors! (administrator)
+# 0000138: [] Unregistred users can see images for registered users only by viewing the 'top ten' images (administrator)
+# 0000236: [] Comment system bug (administrator)
+# 0000351: [] Category and sub-category (Kevin8020)
+# 0000382: [] Set as Gallery Image fails if publish is unchecked (Kevin8020)
+# 0000360: [] Set as Gallery Image (administrator)
+# 0000329: [] Wrong image when editing image (Kevin8020)
+# 0000306: [] 2nd page in media manager malfunctions (Kevin8020)
+# 0000300: [] Wrong image selection (Kevin8020)
+# 0000286: [] Cannot delete gallery on Joomla 1.0.4 and RC1 (Kevin8020)
+# 0000263: [] Send E-Card function crash (Kevin8020)
+# 0000255: [] Not possible to add Categories (Kevin8020)
+# 0000254: [] Error on deleting gallery (Kevin8020)
+# 0000228: [] Multi page gallery editing fails (Kevin8020)
+# 0000224: [] Sorting in Gallery Manager (Kevin8020)
+# 0000608: [] Unable to manage galleries!!! (Kevin8020)
+# 0000689: [] Error message when sending an ecard (Kevin8020)
+# 0000690: [] Error message when sending an ecard (Kevin8020)
+# 0000680: [] Zoom doesn't zoom on high res picture, but uses viewsize instead (Kevin8020)
+# 0000530: [] ISO 8859-2 (latin 2) characters in the Gallery names are displayed wrong, filenames with those characters don't display at all. (Kevin8020)
+# 0000630: [] Problem with international characters in gallery titles (Kevin8020)
+# 0000670: [] An Fatal Error Request (Kevin8020)
+# 0000592: [] "New media uploaded" button shows pics even if the album is not yet published (Kevin8020)
+# 0000509: [] Image in modul is resized to full size during slideshow (ripper17)
+# 0000618: [] Entire Directory uploaded when performing "scan directory" instead of the selected files (Kevin8020)
+# 0000539: [] picture voting doesn´t work since last cvs-update (Kevin8020)
+# 0000565: [] New Rating system does not work for Opera browser (administrator)
+# 0000582: [] Wrong picture retrieved when you select image (Kevin8020)
+# 0000581: [] Wrong picture retrieved when you select image (Kevin8020)
+# 0000572: [] admin Gallery Manager does not display galleries (Kevin8020)
+# 0000600: [] Incorrect Focus on upload tabs (Kevin8020)
+# 0000596: [] Description containing ' not added at all (Kevin8020)
+# 0000589: [] error message using quicksearch (Kevin8020)
+# 0000540: [] Search + windows popup not working (Kevin8020)
+# 0000574: [] Gallery Manager not showing Descripion from DB (Kevin8020)
+# 0000583: [] Password protected galleries are publicly viewable (Kevin8020)
+# 0000587: [] Breadcrumb contains space characters either side of titles (Kevin8020)
+# 0000543: [] eCard expired to soon?? (Kevin8020)
+# 0000561: [] E-card expire immediately after sent (Kevin8020)
+# 0000380: [] FLV Videos? (Kevin8020)
+# 0000567: [] Crash when lightbox feature is enabled (administrator)
+# 0000558: [] Comment containing ' not added at all (Kevin8020)
+# 0000217: [] Pathway using > sign instead of &gt; (Kevin8020)
+# 0000544: [] Layout of Gallery and Image View (Kevin8020)
+# 0000547: [] Comment Times not correct (Kevin8020)
+
+zOOm Media Gallery - 2.5.1 RC2 Weekly Build 1
+=============================================
+! Updated the tjpzoom script to the newest version.
+- Removed depreciated files
+# 0000547: [] Comment Times not correct (Kevin8020)
+
+zOOm Media Gallery - 2.5.1 RC2
+==============================
++ New Ajax rating system
++ New Ajax Gallery Manager
+# 0000135: [] Cannot Upload - upl_multiple error line 45 (spignataro)
+# 0000406: [] Automatic naming of files on upload (Kevin8020)
+# 0000515: [] Multiple File Upload (Kevin8020)
+# 0000252: [] Same name for multiple upload (Kevin8020)
+# 0000523: [] Spam in comments (Kevin8020)
+# 0000524: [] Can not create new Gallery (Kevin8020)
+# 0000488: [] 'ftp mode on' gives error (administrator)
+# 0000469: [] Upload multiple files (Error Type) (Kevin8020)
+# 0000295: [] Unable to Create Galleries (Kevin8020)
+# 0000407: [] Lightbox: Fatal Error (Kevin8020)
+# 0000403: [] Cannot upload anything (Kevin8020)
+# 0000410: [] WaterMark Settings not loading (Kevin8020)
+# 0000499: [] Warning after creating new albums (Kevin8020)
+# 0000518: [] Displaying username when adding a comment (Kevin8020)
+# 0000490: [] Can't edit gallerys with AJAX (administrator)
+# 0000521: [] Resizing does not work correctly (Kevin8020)
+# 0000339: [] After clicking on a thumbnail, image is running out of the page (administrator)
+# 0000061: [] Error resizing image / creating thumbnail in 2.5b3 using NetPBM (10.28.00) conversion library (administrator)
+# 0000289: [] Unable to upload .gifs (administrator)
+# 0000483: [] Upload Images, ordering under wrong filenames (administrator)
+# 0000396: [] Wrong Picture (administrator)
+# 0000140: [] Album Order can not be changed?!?!?!? (administrator)
+# 0000517: [] Back-Button on uploading new images (Kevin8020)
+# 0000149: [] Exec() is disabled for security reasons (spignataro)
+# 0000247: [] slideshow and rating ideas
+# 0000303: [] Gallery name not appearing in edit gallery screen (Kevin8020)
+# 0000248: [] Missing Images (Muneo)
+# 0000347: [] german "umlaute" in filenames prevent image presentation (Kevin8020)
+# 0000374: [] Lightbox fails when adding from full image view (Kevin8020)
+# 0000370: [] After Comment & Logout: Fatal error: Call to ... (Kevin8020)
+# 0000477: [] equal imagenames cause db inconsistency (Kevin8020)
+# 0000489: [] slide show (Kevin8020)
+# 0000460: [] Display Problems with Internet Explorer (Kevin8020)
+# 0000512: [] Some Errors in "Top Ten" Category (Kevin8020)
+# 0000508: [] Watermarks on some pictures not displayed (Kevin8020)
+# 0000497: [] Layout issue (Kevin8020)
+# 0000506: [] Drag N drop not working and no Next, Back arrows (Kevin8020)
+# 0000501: [] errot in view.php comments (Kevin8020)
+# 0000500: [] Error: Installing on Joomla 1.0.10 (Kevin8020)
+# 0000242: [] lightbox crash on insert and on view (Kevin8020)
+# 0000365: [] Zoom Gallery ERROR (Kevin8020)
+# 0000387: [] Attempting to 'Lightbox' Gallery (Kevin8020)
+# 0000388: [] Using Lightbox feature (Kevin8020)
+# 0000196: [] Processing images from list... > >No category specified, please select one from the list. (Kevin8020)
+# 0000239: [] *UNPUBLISHED* SUB-categories are always shown to the frontend user (Kevin8020)
+# 0000492: [] All works but throws up multiple errors on all pages in Mambo site (Kevin8020)
+# 0000496: [] Slide show error (Kevin8020)
+# 0000484: [] Edit/Create Gallery Issue (Latest CVS) (Kevin8020)
+# 0000491: [] zOOmMedia gallery displays with errors (Kevin8020)
+# 0000480: [] When creating a new gallary a "Parse error" occurs. (rokonso)
+# 0000494: [] Undefined variable: parent in editimg.php (Kevin8020)
+# 0000493: [] After the installation of zOOmgallery the following errors occured (backend) (Kevin8020)
+# 0000212: [] ecard_back.png isn't shown (Kevin8020)
+# 0000219: [] Data missing from xml file (Kevin8020)
+# 0000280: [] arrow_down_grey.png not displaying (Kevin8020)
+# 0000158: [] image resize not working (administrator)
+# 0000215: [] Validity
+# 0000311: [] Installation problems with Zoom 2.5RC1 (Kevin8020)
+# 0000316: [] Undefined index: catid in admin.zoom.php on line 68 (Kevin8020)
+# 0000177: [] settings for max size (Kevin8020)
+# 0000358: [] Rating Improvement (administrator)
+# 0000333: [] Joomla version compatibility (administrator)
+# 0000383: [] Unable to make a gallery from the front-end (Kevin8020)
+# 0000394: [] error in commnets (Kevin8020)
+# 0000397: [] Image max. size and thumbnail resizing not working (Kevin8020)
+# 0000334: [] Drag n drop does not work in combination with joomla 1.0.8 (Kevin8020)
+# 0000409: [] when viewing comments, receive error: $count is undefined in view.php line 553, 555 (Kevin8020)
+# 0000194: [] Unable to delete gallery. (Kevin8020)
+# 0000199: [] cant pick a gallery in "upload media" (latest CVS) (Kevin8020)
+# 0000390: [] some errors (Muneo)
+# 0000467: [] Edit Gallery not found (Kevin8020)
+# 0000487: [] Errors in dutch language file (Kevin8020)
+# 0000449: [] User permissions with Joomla 1.0.8 (Kevin8020)
+# 0000485: [] Fatal error when viewing gallerys (Latest CVS) (Kevin8020)
+# 0000458: [] Only last clicked member saved ( firefox only ) (Kevin8020)
+# 0000312: [] Media Gallery Pop Up showing same frame in IE (Kevin8020)
+# 0000474: [] in Backend/Settings Notice: Undefined variable: status in /lib/toolbox.class.php on lines 1140/1141/1155/1156 (Kevin8020)
+# 0000465: [] Delete Gallery with new ajaxcallback.php (Kevin8020)
+# 0000417: [] "Save"-Button on creating a new album is missing (Kevin8020)
+# 0000093: [] Zoom Pop-up's do not work SEO activated
+# 0000453: [] Error in Back-end "Notice: Undefined index: catid in [...]administrator/components/com_zoom/admin.zoom.php" (Kevin8020)
+# 0000433: [] EXIF-Information on watermarked-pictures (Kevin8020)
+# 0000418: [] Upload dialog is always visible (Kevin8020)
+# 0000454: [] access level for gallery not saved : reverts to "public access" (Kevin8020)
+# 0000457: [] Max. Size Setting doesn't work (Kevin8020)
+# 0000456: [] broken pop-up image (Kevin8020)
+# 0000441: [] rating icons is not showing in Top Ten. (Muneo)
+# 0000452: [] Error on Front-end : "Warning: session_destroy()..." (Kevin8020)
+# 0000363: [] Top 10, Last commented (Kevin8020)
+# 0000414: [] Save Gallery Button has JavaScript Error (Kevin8020)
+# 0000440: [] Keywords not stored when using scan folder function (Kevin8020)
+# 0000446: [] Zoom Thumb Codes link on closed project (Kevin8020)
+# 0000432: [] Variable for translation not used (_ZOOM_THUMB_DESCR) (Kevin8020)
+# 0000430: [] Watermark with JPG (transparency) (Kevin8020)
+# 0000434: [] Default watermark is a gif File - not suported (Kevin8020)
+# 0000439: [] problems with put_jpeg_header_data() (Kevin8020)
+# 0000438: [] Add to Ligthbox Link on View Page Incorrect
+# 0000185: [] Java Upload Disabled (Kevin8020)
+# 0000435: [] Watermarks imagemagick support (Kevin8020)
+# 0000428: [] checking type of wrong file - file don't uplaod (Kevin8020)
+# 0000319: [] Can't create Watermark (administrator)
+# 0000429: [] _watermarkImageGD() create jpeg with bad quallity (Muneo)
+# 0000205: [] backslash missin for light box image (Muneo)
+# 0000421: [] Installation don't crate watermarks directory (Muneo)
+# 0000423: [] Error Editing Galleries with more than 2 pages of results (Muneo)
+# 0000391: [] zoom.class.php line 1345 (Muneo)
+# 0000413: [] When editing images ( Admin ) link to home.gif is broken (Muneo)
+# 0000326: [] Selecting image to edit from multi page adminmgr screen always gives a page 1 image (Muneo)
+# 0000420: [] Again some Errors im zoom.xml (Muneo)
+# 0000402: [] Cannot create a new album
+# 0000389: [] Both registered users and non-registered users can comment (Muneo)
+# 0000373: [] Feature Request: Comments only for Registered Users (Muneo)
+# 0000288: [] Slideshow doesn't work (administrator)
+# 0000353: [] Would it be possible to allow hyper links in image descriptions ? (administrator)
+# 0000355: [] Viewing previous Gallery through Last Submitted causes Fatal Error (administrator)
+# 0000354: [] Slideshow out of function (administrator)
+# 0000151: [] Thumbnail max. width (administrator)
+# 0000292: [] Can't delete gallery (administrator)
+# 0000250: [] Pictures cannot be added to Lightbox when viewing it (Muneo)
+# 0000278: [] Lightbox.png not shown (missing slashes in url) (Muneo)
+# 0000282: [] Comments only for registered Users (Muneo)
+
+zOOm Media Gallery - 2.5.1 RC1
+==============================
+# 0000170: [] Crude Code Implementation (Kevin8020)
+# 0000150: [] Multiple Upload two files (administrator)
+# 0000359: [] Gallery Navigation... (Specificaly the "Mainscreen")
+# 0000357: [] E-Card Not working
+# 0000264: [] Tradução para português brasil (Muneo)
+# 0000279: [] Mainscreen and Rating Images not shown on search page results (Muneo)
+# 0000191: [] Getting message in ZOOM config panel. To long filename... Growing blak line.
+# 0000186: [] Security Hole Found (administrator)
+# 0000193: [] Ecard (administrator)
+# 0000141: [] is_dir() Error (administrator)
+# 0000142: [] Atributes not set using DnD (administrator)
+# 0000188: [] Security holl
+# 0000139: [] JPEG assignment should be test for equality. (administrator)
+# 0000174: [] Missing image in CVS (spignataro)
+# 0000160: [] Script error caused by IE (administrator)
+# 0000132: [] Registed users can't upload media. (administrator)
+# 0000058: [] Slow Upload due to inefficient script (administrator)
+# 0000046: [] Call-time pass-by-reference has been deprecated (administrator)
+# 0000068: [] Every User can watch the pics with the exact zoom URL. (administrator)
+# 0000074: [] member only images appear in slideshow viewed by public (administrator)
+# 0000107: [] Old user rights issue still there (administrator)
+# 0000113: [] Guests can view Registered users gallery's (administrator)
+# 0000124: [] No access for authors & above on "members only" galleries (administrator)
+# 0000134: [] UID is not set after DragNDrop upload (administrator)
+# 0000102: [] IE javascript error (administrator)
+# 0000133: [] Add new language portuguese
+# 0000118: [] German Translation missing (spignataro)
+# 0000153: [] Problem with "moving media" between galleries
+# 0000152: [] Updated germani.php
+# 0000154: [] chmod problem on Unix systems
+# 0000127: [] Unable to change accessibility (spignataro)
+# 0000137: [] zip upload: can't extract files to folder
+# 0000051: [] Small Comments Image is not displayed very nice (administrator)
+# 0000013: [] Playing a MP3 with zOOM Player doesn't work (administrator)
+# 0000077: [] player keeps playing the same file (administrator)
+# 0000126: [] Slideshow not working
+# 0000052: [] Image Size with Drag and Drop (administrator)
+# 0000075: [] Upload file - drag and drop (spignataro)
+# 0000115: [] Installation omits certain images
+# 0000088: [] getimagesize() error when clicking on an audio/video file thumbnail
+# 0000070: [] Last Commented photos
+# 0000059: [] Impossible to create a second gallery after created the first
+
+zOOm Media Gallery - 2.5 beta3
+==============================
+# 0000071: [] Fatal error in sending ecards
+# 0000106: [] Fatal error when sending ecards
+# 0000080: [] e-card error
+# 0000096: [] Unable to upload pictures
+# 0000072: [] Lightbox not working - get fatal error when viewing
+# 0000038: [] Can't create gallery (m2mark)
+# 0000030: [] Drag n Drop ignores name, keywords and description (administrator)
+# 0000043: [] Drag n' Drop Doesn't Work (administrator)
+# 0000076: [] Slideshow only shows 1 image rest of album won't display
+# 0000094: [] slide show now working
+# 0000081: [] Upload over Drag n Drop faild
+# 0000083: [] Back to gallery link Solution (spignataro)
+# 0000086: [] Error with popup window
+# 0000097: [] Publishing/Unpublishing galleries
+# 0000063: [] joomla with register_globals not emulated makes zoom impossible to upload pictures (administrator)
+# 0000031: [] Gallery delete does not work (administrator)
+# 0000011: [] Upload a Zip-File (administrator)
+# 0000048: [] Ecard top picture link broken (administrator)
+# 0000057: [] Moving multiple checked items results in only 1 item moving (administrator)
+# 0000037: [] Ecard not functioning on zoomfactory.org (administrator)
+# 0000005: [] Update Zoom Media Gallery (administrator)
+# 0000006: [] Admin System - Settings (administrator)
+# 0000001: [] Call to a member function on a non-object in .../components/com_zoom/ecard.php on line 83 (administrator)
+# 0000028: [] Ecard expired (administrator)
+# 0000019: [] /home/koudhe/public_html/components/com_zoom/lib/toolbox.class.php on line 207 (administrator)
+# 0000029: [] Drag n Drop is not functioning (administrator)
+# 0000022: [] Image moving not working (administrator)
+# 0000007: [] Category user rights (administrator)
+
+
+27-August-2005 Steven Pignataro
+ # Fixed bugs with the installer
+
+15-August-2005 Steven Pignataro
+ # Fixed a minor bug in the installer of depreciated files
+ ! Took | in other areas that it is not needed
+ ! Fixed missing <?php tags
+
+13-August-2005 Steven Pignataro
+ ! Moved "Diskspace zOOm is currently using:" in media manager to a better location. 
+ ! Took | out of media manager/settings as it was not needed.
+ ! Reorganization of Settings layout
+ ! NOTE: Need to put tab ordering in Layout tab of settings. Current way of doing it messes up layout.
+ ! Fixed a minor PHP bug that messes up on a Windows box in the settings page.
+
+12-August-2005 Steven Pignataro
+ ! Changed all old URLs to the new http://zoomfactory.org address
+ + Created Changelog text file.
