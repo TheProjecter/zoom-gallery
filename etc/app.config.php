@@ -13,8 +13,8 @@ defined('_ZMG_EXEC') or die('Restricted access');
 
 $zoom_config = array();
 $zoom_config['meta'] = array();
-$zoom_config['meta']['title']       = "zOOm Gallery";
-$zoom_config['meta']['description'] = "zoom, doing scrum the easy way.";
+$zoom_config['meta']['title']       = "zOOm Media Gallery";
+$zoom_config['meta']['description'] = "...delivering beautiful content";
 $zoom_config['meta']['keywords']    = "";
 
 $zoom_config['locale'] = array();
@@ -23,7 +23,7 @@ $zoom_config['locale']['encoding'] = "UTF-8";
 $zoom_config['locale']['domain']   = "messages";
 
 $zoom_config['db'] = array();
-$zoom_config['db']['prefix']   = "zmg_";
+$zoom_config['db']['prefix'] = "zmg_";
 $zoom_config['db']['tables'] = array();
 $zoom_config['db']['tables']['galleries']   = "galleries";
 $zoom_config['db']['tables']['media']       = "media";
@@ -81,7 +81,6 @@ $zoom_config['layout']['medium']['showdate']     = 1;
 $zoom_config['layout']['medium']['showusername'] = 1;
 $zoom_config['layout']['medium']['showfilename'] = 1;
 $zoom_config['layout']['medium']['showmetadata'] = 1;
-
 $zoom_config['layout']['ordering']  = array();
 $zoom_config['layout']['ordering']['media']     = 1;
 $zoom_config['layout']['ordering']['galleries'] = 1;
