@@ -1,11 +1,11 @@
 <?php
 /**
- * Jersey, doing scrum the easy way.
+ * zOOm Media Gallery! - a multi-gallery component 
  * 
- * @package jersey
+ * @package zmg
  * @version $Revision$
  * @author Mike de Boer <mdeboer AT ebuddy.com>
- * @copyright Copyright &copy; 2007, Mike de Boer.
+ * @copyright Copyright &copy; 2007, Mike de Boer. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GPL
  * 
  * NOTE: the structure and parts of the implementation of the jsyError class
@@ -14,21 +14,21 @@
  *       owners.
  */
 
-defined("_VALID_JERSEY") or die("Direct access.");
+defined('_ZMG_EXEC') or die('Restricted access');
 
 /**
  * Define all the error types that are supported 
  */
-define('JSY_ERROR_RETURN',     1);
-define('JSY_ERROR_PRINT',      2);
-define('JSY_ERROR_TRIGGER',    4);
-define('JSY_ERROR_DIE',        8);
-define('JSY_ERROR_CALLBACK',  16);
-define('JSY_ERROR_EXCEPTION', 32);
+define('ZMG_ERROR_RETURN',     1);
+define('ZMG_ERROR_PRINT',      2);
+define('ZMG_ERROR_TRIGGER',    4);
+define('ZMG_ERROR_DIE',        8);
+define('ZMG_ERROR_CALLBACK',  16);
+define('ZMG_ERROR_EXCEPTION', 32);
 
 
-$GLOBALS['_JSY_default_error_mode']    = JSY_ERROR_RETURN;
-$GLOBALS['_JSY_default_error_options'] = E_USER_NOTICE;
+$GLOBALS['_ZMG_default_error_mode']    = ZMG_ERROR_RETURN;
+$GLOBALS['_ZMG_default_error_options'] = E_USER_NOTICE;
 
 @ini_set('track_errors', true);
 
@@ -36,7 +36,7 @@ $GLOBALS['_JSY_default_error_options'] = E_USER_NOTICE;
  * Jersey error handling class
  * @package jersey
  */
-class jsyError {
+class zmgError {
     /**
      * Default error mode for this object.
      *
@@ -46,29 +46,29 @@ class jsyError {
     var $_default_error_mode = null;
     /**
      * Default error options used for this object when error mode
-     * is JSY_ERROR_TRIGGER or JSY_ERROR_CALLBACK.
+     * is ZMG_ERROR_TRIGGER or ZMG_ERROR_CALLBACK.
      *
      * @var     int
      * @access  private
      */
     var $_default_error_options = null;
     /**
-     * jsyError constructor
+     * zmgError constructor
      * 
-     * @param int $mode     (optional) error mode, one of: JSY_ERROR_RETURN,
-     * JSY_ERROR_PRINT, JSY_ERROR_DIE, JSY_ERROR_TRIGGER,
-     * JSY_ERROR_CALLBACK or JSY_ERROR_EXCEPTION
+     * @param int $mode     (optional) error mode, one of: ZMG_ERROR_RETURN,
+     * ZMG_ERROR_PRINT, ZMG_ERROR_DIE, ZMG_ERROR_TRIGGER,
+     * ZMG_ERROR_CALLBACK or ZMG_ERROR_EXCEPTION
      * @param mixed $options   (optional) error level, _OR_ in the case of
-     * JSY_ERROR_CALLBACK, the callback function or object/method
+     * ZMG_ERROR_CALLBACK, the callback function or object/method
      * tuple.
      * @access public
      */
-    function jsyError($mode = null, $options = null) {
+    function zmgError($mode = null, $options = null) {
         if ($mode === null) {
-            $mode = $GLOBALS['_JSY_default_error_mode'];
+            $mode = $GLOBALS['_ZMG_default_error_mode'];
         }
         if ($options === null) {
-            $options = $GLOBALS['_JSY_default_error_options'];
+            $options = $GLOBALS['_ZMG_default_error_options'];
         }
         $this->setErrorHandling($mode, $options);
     }
@@ -80,46 +80,46 @@ class jsyError {
      * the default behaviour for that object.
      *
      * @param int $mode
-     *        One of JSY_ERROR_RETURN, JSY_ERROR_PRINT,
-     *        JSY_ERROR_TRIGGER, JSY_ERROR_DIE,
-     *        JSY_ERROR_CALLBACK or JSY_ERROR_EXCEPTION.
+     *        One of ZMG_ERROR_RETURN, ZMG_ERROR_PRINT,
+     *        ZMG_ERROR_TRIGGER, ZMG_ERROR_DIE,
+     *        ZMG_ERROR_CALLBACK or ZMG_ERROR_EXCEPTION.
      *
      * @param mixed $options
-     *        When $mode is JSY_ERROR_TRIGGER, this is the error level (one
+     *        When $mode is ZMG_ERROR_TRIGGER, this is the error level (one
      *        of E_USER_NOTICE, E_USER_WARNING or E_USER_ERROR).
      *
-     *        When $mode is JSY_ERROR_CALLBACK, this parameter is expected
+     *        When $mode is ZMG_ERROR_CALLBACK, this parameter is expected
      *        to be the callback function or method.  A callback
      *        function is a string with the name of the function, a
      *        callback method is an array of two elements: the element
      *        at index 0 is the object, and the element at index 1 is
      *        the name of the method to call in the object.
      *
-     *        When $mode is JSY_ERROR_PRINT or JSY_ERROR_DIE, this is
+     *        When $mode is ZMG_ERROR_PRINT or ZMG_ERROR_DIE, this is
      *        a printf format string used when printing the error
      *        message.
      */
     function setErrorHandling($mode = null, $options = null) {
-        if (isset($this) && is_subclass_of($this, 'jsyError')) {
+        if (isset($this) && is_subclass_of($this, 'zmgError')) {
             $setmode     = &$this->_default_error_mode;
             $setoptions  = &$this->_default_error_options;
         } else {
-            $setmode     = &$GLOBALS['_JSY_default_error_mode'];
-            $setoptions  = &$GLOBALS['_JSY_default_error_options'];
+            $setmode     = &$GLOBALS['_ZMG_default_error_mode'];
+            $setoptions  = &$GLOBALS['_ZMG_default_error_options'];
         }
 
         switch ($mode) {
-            case JSY_ERROR_RETURN:
-            case JSY_ERROR_PRINT:
-            case JSY_ERROR_TRIGGER:
-            case JSY_ERROR_DIE:
-            case JSY_ERROR_EXCEPTION:
+            case ZMG_ERROR_RETURN:
+            case ZMG_ERROR_PRINT:
+            case ZMG_ERROR_TRIGGER:
+            case ZMG_ERROR_DIE:
+            case ZMG_ERROR_EXCEPTION:
             case null:
                 $setmode = $mode;
                 $setoptions = $options;
                 break;
 
-            case JSY_ERROR_CALLBACK:
+            case ZMG_ERROR_CALLBACK:
                 $setmode = $mode;
                 // class/object method callback 
                 if (is_callable($options)) {
@@ -145,13 +145,13 @@ class jsyError {
      *                  to define these if you want to use codes)
      */
     function throwError($message = null, $code = null) {
-        $mode    = $GLOBALS['_JSY_default_error_mode'];
-        $options = $GLOBALS['_JSY_default_error_options'];
-        if (isset($this) && is_subclass_of($this, 'jsyError')) {
+        $mode    = $GLOBALS['_ZMG_default_error_mode'];
+        $options = $GLOBALS['_ZMG_default_error_options'];
+        if (isset($this) && is_subclass_of($this, 'zmgError')) {
             return $this->raiseError($message, $code,
-              $GLOBALS['_JSY_default_error_mode'], $GLOBALS['_JSY_default_error_options']);
+              $GLOBALS['_ZMG_default_error_mode'], $GLOBALS['_ZMG_default_error_options']);
         } else {
-            return jsyError::raiseError($message, $code, $mode, $options);
+            return zmgError::raiseError($message, $code, $mode, $options);
         }
     }
     /**
@@ -161,25 +161,25 @@ class jsyError {
      *
      * @param string $message  message
      * @param int $code     (optional) error code
-     * @param int $mode     (optional) error mode, one of: JSY_ERROR_RETURN,
-     * JSY_ERROR_PRINT, JSY_ERROR_DIE, JSY_ERROR_TRIGGER,
-     * JSY_ERROR_CALLBACK or JSY_ERROR_EXCEPTION
+     * @param int $mode     (optional) error mode, one of: ZMG_ERROR_RETURN,
+     * ZMG_ERROR_PRINT, ZMG_ERROR_DIE, ZMG_ERROR_TRIGGER,
+     * ZMG_ERROR_CALLBACK or ZMG_ERROR_EXCEPTION
      * @param mixed $options   (optional) error level, _OR_ in the case of
-     * JSY_ERROR_CALLBACK, the callback function or object/method
+     * ZMG_ERROR_CALLBACK, the callback function or object/method
      * tuple.
      * @param string $userinfo (optional) additional user/debug info
      * @access public
      */
     function raiseError($message, $code, $mode = null, $options = null) {
         if ($mode === null) {
-            $mode = JSY_ERROR_RETURN;
+            $mode = ZMG_ERROR_RETURN;
         }
         $error = array();
         $error['message']   = $message;
         $error['code']      = $code;
         $error['mode']      = $mode;
-        $error['backtrace'] = jsyBackTrace();
-        if ($mode & JSY_ERROR_CALLBACK) {
+        $error['backtrace'] = zmgBackTrace();
+        if ($mode & ZMG_ERROR_CALLBACK) {
             $error['level'] = E_USER_NOTICE;
             $error['callback'] = $options;
         } else {
@@ -189,7 +189,7 @@ class jsyError {
             $error['level']    = $options;
             $error['callback'] = null;
         }
-        if ($error['mode'] & JSY_ERROR_PRINT) {
+        if ($error['mode'] & ZMG_ERROR_PRINT) {
             if (is_null($options) || is_int($options)) {
                 $format = "%s";
             } else {
@@ -197,10 +197,10 @@ class jsyError {
             }
             printf($format, $message);
         }
-        if ($error['mode'] & JSY_ERROR_TRIGGER) {
+        if ($error['mode'] & ZMG_ERROR_TRIGGER) {
             trigger_error($error['message'], $error['level']);
         }
-        if ($error['mode'] & JSY_ERROR_DIE) {
+        if ($error['mode'] & ZMG_ERROR_DIE) {
             $msg = $error['message'];
             if (is_null($options) || is_int($options)) {
                 $format = "%s";
@@ -212,7 +212,7 @@ class jsyError {
             }
             die(sprintf($format, $msg));
         }
-        if ($error['mode'] & JSY_ERROR_CALLBACK) {
+        if ($error['mode'] & ZMG_ERROR_CALLBACK) {
             if (is_callable($error['callback'])) {
                 call_user_func($error['callback'], $error);
             }
@@ -233,7 +233,7 @@ class jsyError {
      * @access public
      */
     function getType() {
-        return "jsyError";
+        return "zmgError";
     }
 }
 ?>

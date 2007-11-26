@@ -15,7 +15,7 @@ defined('_ZMG_EXEC') or die('Restricted access');
  * Main application class
  * @package zmg
  */
-class zoom extends zmgError {
+class Zoom extends zmgError {
 	/**
      * Internal variable for the configuration array.
      *
@@ -37,8 +37,10 @@ class zoom extends zmgError {
 	/**
      * The class constructor.
      */
-	function zoom() {
-		$this->loadConfig();
+	function Zoom() {
+		global $zoom_config;
+        $this->_config = new zmgConfigurationHelper(&$zoom_config);
+        $this->loadEvents(); //TODO: use cached events list
 	}
 	/**
 	 * Load all the configuration settings as set in /etc/app.config/php into
@@ -54,6 +56,14 @@ class zoom extends zmgError {
     }
     function logout() {
         
+    }
+    function hasAccess() {
+        //TODO: implement!
+        return true;
+    }
+    function notAuth() {
+        //TODO: implement!
+        die('Restricted access');
     }
     function restoreSession() {
         $username = zmgGetParam($_SESSION, 'zmg.session.username', '');
@@ -78,19 +88,13 @@ class zoom extends zmgError {
      * @param string The name of the setting in the format of a pathname: 'group/setting'
      */
     function getConfig($path) {
-    	$path_tokens = explode("/", $path);
-        $config_val  = &$this->_config;
-        for ($i = 0; $i < count($path_tokens); $i++) {
-        	if (isset($config_val[$path_tokens[$i]])) {
-                $config_val = &$config_val[$path_tokens[$i]];
-            }
-        }
-        return $config_val;
+    	return $this->_config->get($path);
     }
     /**
      * Load all available custom events from the /var/events folder.
      */
     function loadEvents() {
+        //TODO: move reading directory stuff to zmgConfigurationHelper class
         $event_cats = zmgReadDirectory(ABS_PATH . '/var/events');
         $this->events = array();
         foreach ($event_cats as $cat) {
@@ -111,7 +115,7 @@ class zoom extends zmgError {
             foreach ($this->events[$event] as $cmp) {
                 require_once(ZMG_ABS_PATH . "/var/events/$event/$cmp/$cmp.php");
                 if (class_exists($cmp)) { 
-                    eval($cmp . '::start();');
+                    eval($cmp . '::start(&$this);');
                 }
             }
         }
