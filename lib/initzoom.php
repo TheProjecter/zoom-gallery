@@ -12,29 +12,27 @@
 defined('_ZMG_EXEC') or die('Restricted access');
 
 //load the error handling base class
-require_once(ZMG_ABS_PATH . '/lib/error.class.php');
+require_once(ZMG_ABS_PATH . '/lib/zmgError.php');
 
 //load the configuration file
 require(ZMG_ABS_PATH . '/etc/app.config.php');
 
 //initialize the zoom (app) class
-require_once(ZMG_ABS_PATH . '/lib/zoom.class.php');
-$zoom = new zoom();
+require_once(ZMG_ABS_PATH . '/lib/zmgConfigurationHelper.php');
+require_once(ZMG_ABS_PATH . '/lib/Zoom.php');
+$zoom = new Zoom();
 
 $zoom->hasAccess() or die('Restricted access');
 
 //load application classes
 require_once(ZMG_ABS_PATH . '/lib/phpInputFilter/class.inputfilter.php');
-require_once(ZMG_ABS_PATH . '/lib/table.class.php');
-require_once(ZMG_ABS_PATH . '/lib/notifier.class.php');
-require_once(ZMG_ABS_PATH . '/lib/postit.class.php');
-require_once(ZMG_ABS_PATH . '/lib/project.class.php');
-require_once(ZMG_ABS_PATH . '/lib/user.class.php');
+//require_once(ZMG_ABS_PATH . '/lib/table.class.php');
+require_once(ZMG_ABS_PATH . '/lib/zmgJson.php');
 
 $zoom->fireEvents('onstartup');
 
 //set error handling options
-jsyError::setErrorHandling($zoom->getConfig('app/errors/defaultmode'),
+zmgError::setErrorHandling($zoom->getConfig('app/errors/defaultmode'),
   $zoom->getConfig('app/errors/defaultoption'));
 
 //load php-gettext (used in zoom in 'fallback mode')
@@ -53,9 +51,6 @@ session_start();
 
 //restore session data
 $zoom->restoreSession();
-if (!$zoom->user) {
-    $zoom->login('mdeboer', 'mike1324');
-}
 
 $zoom->fireEvents('oncontentstart');
 
@@ -82,7 +77,7 @@ $zoom->fireEvents('oncontent');
  * @param array A named array
  * @param string The key to search for
  * @param mixed The default value to give if no key found
- * @param int An options mask: _JSY_NOTRIM prevents trim, _JSY_ALLOWHTML allows safe html, _JSY_ALLOWRAW allows raw input
+ * @param int An options mask: _ZMG_NOTRIM prevents trim, _ZMG_ALLOWHTML allows safe html, _ZMG_ALLOWRAW allows raw input
  */
 define( "_ZMG_NOTRIM",    0x0001 );
 define( "_ZMG_ALLOWHTML", 0x0002 );

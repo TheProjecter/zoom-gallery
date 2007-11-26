@@ -112,7 +112,7 @@ define('JSON_SUPPRESS_ERRORS', 32);
  * $value = $json->decode($input);
  * </code>
  */
-class jsyJSON extends jsyError
+class zmgJSON extends zmgError
 {
    /**
     * Object behavior flag
@@ -144,7 +144,7 @@ class jsyJSON extends jsyError
     *                                   bubble up with an error, so all return values
     *                                   from encode() should be checked with isError()
     */
-    function jsyJSON($use = 0)
+    function zmgJSON($use = 0)
     {
         $this->_use        = $use;
         $this->_use_native = (bool)@extension_loaded('json');
@@ -242,7 +242,7 @@ class jsyJSON extends jsyError
     * encodes an arbitrary variable into JSON format
     *
     * @param    mixed   $var    any number, boolean, string, array, or object to be encoded.
-    *                           see argument 1 to jsyJSON() above for array-parsing behavior.
+    *                           see argument 1 to zmgJSON() above for array-parsing behavior.
     *                           if var is a strng, note that encode() always expects it
     *                           to be in ASCII or UTF-8 format!
     *
@@ -400,7 +400,7 @@ class jsyJSON extends jsyError
                                             array_values($var));
 
                     foreach($properties as $property) {
-                        if(jsyJSON::isError($property)) {
+                        if(zmgJSON::isError($property)) {
                             return $property;
                         }
                     }
@@ -412,7 +412,7 @@ class jsyJSON extends jsyError
                 $elements = array_map(array($this, 'encode'), $var);
 
                 foreach($elements as $element) {
-                    if(jsyJSON::isError($element)) {
+                    if(zmgJSON::isError($element)) {
                         return $element;
                     }
                 }
@@ -427,7 +427,7 @@ class jsyJSON extends jsyError
                                         array_values($vars));
 
                 foreach($properties as $property) {
-                    if(jsyJSON::isError($property)) {
+                    if(zmgJSON::isError($property)) {
                         return $property;
                     }
                 }
@@ -437,7 +437,7 @@ class jsyJSON extends jsyError
             default:
                 return ($this->_use & JSON_SUPPRESS_ERRORS)
                     ? 'null'
-                    : new jsyError(gettype($var)." can not be encoded as JSON string");
+                    : new zmgError(gettype($var)." can not be encoded as JSON string");
         }
     }
 
@@ -454,7 +454,7 @@ class jsyJSON extends jsyError
     {
         $encoded_value = $this->encode($value);
 
-        if(jsyJSON::isError($encoded_value)) {
+        if(zmgJSON::isError($encoded_value)) {
             return $encoded_value;
         }
 
@@ -495,7 +495,7 @@ class jsyJSON extends jsyError
     *
     * @return   mixed   number, boolean, string, array, or object
     *                   corresponding to given JSON input string.
-    *                   See argument 1 to jsyJSON() above for object-output behavior.
+    *                   See argument 1 to zmgJSON() above for object-output behavior.
     *                   Note that decode() always returns strings
     *                   in ASCII or UTF-8 format!
     * @access   public
