@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="build" name="zmg">
+	<description>Build file zOOm Media Gallery</description>
+	
+	<property name="content.dir" value="content"/>
+	<property name="app.dir" value="application"/>
+	<property name="js.dir" value="../js"/>
+	<property name="manual.build" value="zmg_latest"/>
+	<property name="deploy.build" value="zmg_"/>
+	<property name="svn.rep" value="https://zoom-gallery.googlecode.com/svn/"/>
+	
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<classpath>
+			<pathelement location="ant-contrib-1.0b3.jar"/>
+		</classpath>
+	</taskdef>
+	
+	<target name="clean">
+		<echo message="preparing directories for build: ${build.label}"/>
+		<delete dir="content"/>
+		<delete dir="application"/>
+		<delete dir="application/zmg"/>
+		<mkdir dir="content"/>
+		<mkdir dir="content/${build.label}"/>
+		<mkdir dir="content/${build.label}/js"/>
+		<mkdir dir="application"/>
+	</target>
+	
+	<target name="build">
+		<property name="js.arg" value="sm"/>
+		<property name="build.label" value="${manual.build}"/>
+		<antcall target="clean" inheritall="true"/>
+		<antcall target="copy.all" inheritall="true"/>
+		<antcall target="compress.all" inheritall="true"/>
+		<antcall target="deploy.content" inheritall="true"/>
+		<antcall target="deploy.application" inheritall="true">
+			<param name="app.host" value="www.zoomfactory.org"/>
+		</antcall>
+	</target>
+	
+	<target name="deploy">
+		<property name="js.arg" value="smd"/>
+		<property name="build.label" value="${deploy.build}${label}"/>
+		<antcall target="clean" inheritall="true"/>
+		<antcall target="copy.all" inheritall="true"/>
+		<antcall target="compress.all" inheritall="true"/>
+		<copy file="index.jsp" tofile="application/index.jsp" filtering="on">
+			<filterset>
+				<filter token="build" value="${build.label}" />
+			</filterset>
+		</copy>
+		<antcall target="deploy.content" inheritall="true"/>
+		<antcall target="deploy.application" inheritall="true">
+			<param name="app.host" value="bikini.ebuddy.com"/>
+		</antcall>
+		<antcall target="deploy.application" inheritall="true">
+			<param name="app.host" value="geeks.ebuddy.net"/>
+		</antcall>
+		<exec executable="svn">
+			<arg
+				line="copy ${svn.rep}/trunk ${svn.rep}/tags/${build.label} -m 'tagged ${build.label}'"/>
+		</exec>
+		<antcall target="docs"/>
+	</target>
+	
+	<target name="compress.all">
+		<antcall target="compress.zmg"/>
+		<echo message="Compressing CSS with YUI compress"/>
+		<foreach param="file" target="compress.css" inheritall="yes">
+            <path>
+                <fileset dir="content">
+                    <include name="**/*.css"/>
+                </fileset>
+            </path>
+        </foreach>
+		<echo message="Compressing JS with YUI compress"/>
+		<foreach param="file" target="compress.js" inheritall="yes">
+			<path>
+				<fileset dir="application">
+					<include name="**/*.js"/>
+				</fileset>
+				<fileset dir="content">
+					<include name="**/*.js"/>
+				</fileset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="compress.css">
+        <exec executable="java">
+            <arg line=" -jar yuicompressor-2.2.5/build/yuicompressor-2.2.5.jar -o ${file}.tmp ${file}"/>
+        </exec>
+        <move file="${file}.tmp" tofile="${file}"/>
+	</target>
+	
+	<target name="compress.js">
+		<exec executable="java">
+			<arg line=" -jar yuicompressor-2.2.5/build/yuicompressor-2.2.5.jar --charset=UTF-8 -o ${file}.tmp ${file}"/>
+		</exec>
+		<move file="${file}.tmp" tofile="${file}"/>
+	</target>
+	
+	<target name="copy.all">
+		<copy todir="application/${build.label}">
+			<fileset dir="..">
+				<include name="a_directory/**"/>
+				<include name="*.html"/>
+				<include name="*.xml"/>
+				<include name="*.php"/>
+				<exclude name="a_file.html"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="compress.zmg">
+		<echo message="compressing zmg.js"/>
+		<property name="target" value="${content.dir}/${build.label}/js/zmg.js"/>
+		<foreach param="source" target="compress" inheritall="yes">
+			<path>
+				<fileset dir="${js.dir}/zmg_js_dir">
+					<exclude name="**/a_directory/**"/>
+				</fileset>
+				<fileset dir="${js.dir}">
+					<include name="util.js"/>
+				</fileset>
+				<fileset dir="${js.dir}/Widgets">
+					<include name="*.js"/>
+				</fileset>
+			</path>
+		</foreach>
+	</target>
+	
+	<target name="compress">
+		<exec os="Windows XP" executable="jsjuicer.exe" output="${target}"
+			input="${source}" append="true" error="jsjuicer.log">
+			<arg line="-${js.arg}"/>
+		</exec>
+		<exec os="Linux" executable="${basedir}/jsjuicer" output="${target}"
+			input="${source}" append="true" error="jsjuicer.log">
+			<arg line="-${js.arg}"/>
+		</exec>
+	</target>
+	
+	<target name="deploy.content">
+		<echo message="deploying build ${build.label}"/>
+	</target>
+	
+	<target name="deploy.application">
+		<echo message="deploying build ${build.label}"/>
+	</target>
+	
+	<target name="docs">
+		<java jar="jsdoc/app/js.jar" fork="true" dir="${basedir}/jsdoc">
+			<arg line=" app/run.js -r -A -d=../docs -t=templates/htm ../../js"></arg>
+		</java>
+		<copy todir="/usr/share/dokuwiki/jsdoc">
+			<fileset dir="docs"/>
+		</copy>		
+	</target>
+	
+</project>
