@@ -39,7 +39,8 @@ class Zoom extends zmgError {
      */
 	function Zoom() {
 		global $zoom_config;
-        $this->_config = new zmgConfigurationHelper(&$zoom_config);
+        $this->_config  = new zmgConfigurationHelper(&$zoom_config);
+        $this->template = new zmgTemplateHelper();
         $this->loadEvents(); //TODO: use cached events list
 	}
 	/**

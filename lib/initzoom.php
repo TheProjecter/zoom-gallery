@@ -17,8 +17,12 @@ require_once(ZMG_ABS_PATH . '/lib/zmgError.php');
 //load the configuration file
 require(ZMG_ABS_PATH . '/etc/app.config.php');
 
+//initialize Smarty template engine
+require_once(ZMG_ABS_PATH . '/lib/smarty/Smarty.class.php');
+
 //initialize the zoom (app) class
 require_once(ZMG_ABS_PATH . '/lib/zmgConfigurationHelper.php');
+require_once(ZMG_ABS_PATH . '/lib/zmgTemplateHelper.php');
 require_once(ZMG_ABS_PATH . '/lib/Zoom.php');
 $zoom = new Zoom();
 
@@ -53,10 +57,6 @@ session_start();
 $zoom->restoreSession();
 
 $zoom->fireEvents('oncontentstart');
-
-//initialize Smarty template engine
-require_once(ZMG_ABS_PATH . '/lib/smarty/Smarty.class.php');
-$zoom->template = new Smarty();
 
 $zoom->template->template_dir = $zoom->getConfig('smarty/template_dir');
 $zoom->template->compile_dir  = $zoom->getConfig('smarty/compile_dir');

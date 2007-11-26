@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest version="0.2" xml:base="/var/www/templates/">
+    <theme name="default">
+        <author>Mike de Boer</author>
+        <country>NL</country>
+        <creationdate>11/26/2007</creationdate>
+        <description>Default theme of zOOm Media Gallery</description>
+        <ranking>100.0</ranking>
+    </theme>
+    <views>
+        <view name="gallery:overview"/>
+        <view name="gallery:thumbnails"/>
+        <view name="gallery:thumbnails:medium"/>
+        <view name="singlepage" inherits="gallery:overview,
+          gallery:thumbnails,gallery:thumbnails:medium"/>
+    </views>
+    <resources xml:base="default/">
+        <resource name="stylesheet" xml:base="css/">
+            <file href="zmg_default.css" />
+        </resource>
+        <resource name="javascript" xml:base="js/">
+            <file href="zmg_default.js" />
+        </resource>
+        <resource name="template" view="singlepage" xml:base="">
+            <file href="default.tpl" />
+        </resource>
+    </resources>
+</manifest>
