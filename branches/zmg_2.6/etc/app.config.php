@@ -43,10 +43,11 @@ $zoom_config['filesystem']['upload']['tempname']    = "Temporary name, please ch
 $zoom_config['filesystem']['upload']['autonumber']  = 1;
 
 $zoom_config['smarty'] = array();
-$zoom_config['smarty']['template_dir'] = ZMG_ABS_PATH . "/var/www/templates";
-$zoom_config['smarty']['compile_dir']  = ZMG_ABS_PATH . "/etc/compiled";
-$zoom_config['smarty']['cache_dir']    = ZMG_ABS_PATH . "/etc/cache";
-$zoom_config['smarty']['config_dir']   = ZMG_ABS_PATH . "/etc";
+$zoom_config['smarty']['template_dir']    = ZMG_ABS_PATH . "/var/www/templates";
+$zoom_config['smarty']['compile_dir']     = ZMG_ABS_PATH . "/etc/compiled";
+$zoom_config['smarty']['cache_dir']       = ZMG_ABS_PATH . "/etc/cache";
+$zoom_config['smarty']['config_dir']      = ZMG_ABS_PATH . "/etc";
+$zoom_config['smarty']['active_template'] = "default";
 
 $zoom_config['layout'] = array();
 $zoom_config['layout']['columnsno']      = 2;

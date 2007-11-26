@@ -10,15 +10,17 @@
  */
 
 defined('_ZMG_EXEC') or die('Restricted access');
- 
-//list of global constants:
-define("_ZMG_EXEC", 1);
-define("ZMG_ABS_PATH", dirname(__FILE__));
 
-//load all required libraries
-require(ABS_PATH . '/lib/initzoom.php');
-
-$zoom->template->display();
-
-$zoom->fireEvents('onfinish');
+/**
+ * Class that assists Zoom in parsing the templates.
+ * @package zmg
+ */
+class zmgTemplateHelper extends Smarty {
+    /**
+     * The class constructor.
+     */
+    function zmgTemplateHelper() {
+    
+    }
+}
 ?>
