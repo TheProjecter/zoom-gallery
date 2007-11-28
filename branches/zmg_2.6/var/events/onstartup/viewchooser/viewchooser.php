@@ -15,10 +15,18 @@ defined('_ZMG_EXEC') or die('Restricted access');
 /**
  * Class that assists Zoom in determining the currently active view
  * @package zmg
+ * @static
  */
 class viewchooser {
     function start(&$zoom) {
         $page = trim(mosGetParam($_REQUEST,'page'));
+        $zoom->view->set($page);
+        
+        
+        
+        
+        
+        
         switch ($page) {
             case 'editimg':
                 if ($zoom->privileges->hasPrivilege('priv_editmedium') || $zoom->_isAdmin) {

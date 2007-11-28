@@ -11,27 +11,29 @@
 
 defined('_ZMG_EXEC') or die('Restricted access');
 
+if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
+
 //load the error handling base class
-require_once(ZMG_ABS_PATH . '/lib/zmgError.php');
+require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgError.php');
 
 //load the configuration file
-require(ZMG_ABS_PATH . '/etc/app.config.php');
+require(ZMG_ABS_PATH . DS.'etc'.DS.'app.config.php');
 
 //initialize Smarty template engine
-require_once(ZMG_ABS_PATH . '/lib/smarty/Smarty.class.php');
+require_once(ZMG_ABS_PATH . DS.'lib'.DS.'smarty'.DS.'Smarty.class.php');
 
 //initialize the zoom (app) class
-require_once(ZMG_ABS_PATH . '/lib/zmgConfigurationHelper.php');
-require_once(ZMG_ABS_PATH . '/lib/zmgTemplateHelper.php');
-require_once(ZMG_ABS_PATH . '/lib/Zoom.php');
+require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgConfigurationHelper.php');
+require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgTemplateHelper.php');
+require_once(ZMG_ABS_PATH . DS.'lib'.DS.'Zoom.php');
 $zoom = new Zoom();
 
 $zoom->hasAccess() or die('Restricted access');
 
 //load application classes
-require_once(ZMG_ABS_PATH . '/lib/phpInputFilter/class.inputfilter.php');
+//require_once(ZMG_ABS_PATH . DS.'lib'.DS.'phpInputFilter'.DS.'class.inputfilter.php');
 //require_once(ZMG_ABS_PATH . '/lib/table.class.php');
-require_once(ZMG_ABS_PATH . '/lib/zmgJson.php');
+require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgJson.php');
 
 $zoom->fireEvents('onstartup');
 
@@ -40,7 +42,7 @@ zmgError::setErrorHandling($zoom->getConfig('app/errors/defaultmode'),
   $zoom->getConfig('app/errors/defaultoption'));
 
 //load php-gettext (used in zoom in 'fallback mode')
-require_once(ZMG_ABS_PATH . '/lib/phpgettext/gettext.inc');
+require_once(ZMG_ABS_PATH . DS.'lib'.DS.'phpgettext'.DS.'gettext.inc');
 // gettext setup
 T_setlocale(LC_MESSAGES, $zoom->getConfig('locale/default'));
 // Set the text domain as 'messages'
@@ -343,6 +345,20 @@ function zmgChmod($path) {
     if (isset($filemode) || isset($dirmode))
         return zmgChmodRecursive($path, $filemode, $dirmode);
     return TRUE;
+}
+
+/**
+ * Write content to a file on the filesystem. $filename needs to be a FULL path. 
+ * @param string $filename
+ * @param string $content
+ * @return boolean
+ */
+function zmgWriteFile($filename, $content) {
+    if ($fp = fopen($filename, 'w+')) {
+          fputs($fp, $content, strlen($content));
+          fclose($fp);
+    }
+    return true;
 }
 
 /**
