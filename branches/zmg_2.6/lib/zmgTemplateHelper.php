@@ -53,7 +53,7 @@ class zmgTemplateHelper extends Smarty {
         $res = & $this->_getResource('template', $this->_active_view);
         if ($res) {
             $tpl_file = trim($res->firstChild->getAttribute('href'));
-            
+
             $this->display($tpl_file);
         } else {
             return zmgError::throwError('No template resource found. Unable to run application.');
@@ -65,13 +65,14 @@ class zmgTemplateHelper extends Smarty {
             return zmgError::throwError('Template manifest not loaded yet.');
             
         $els = & $this->_manifest->getElementsByTagName('template');
-        if ($els.getLength() < 1)
+        if ($els->getLength() < 1)
             return;
         
         $info = array();
         $profile = & $els->item(0);
-        for ($i = 0; $i < $profile.childCount; $i++) {
-            $info[$profile->childNodes[$i]->nodeName] = trim($profile->childNodes[$i]->nodeValue); 
+        for ($i = 0; $i < $profile->childCount; $i++) {
+            $info[$profile->childNodes[$i]->nodeName] = 
+              trim($profile->childNodes[$i]->firstChild->nodeValue); 
         }
         
         return $info;
@@ -83,7 +84,7 @@ class zmgTemplateHelper extends Smarty {
         
         if (empty($this->_template_name)) {
             $els = & $this->_manifest->getElementsByTagName('template');
-            if ($els.getLength() < 1)
+            if ($els->getLength() < 1)
                 return;
             
             $profile = & $els->item(0);
@@ -98,11 +99,11 @@ class zmgTemplateHelper extends Smarty {
             return zmgError::throwError('Template manifest not loaded yet.');
         
         $els = & $this->_manifest->getElementsByTagName('view');
-        if ($els.getLength() <= 0)
+        if ($els->getLength() <= 0)
             return zmgError::throwError('Invalid manifest; no view(s) defined.');
         
         $view_tokens = split(':', $name);
-        for ($i = 0; $i < $els.getLength(); $i++) {
+        for ($i = 0; $i < $els->getLength(); $i++) {
             $res = & $els->item($i);
             if ($res->hasAttribute('name')) {
                 if (!empty($inheritedBy) && $res->hasAttribute('inherits')) {
@@ -137,7 +138,7 @@ class zmgTemplateHelper extends Smarty {
         $els = & $this->_manifest->getElementsByTagName('resource');
         if ($type == "html_head") {
             $files = array();
-            for ($i = 0; $i < $els.getLength(); $i++) {
+            for ($i = 0; $i < $els->getLength(); $i++) {
                 $res = & $els->item($i);
                 if ($res->hasAttribute('name')) {
                     if ($res->getAttribute('name') == "stylesheet"
@@ -148,7 +149,7 @@ class zmgTemplateHelper extends Smarty {
             }
             return $files;
         } else if ($type == "preview") {
-            for ($i = 0; $i < $els.getLength(); $i++) {
+            for ($i = 0; $i < $els->getLength(); $i++) {
                 $res = & $els->item($i);
                 if ($res->hasAttribute('name')) {
                     if ($res->getAttribute('name') == "preview") {
@@ -162,7 +163,7 @@ class zmgTemplateHelper extends Smarty {
                 $view = $this->_active_view;
                 
             $tpls = array();
-            for ($i = 0; $i < $els.getLength(); $i++) {
+            for ($i = 0; $i < $els->getLength(); $i++) {
                 $res = & $els->item($i);
                 if ($res->hasAttribute('name')) {
                     if ($res->getAttribute('name') == "template"
@@ -174,13 +175,13 @@ class zmgTemplateHelper extends Smarty {
             //first, look if the view is attached to a seperate template resource
             //(i.e. stand-alone, no view-inheritance)
             for ($j = 0; $j < count($tpls); $j++) {
-                if ($tpls[$j].getAttribute('view') == $view) {
+                if ($tpls[$j]->getAttribute('view') == $view) {
                     return $tpls[$j];
                 }
             }
             //not found. Try inheritance
             for ($j = 0; $j < count($tpls); $j++) {
-                $inherited = & $this->_getView($view, $tpls[$j].getAttribute('view'));
+                $inherited = & $this->_getView($view, $tpls[$j]->getAttribute('view'));
                 if (isset($inherited) && !empty($inherited)) {
                     return $tpls[$j];
                 }
@@ -190,8 +191,9 @@ class zmgTemplateHelper extends Smarty {
         return zmgError::throwError('Invalid resource type.');
     }
 
-    function getHTMLHeaders($path_prefix) {
+    function getHTMLHeaders($path_prefix = "") {
         $headers = & $this->_getResource('html_head');
+        $path_prefix .= DS.$this->_manifest->documentElement->getAttribute('xml:base');
         $ret = array();
         foreach ($headers as &$res) {
             $name = $res->getAttribute('name');
@@ -240,6 +242,7 @@ class zmgTemplateHelper extends Smarty {
 
     function _cacheManifest(&$doc) {
         //TODO: what if the manifest changed? Need to implement proper caching
+        //Cache_Lite, maybe?
         if (is_writable($this->cache_dir) && !empty($this->_manifest)) {
             zmgWriteFile($this->cache_dir .DS.$this->_active_template.'_tpl.cache',
               serialize($this->_manifest));

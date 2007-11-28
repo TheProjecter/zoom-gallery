@@ -19,7 +19,6 @@ defined('_ZMG_EXEC') or die('Restricted access');
  */
 class viewchooser {
     function start(&$zoom) {
-        echo "DEBUG: viewchooser event running...<br/>";
         $view = trim(mosGetParam($_REQUEST, 'view', 'gallery'));
         $zoom->view->set($view);
         
