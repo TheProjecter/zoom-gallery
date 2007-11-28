@@ -26,7 +26,7 @@ require_once(ZMG_ABS_PATH . DS.'lib'.DS.'smarty'.DS.'Smarty.class.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgConfigurationHelper.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgTemplateHelper.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'Zoom.php');
-$zoom = new Zoom();
+$zoom = new Zoom($zoom_config);
 
 $zoom->hasAccess() or die('Restricted access');
 
@@ -60,13 +60,8 @@ $zoom->restoreSession();
 
 $zoom->fireEvents('oncontentstart');
 
-$zoom->template->template_dir = $zoom->getConfig('smarty/template_dir');
-$zoom->template->compile_dir  = $zoom->getConfig('smarty/compile_dir');
-$zoom->template->cache_dir    = $zoom->getConfig('smarty/cache_dir');
-$zoom->template->config_dir   = $zoom->getConfig('smarty/config_dir');
-
-$zoom->template->assign('pagetitle',    $zoom->getConfig('meta/title'));
-$zoom->template->assign('pagedescr',    $zoom->getConfig('meta/description'));
+//$zoom->template->assign('pagetitle',    $zoom->getConfig('meta/title'));
+//$zoom->template->assign('pagedescr',    $zoom->getConfig('meta/description'));
 //$zoom->template->assign('pagekeywords', $zoom->getConfig('meta/keywords'));
 //$zoom->template->assign('pageauthor',   $zoom->getConfig('meta/author'));
 //$zoom->template->assign('pageencoding', $zoom->getConfig('locale/encoding'));
@@ -171,10 +166,11 @@ function zmgBindArrayToObject( $array, &$obj, $ignore='', $prefix=NULL, $checkSl
  * Utility function to read the files in a directory
  * @param string The file system path
  * @param string A filter for the names
+ * @param array A list files to exclude
  * @param boolean Recurse search into sub-directories
  * @param boolean True if to prepend the full path to the file name
  */
-function zmgReadDirectory( $path, $filter='.', $recurse=false, $fullpath=false  ) {
+function zmgReadDirectory( $path, $filter='.', $exclude = array(), $recurse=false, $fullpath=false  ) {
     $arr = array();
     if (!@is_dir( $path )) {
         return $arr;
@@ -184,7 +180,7 @@ function zmgReadDirectory( $path, $filter='.', $recurse=false, $fullpath=false  
     while ($file = readdir($handle)) {
         $dir = zmgPathName( $path.'/'.$file, false );
         $isDir = is_dir( $dir );
-        if (($file != ".") && ($file != "..")) {
+        if (($file != ".") && ($file != "..") && ($file != ".svn")) {
             if (preg_match( "/$filter/", $file )) {
                 if ($fullpath) {
                     $arr[] = trim( zmgPathName( $path.'/'.$file, false ) );
@@ -193,7 +189,7 @@ function zmgReadDirectory( $path, $filter='.', $recurse=false, $fullpath=false  
                 }
             }
             if ($recurse && $isDir) {
-                $arr2 = zmgReadDirectory( $dir, $filter, $recurse, $fullpath );
+                $arr2 = zmgReadDirectory( $dir, $filter, $exclude, $recurse, $fullpath );
                 $arr = array_merge( $arr, $arr2 );
             }
         }

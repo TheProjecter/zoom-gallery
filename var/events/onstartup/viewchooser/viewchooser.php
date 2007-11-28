@@ -19,14 +19,15 @@ defined('_ZMG_EXEC') or die('Restricted access');
  */
 class viewchooser {
     function start(&$zoom) {
-        $page = trim(mosGetParam($_REQUEST,'page'));
-        $zoom->view->set($page);
+        echo "DEBUG: viewchooser event running...<br/>";
+        $view = trim(mosGetParam($_REQUEST, 'view', 'gallery'));
+        $zoom->view->set($view);
         
         
         
         
         
-        
+        /*
         switch ($page) {
             case 'editimg':
                 if ($zoom->privileges->hasPrivilege('priv_editmedium') || $zoom->_isAdmin) {
@@ -69,16 +70,6 @@ class viewchooser {
                     $zoom->notAuth();
                 }
                 break;
-            /** Deprecated:
-            case 'new':
-                if ($zoom->_isAdmin || $zoom->privileges->hasPrivilege('priv_creategal')) {
-                    include(ZMG_ABS_PATH.'/components/com_zoom/www/admin/new.php');
-                    $zoom->adminFooter();
-                } else {
-                    mosNotAuth();
-                }
-                break;
-            */
             case 'upload':
                 if ($zoom->_isAdmin || $zoom->privileges->hasPrivilege('priv_upload')) {
                     include(ZMG_ABS_PATH.'/components/com_zoom/www/admin/upload.php');
@@ -163,5 +154,6 @@ class viewchooser {
                 }
                 break;
         }
+        */
     }
 }

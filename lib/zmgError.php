@@ -27,7 +27,7 @@ define('ZMG_ERROR_CALLBACK',  16);
 define('ZMG_ERROR_EXCEPTION', 32);
 
 
-$GLOBALS['_ZMG_default_error_mode']    = ZMG_ERROR_RETURN;
+$GLOBALS['_ZMG_default_error_mode']    = ZMG_ERROR_TRIGGER;
 $GLOBALS['_ZMG_default_error_options'] = E_USER_NOTICE;
 
 @ini_set('track_errors', true);

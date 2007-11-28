@@ -100,8 +100,8 @@ $zoom_config['app']['features']['imagezoom']         = 1;
 $zoom_config['app']['features']['slideshow']         = 1;
 $zoom_config['app']['features']['lightbox']          = 1;
 $zoom_config['app']['errors']          = array();
-$zoom_config['app']['errors']['defaultmode']   = JSY_ERROR_RETURN;
-$zoom_config['app']['errors']['defaultoption'] = E_ALL; //for live usage: E_USER_NOTICE;
+$zoom_config['app']['errors']['defaultmode']   = ZMG_ERROR_TRIGGER;
+$zoom_config['app']['errors']['defaultoption'] = E_USER_NOTICE; //for live usage: E_USER_NOTICE;
 
 $zoom_config['events'] = array();
 
