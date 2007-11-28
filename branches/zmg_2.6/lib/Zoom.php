@@ -38,22 +38,12 @@ class Zoom extends zmgError {
 	/**
      * The class constructor.
      */
-	function Zoom() {
-		global $zoom_config;
-        $this->_config = new zmgConfigurationHelper(&$zoom_config);
-        $this->view    = new zmgTemplateHelper('fronend', 
-          $this->getConfig('smarty/active_template'));
+	function Zoom(&$config) {
+        $this->_config = new zmgConfigurationHelper($config);
+        $this->view    = new zmgTemplateHelper($this->getConfig('smarty'));
+
         $this->loadEvents(); //TODO: use cached events list
 	}
-	/**
-	 * Load all the configuration settings as set in /etc/app.config/php into
-	 * a class variable (scoped). 
-	 */
-    function loadConfig() {
-    	global $zoom_config;
-        $this->_config = $zoom_config;
-        $zoom_config = null;
-    }
     function hasAccess() {
         //TODO: implement!
         return true;
@@ -92,11 +82,12 @@ class Zoom extends zmgError {
      */
     function loadEvents() {
         //TODO: move reading directory stuff to zmgConfigurationHelper class
-        $event_cats = zmgReadDirectory(ABS_PATH . '/var/events');
+        $event_cats = zmgReadDirectory(ZMG_ABS_PATH . DS.'var'.DS.'events', '[^index\.html]');
         $this->events = array();
         foreach ($event_cats as $cat) {
+            echo $cat;
             if ($cat != "shared") {
-                $events = zmgReadDirectory(ABS_PATH . '/var/events/' . $cat);
+                $events = zmgReadDirectory(ZMG_ABS_PATH . DS.'var'.DS.'events'.DS . $cat, '[^index\.html]');
                 if (count($events) > 0) {
                     $this->events[$cat] = $events;
                 }
@@ -110,7 +101,7 @@ class Zoom extends zmgError {
     function fireEvents($event) {
         if (!empty($this->events[$event])) {
             foreach ($this->events[$event] as $cmp) {
-                require_once(ZMG_ABS_PATH . "/var/events/$event/$cmp/$cmp.php");
+                require_once(ZMG_ABS_PATH . DS.'var'.DS.'events'.DS.$event.DS.$cmp.DS.$cmp.'.php');
                 if (class_exists($cmp)) { 
                     eval($cmp . '::start(&$this);');
                 }

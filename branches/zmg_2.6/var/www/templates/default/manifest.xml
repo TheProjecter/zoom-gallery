@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<manifest version="0.2" xml:base="/var/www/templates/">
+<manifest version="0.2" xml:base="default/">
     <template name="default">
         <author>Mike de Boer</author>
         <country>NL</country>
