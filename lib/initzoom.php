@@ -166,11 +166,10 @@ function zmgBindArrayToObject( $array, &$obj, $ignore='', $prefix=NULL, $checkSl
  * Utility function to read the files in a directory
  * @param string The file system path
  * @param string A filter for the names
- * @param array A list files to exclude
  * @param boolean Recurse search into sub-directories
  * @param boolean True if to prepend the full path to the file name
  */
-function zmgReadDirectory( $path, $filter='.', $exclude = array(), $recurse=false, $fullpath=false  ) {
+function zmgReadDirectory( $path, $filter='.', $recurse=false, $fullpath=false  ) {
     $arr = array();
     if (!@is_dir( $path )) {
         return $arr;
@@ -189,7 +188,7 @@ function zmgReadDirectory( $path, $filter='.', $exclude = array(), $recurse=fals
                 }
             }
             if ($recurse && $isDir) {
-                $arr2 = zmgReadDirectory( $dir, $filter, $exclude, $recurse, $fullpath );
+                $arr2 = zmgReadDirectory( $dir, $filter, $recurse, $fullpath );
                 $arr = array_merge( $arr, $arr2 );
             }
         }

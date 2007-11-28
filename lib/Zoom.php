@@ -85,7 +85,6 @@ class Zoom extends zmgError {
         $event_cats = zmgReadDirectory(ZMG_ABS_PATH . DS.'var'.DS.'events', '[^index\.html]');
         $this->events = array();
         foreach ($event_cats as $cat) {
-            echo $cat;
             if ($cat != "shared") {
                 $events = zmgReadDirectory(ZMG_ABS_PATH . DS.'var'.DS.'events'.DS . $cat, '[^index\.html]');
                 if (count($events) > 0) {
