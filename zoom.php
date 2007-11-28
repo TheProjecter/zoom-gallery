@@ -18,7 +18,7 @@ define("ZMG_ABS_PATH", dirname(__FILE__));
 //load all required libraries
 require(ABS_PATH . '/lib/initzoom.php');
 
-$zoom->template->display();
+$zoom->view->run();
 
 $zoom->fireEvents('onfinish');
 ?>

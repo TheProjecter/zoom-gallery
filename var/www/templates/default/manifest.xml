@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest version="0.2" xml:base="/var/www/templates/">
-    <theme name="default">
+    <template name="default">
         <author>Mike de Boer</author>
         <country>NL</country>
         <creationdate>11/26/2007</creationdate>
         <description>Default theme of zOOm Media Gallery</description>
         <ranking>100.0</ranking>
-    </theme>
+    </template>
     <views>
         <view name="gallery:overview"/>
+        <view name="gallery:search"/>
+        <view name="gallery:special"/>
+        <view name="gallery:lightbox"/>
         <view name="gallery:thumbnails"/>
         <view name="gallery:thumbnails:medium"/>
-        <view name="singlepage" inherits="gallery:overview,
-          gallery:thumbnails,gallery:thumbnails:medium"/>
+        <view name="gallery:thumbnails:medium:edit"/>
+        <view name="gallery:thumbnails:medium:delete"/>
+        <view name="gallery:thumbnails:medium:lightbox"/>
+        <view name="useradmin"/>
+        <view name="singlepage" inherits="gallery:*,useradmin"/>
     </views>
     <resources xml:base="default/">
         <resource name="stylesheet" xml:base="css/">
@@ -23,6 +29,9 @@
         </resource>
         <resource name="template" view="singlepage" xml:base="">
             <file href="default.tpl" />
+        </resource>
+        <resource name="preview" xml:base="images/">
+            <file href="default_preview.png" />
         </resource>
     </resources>
 </manifest>

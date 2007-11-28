@@ -33,7 +33,7 @@ $zoom_config['db']['tables']['getid3cache'] = "getid3_cache";
 $zoom_config['db']['tables']['priviliges']  = "priviliges";
 
 $zoom_config['filesystem'] = array();
-$zoom_config['filesystem']['mediapath']   = "images/zoom/";
+$zoom_config['filesystem']['mediapath']   = "images".DS."zoom".DS;
 $zoom_config['filesystem']['dirperms']    = "";
 $zoom_config['filesystem']['fileperms']   = "";
 $zoom_config['filesystem']['upload']      = array();
@@ -43,10 +43,10 @@ $zoom_config['filesystem']['upload']['tempname']    = "Temporary name, please ch
 $zoom_config['filesystem']['upload']['autonumber']  = 1;
 
 $zoom_config['smarty'] = array();
-$zoom_config['smarty']['template_dir']    = ZMG_ABS_PATH . "/var/www/templates";
-$zoom_config['smarty']['compile_dir']     = ZMG_ABS_PATH . "/etc/compiled";
-$zoom_config['smarty']['cache_dir']       = ZMG_ABS_PATH . "/etc/cache";
-$zoom_config['smarty']['config_dir']      = ZMG_ABS_PATH . "/etc";
+$zoom_config['smarty']['template_dir']    = ZMG_ABS_PATH . DS."var".DS."www".DS."templates";
+$zoom_config['smarty']['compile_dir']     = ZMG_ABS_PATH . DS."etc".DS."compiled";
+$zoom_config['smarty']['cache_dir']       = ZMG_ABS_PATH . DS."etc".DS."cache";
+$zoom_config['smarty']['config_dir']      = ZMG_ABS_PATH . DS."etc";
 $zoom_config['smarty']['active_template'] = "default";
 
 $zoom_config['layout'] = array();

@@ -23,11 +23,12 @@ class Zoom extends zmgError {
      */
 	var $_config = null;
     /**
-     * Public variable, containing the Smarty templating engine class.
+     * Public variable, containing the zmgTemplateViewHelper/Smarty
+     * templating engine class.
      *
-     * @var Smarty
+     * @var zmgTemplateHelper
      */
-    var $template = null;
+    var $view = null;
     /**
      * Public variable, containing the current user.
      * 
@@ -39,8 +40,9 @@ class Zoom extends zmgError {
      */
 	function Zoom() {
 		global $zoom_config;
-        $this->_config  = new zmgConfigurationHelper(&$zoom_config);
-        $this->template = new zmgTemplateHelper();
+        $this->_config = new zmgConfigurationHelper(&$zoom_config);
+        $this->view    = new zmgTemplateHelper('fronend', 
+          $this->getConfig('smarty/active_template'));
         $this->loadEvents(); //TODO: use cached events list
 	}
 	/**
@@ -51,12 +53,6 @@ class Zoom extends zmgError {
     	global $zoom_config;
         $this->_config = $zoom_config;
         $zoom_config = null;
-    }
-    function login($username, $password, $remember = false) {
-        
-    }
-    function logout() {
-        
     }
     function hasAccess() {
         //TODO: implement!
