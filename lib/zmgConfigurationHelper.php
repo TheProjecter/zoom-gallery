@@ -32,39 +32,70 @@ class zmgConfigurationHelper extends zmgError {
         $this->_config = $config;
         $config = null;
     }
-     /**
+    /**
      * Retrieve a specific configuration setting.
      * @param string The name of the setting in the format of a pathname: 'group/setting'
+     * @return string
      */
-    function get($path) {
+    function &get($path) {
         $path_tokens = explode("/", $path);
-        $config_val  = &$this->_config;
+        $config_val  = & $this->_config;
         for ($i = 0; $i < count($path_tokens); $i++) {
             if (isset($config_val[$path_tokens[$i]])) {
-                $config_val = &$config_val[$path_tokens[$i]];
+                $config_val = & $config_val[$path_tokens[$i]];
             }
         }
         return $config_val;
     }
-    function buildMetaBlock() {
+    /**
+     * Set a specific configuration setting.
+     * @param string The name of the setting in the format of a pathname: 'group/setting'
+     * @param mixed The new value for the setting as defined in the path up.
+     * @return boolean
+     */
+    function set($path, $value) {
+        $path_tokens = explode("/", $path);
+        $config_val  = &$this->_config;
+        for ($i = 0; $i < count($path_tokens); $i++) {
+            if (isset($config_val[$path_tokens[$i]])) {
+                $config_val = & $config_val[$path_tokens[$i]];
+            } else {
+                //path appears to be invalid
+                $config_val = null;
+                break;
+            }
+        }
+        if ($config_val) {
+            $config_val = $value;
+            return true;
+        }
+        return false;
+    }
+    function update() {
         
     }
-    function buildLocaleBlock() {
+    function save() {
         
     }
-    function buildDatabaseBlock() {
+    function _buildMetaBlock() {
         
     }
-    function buildFilesystemBlock() {
+    function _buildLocaleBlock() {
         
     }
-    function buildSmartyBlock() {
+    function _buildDatabaseBlock() {
         
     }
-    function buildLayoutBlock() {
+    function _buildFilesystemBlock() {
         
     }
-    function buildAppBlock() {
+    function _buildSmartyBlock() {
+        
+    }
+    function _buildLayoutBlock() {
+        
+    }
+    function _buildAppBlock() {
         
     }
 }

@@ -8,30 +8,25 @@
         <ranking>100.0</ranking>
     </template>
     <views>
-        <view name="gallery:overview"/>
-        <view name="gallery:search"/>
-        <view name="gallery:special"/>
-        <view name="gallery:lightbox"/>
-        <view name="gallery:thumbnails"/>
-        <view name="gallery:thumbnails:medium"/>
-        <view name="gallery:thumbnails:medium:edit"/>
-        <view name="gallery:thumbnails:medium:delete"/>
-        <view name="gallery:thumbnails:medium:lightbox"/>
-        <view name="useradmin"/>
-        <view name="singlepage" inherits="gallery:*,useradmin"/>
+        <view name="admin:gallerymanager"/>
+        <view name="admin:mediamanager"/>
+        <view name="admin:thumbcoder"/>
+        <view name="admin:settings"/>
+        <view name="admin:settings"/>
+        <view name="singlepage" inherits="admin:*"/>
     </views>
     <resources xml:base="default/">
         <resource name="stylesheet" xml:base="css/">
-            <file href="zmg_default.css" />
+            <file href="zmg_admin.css" />
         </resource>
         <resource name="javascript" xml:base="js/">
-            <file href="zmg_default.js" />
+            <file href="zmg_admin.js" />
         </resource>
         <resource name="template" view="singlepage" xml:base="">
-            <file href="default.html.tpl" />
+            <file href="admin.tpl" />
         </resource>
         <resource name="preview" xml:base="images/">
-            <file href="default_preview.png" />
+            <file href="admin_preview.png" />
         </resource>
     </resources>
 </manifest>
