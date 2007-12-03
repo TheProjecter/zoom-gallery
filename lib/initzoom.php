@@ -24,11 +24,10 @@ require_once(ZMG_ABS_PATH . DS.'lib'.DS.'smarty'.DS.'Smarty.class.php');
 
 //initialize the zoom (app) class
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgConfigurationHelper.php');
+require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgPluginHelper.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgTemplateHelper.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'Zoom.php');
 $zoom = new Zoom($zoom_config);
-
-$zoom->hasAccess() or die('Restricted access');
 
 //load application classes
 //require_once(ZMG_ABS_PATH . DS.'lib'.DS.'phpInputFilter'.DS.'class.inputfilter.php');
@@ -36,6 +35,8 @@ $zoom->hasAccess() or die('Restricted access');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgJson.php');
 
 $zoom->fireEvents('onstartup');
+
+$zoom->hasAccess() or die('Restricted access');
 
 //set error handling options
 zmgError::setErrorHandling($zoom->getConfig('app/errors/defaultmode'),
