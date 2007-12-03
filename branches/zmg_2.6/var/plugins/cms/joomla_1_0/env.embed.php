@@ -28,5 +28,14 @@ class zmgEnv extends zmgError {
         // Session ID / `value`
         return mosMainFrame::sessionCookieValue($sessioncookie);
     }
+    
+    function getSiteURL() {
+        global $mosConfig_live_site;
+        return $mosConfig_live_site;
+    }
+    
+    function sefRouteURL($value) {
+        return sefRelToAbs($value);
+    }
 }
 ?>

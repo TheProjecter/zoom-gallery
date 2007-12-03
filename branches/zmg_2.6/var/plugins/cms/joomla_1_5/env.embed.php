@@ -18,11 +18,26 @@ class zmgEnv extends zmgError {
     }
     
     function getSessionLifetime() {
-        
+        $session = & JFactory::getSession();
+        return $session->getExpire();
     }
     
     function getSessionID() {
+        $session = & JFactory::getSession();
+        return $session->getToken();
+    }
+    
+    function getSiteURL() {
+        return substr_replace(JURI::root(), '', -1, 1);
+    }
+    
+    function sefRouteURL($value) {
+        // Replace all &amp; with & as the router doesn't understand &amp;
+        $url = str_replace('&amp;', '&', $value);
         
+        $uri    = & JURI::getInstance();
+        $prefix = $uri->toString(array('scheme', 'host', 'port'));
+        return $prefix.JRoute::_($url);
     }
 }
 ?>

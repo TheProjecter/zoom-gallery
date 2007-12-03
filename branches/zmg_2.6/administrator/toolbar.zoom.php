@@ -24,9 +24,9 @@
 **/
 global $zoom, $mainframe;
 
-$page = mosGetParam($_REQUEST, 'page');
+$page = zmgGetParam($_REQUEST, 'page');
 
-mosMenuBar::startTable();
+//mosMenuBar::startTable();
 switch ($page) {
 	case 'catsmgr' :
 		mosMenuBar::spacer();
@@ -76,8 +76,8 @@ switch ($page) {
 		mosMenuBar::back(_ZOOM_BACK);
 		break;
 	default :
-		mosMenuBar::spacer();
+		//mosMenuBar::spacer();
 		break;
 }
-mosMenuBar::endTable();
+//mosMenuBar::endTable();
 ?>

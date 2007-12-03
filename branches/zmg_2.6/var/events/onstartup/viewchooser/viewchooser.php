@@ -19,7 +19,7 @@ defined('_ZMG_EXEC') or die('Restricted access');
  */
 class viewchooser {
     function start(&$zoom) {
-        $view = trim(mosGetParam($_REQUEST, 'view', defined('ZMG_ADMIN') ? 'admin:home' : 'gallery'));
+        $view = trim(zmgGetParam($_REQUEST, 'view', defined('ZMG_ADMIN') ? 'admin:home' : 'gallery'));
         $zoom->view->set($view);
         
         /*
