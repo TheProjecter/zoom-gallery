@@ -35,17 +35,25 @@ class Zoom extends zmgError {
      * @var zmgUser
      */
     var $user = null;
+    /**
+     * Public variable, containing the plugin system of ZMG.
+     * 
+     * @var zmgPluginHelper()
+     */
+    var $plugins = null;
 	/**
      * The class constructor.
      */
 	function Zoom(&$config) {
         $this->_config = new zmgConfigurationHelper($config);
         $this->view    = new zmgTemplateHelper($this->getConfig('smarty'));
+        $this->plugins = new zmgPluginHelper();
 
         $this->loadEvents(); //TODO: use cached events list
 	}
     function hasAccess() {
-        //TODO: implement!
+        if (!zmgACL::check_defines())
+            return false;
         return true;
     }
     function notAuth() {

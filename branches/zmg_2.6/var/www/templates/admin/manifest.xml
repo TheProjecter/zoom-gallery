@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<manifest version="0.2" xml:base="default/">
-    <template name="default">
+<manifest version="0.2" xml:base="admin/">
+    <template name="admin">
         <author>Mike de Boer</author>
         <country>NL</country>
         <creationdate>11/26/2007</creationdate>
-        <description>Default theme of zOOm Media Gallery</description>
+        <description>Default Admininstrator theme of zOOm Media Gallery</description>
         <ranking>100.0</ranking>
     </template>
     <views>
+        <view name="admin:home"/>
         <view name="admin:gallerymanager"/>
         <view name="admin:mediamanager"/>
         <view name="admin:thumbcoder"/>
-        <view name="admin:settings"/>
         <view name="admin:settings"/>
         <view name="singlepage" inherits="admin:*"/>
     </views>
@@ -23,7 +23,7 @@
             <file href="zmg_admin.js" />
         </resource>
         <resource name="template" view="singlepage" xml:base="">
-            <file href="admin.tpl" />
+            <file href="admin.html.tpl" />
         </resource>
         <resource name="preview" xml:base="images/">
             <file href="admin_preview.png" />
