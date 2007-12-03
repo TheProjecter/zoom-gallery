@@ -12,6 +12,21 @@
 defined('_ZMG_EXEC') or die('Restricted access');
 
 class zmgEnv extends zmgError {
+    function redirect($url, $msg = '', $msg_type = 'message') {
+        mosRedirect($url, $msg, $msg_type);
+    }
     
+    function getSessionLifetime() {
+        
+    }
+    
+    function getSessionID() {
+        // Session Cookie `name`
+        $sessionCookieName = mosMainFrame::sessionCookieName();
+        // Get Session Cookie `value`
+        $sessioncookie = jsyGetParam($_COOKIE, $sessionCookieName, null);
+        // Session ID / `value`
+        return mosMainFrame::sessionCookieValue($sessioncookie);
+    }
 }
 ?>

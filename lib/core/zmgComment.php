@@ -13,9 +13,18 @@
 defined('_ZMG_EXEC') or die('Restricted access');
 
 class zmgComment extends zmgTable {
+    var $cid = null;
+    
+    var $mid = null;
+    
+    var $name = null;
+    
+    var $content = null;
+    
+    var $date_added = null;
     
     function zmgComment(&$db) {
-        $this->zmgTable('', 'cid', $db);
+        $this->zmgTable('#__zmg_comments', 'cid', $db);
     }
 }
 ?>
