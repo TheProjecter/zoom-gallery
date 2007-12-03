@@ -1,0 +1,74 @@
+12/03/2007:
+
+  ======= framework changes =======
+  * renamed '#__zoom' to '#__zmg_galleries'
+  * renamed '#__zoomfiles' to '#__zmg_media'
+  * renamed '#__zoom_comments' to '#__zmg_comments'
+  * renamed '#__zoom_ecards' to '#__zmg_ecards'
+  * renamed '#__zoom_editmon' to '#__zmg_editmon'
+  * renamed '#__zoom_getid3_cache' to '#__zmg_cache_getid3'
+  * renamed '#__zoom_priv' to '#__zmg_privs'
+  
+  ======= table structure changes =======
+  '#__zmg_galleries':
+    * renamed 'catid' field to 'gid'
+    * renamed 'catname' to 'name'
+    * renamed 'catdescr' to 'descr'
+    * renamed 'catdir' to 'dir'
+    * renamed 'catimg' to 'cover_img'
+    * renamed 'catpassword' to 'password'
+    * renamed 'catkeywords' to 'keywords'
+    * renamed 'hideMsg' to 'hide_msg'
+    * renamed 'catmembers' to 'members'
+   
+    SQL:
+      ALTER TABLE `jos_zmg_galleries` CHANGE `catid` `gid` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+      CHANGE `catname` `name` VARCHAR( 240 ) NULL DEFAULT '0',
+      CHANGE `catdescr` `descr` MEDIUMTEXT NULL DEFAULT NULL ,
+      CHANGE `catdir` `dir` VARCHAR( 50 ) NULL DEFAULT '0',
+      CHANGE `catimg` `cover_img` INT( 11 ) NULL DEFAULT '0',
+      CHANGE `catpassword` `password` VARCHAR( 100 ) NOT NULL ,
+      CHANGE `catkeywords` `keywords` VARCHAR( 240 ) NOT NULL ,
+      CHANGE `hideMsg` `hide_msg` TINYINT( 1 ) NOT NULL DEFAULT '0',
+      CHANGE `catmembers` `members` VARCHAR( 240 ) NOT NULL;
+  
+  '#__zmg_media':
+    * renamed 'imgid' field to 'mid'
+    * renamed 'imgname' field to 'name'
+    * renamed 'imgfilename' field to 'filename'
+    * renamed 'imgdescr' field to 'descr'
+    * renamed 'imgkeywords' field to 'keywords'
+    * renamed 'imgdate' field to 'date_added'
+    * renamed 'imghits' field to 'hits'
+    * renamed 'cat' field to 'gid'
+    * renamed 'imgmembers' field to 'members'
+    
+    SQL:
+      ALTER TABLE `jos_zmg_media` CHANGE `imgid` `mid` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+      CHANGE `imgname` `name` VARCHAR( 255 ) NULL DEFAULT NULL ,
+      CHANGE `imgfilename` `filename` VARCHAR( 255 ) NULL DEFAULT NULL ,
+      CHANGE `imgdescr` `descr` MEDIUMTEXT NULL DEFAULT NULL ,
+      CHANGE `imgkeywords` `keywords` VARCHAR( 255 ) NULL DEFAULT NULL ,
+      CHANGE `imgdate` `date_add` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+      CHANGE `imghits` `hits` BIGINT( 20 ) NOT NULL DEFAULT '0',
+      CHANGE `catid` `gid` INT( 11 ) NOT NULL DEFAULT '0',
+      CHANGE `imgmembers` `members` VARCHAR( 240 ) NOT NULL;
+  
+  '#__zmg_comments':
+    * renamed 'cmtid' field to 'cid'
+    * renamed 'imgid' field to 'mid'
+    * renamed 'cmtname' field to 'name'
+    * renamed 'cmtcontent' field to 'content'
+    * renamed 'cmtdate' field to 'date_added'
+    
+    SQL:
+      ALTER TABLE `jos_zmg_comments` CHANGE `cmtid` `cid` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+      CHANGE `imgid` `mid` INT( 11 ) NOT NULL DEFAULT '0',
+      CHANGE `cmtname` `name` VARCHAR( 40 ) NOT NULL ,
+      CHANGE `cmtcontent` `content` TEXT CHARACTER SET NOT NULL ,
+      CHANGE `cmtdate` `date_added` TIMESTAMP NOT NULL DEFAULT NOW();
+    
+  '#__zmg_ecards':
+    * renamed 'imgid' field to 'mid'
+    
+    SQL: ALTER TABLE `jos_zmg_ecards` CHANGE `imgid` `mid` INT( 11 ) NOT NULL DEFAULT '0';

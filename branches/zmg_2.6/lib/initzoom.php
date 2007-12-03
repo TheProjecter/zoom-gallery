@@ -286,6 +286,20 @@ function zmgAmpReplace( $text ) {
 }
 
 /**
+  * @author Chris Tobin
+  * @author Daniel Morris
+  * @param String $source
+  * @return String $source
+  */
+function jsySQLEscape($string) {
+    // depreciated function
+    if (version_compare(phpversion(),"4.3.0", "<")) mysql_escape_string($string);
+    // current function
+    else mysql_real_escape_string($string);
+    return $string;
+}
+
+/**
  * Chmods files and directories recursively to given permissions. Available from 1.0.0 up.
  * @param path The starting file or directory (no trailing slash)
  * @param filemode Integer value to chmod files. NULL = dont chmod files.

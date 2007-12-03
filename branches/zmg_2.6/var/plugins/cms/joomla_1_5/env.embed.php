@@ -16,5 +16,13 @@ class zmgEnv extends zmgError {
         global $mainframe;
         $mainframe->redirect($url, $msg, $msg_type);
     }
+    
+    function getSessionLifetime() {
+        
+    }
+    
+    function getSessionID() {
+        
+    }
 }
 ?>
