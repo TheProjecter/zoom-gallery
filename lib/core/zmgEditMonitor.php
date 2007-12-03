@@ -40,22 +40,22 @@ class zmgEditMonitor extends zmgError {
                 case 'comment':
                     $db->setQuery("INSERT INTO #__zmg_editmon (user_session, "
                      . "comment_time, object_id) VALUES ('$sid', '$today','"
-                     . jsySQLEscape($id) . "')");
+                     . zmgSQLEscape($id) . "')");
                     break;
                 case 'vote':
                     $db->setQuery("INSERT INTO #__zmg_editmon (user_session, "
                      . "vote_time, object_id) VALUES ('$sid', '$today', '"
-                     . jsySQLEscape($id) . "')");
+                     . zmgSQLEscape($id) . "')");
                     break;
                 case 'pass':
                     $db->setQuery("INSERT INTO #__zmg_editmon (user_session, "
                      . "pass_time, object_id) VALUES ('$sid', '$today', '"
-                     . jsySQLEscape($id) . "')");
+                     . zmgSQLEscape($id) . "')");
                     break;
                 case 'lightbox':
                     $db->setQuery("INSERT INTO #__zmg_editmon (user_session, "
                      . "lightbox_time, lightbox_file) VALUES ('$sid', '$today', '"
-                     . jsySQLEscape($filename) . "')");
+                     . zmgSQLEscape($filename) . "')");
                     break;
             }
             if (@$db->query()) {
@@ -128,22 +128,22 @@ class zmgEditMonitor extends zmgError {
             case 'comment':
                 $db->setQuery("SELECT edtid FROM #__zmg_editmon WHERE "
                  . "user_session = '$sid' AND comment_time > '$now' AND "
-                 . "object_id = " . jsySQLEscape($id));
+                 . "object_id = " . zmgSQLEscape($id));
                 break;
             case 'vote';
                 $db->setQuery("SELECT edtid FROM #__zmg_editmon WHERE "
                  . "user_session = '$sid' AND vote_time > '$now' AND "
-                 . "object_id = " . jsySQLEscape($id));
+                 . "object_id = " . zmgSQLEscape($id));
                 break;
             case 'pass':
                 $db->setQuery("SELECT edtid FROM #__zmg_editmon WHERE "
                  . "user_session = '$sid' AND pass_time > '$now' AND "
-                 . "object_id = " . jsySQLEscape($id));
+                 . "object_id = " . zmgSQLEscape($id));
                 break;
             case 'lightbox':
                 $db->setQuery("SELECT edtid FROM #__zmg_editmon WHERE "
                  . "user_session = '$sid' AND lightbox_time > '$now' AND "
-                 . "lightbox_file = '" . jsySQLEscape($filename) . "'");
+                 . "lightbox_file = '" . zmgSQLEscape($filename) . "'");
                 break;
         }
         $result = $db->query();

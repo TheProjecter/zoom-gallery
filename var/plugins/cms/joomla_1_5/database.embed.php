@@ -19,7 +19,7 @@ class zmgDatabase extends zmgError {
 
 class zmgTable extends JTable {
     function zmgTable($table, $key, &$db) {
-        $this->JTable($table, $key, $db);
+        parent::__construct($table, $key, $db);
     }
 }
 ?>

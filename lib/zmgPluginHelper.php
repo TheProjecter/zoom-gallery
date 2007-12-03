@@ -15,8 +15,6 @@ class zmgPluginHelper extends zmgError {
     
     var $_plugins = null;
     
-    
-    
     function zmgPluginHelper() {
         $this->_loadPlugins();
     }
@@ -26,7 +24,7 @@ class zmgPluginHelper extends zmgError {
             $plugin_path = ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS.$cat;
             if (file_exists($plugin_path . DS.$cat.'.plugin.php')) {
                 require_once($plugin_path . DS.$cat.'.plugin.php');
-                $class = 'zmg' . strtoupper(substr($cat, 0, 1)) . substr($cat, 1) . 'Plugin';
+                $class = 'zmg' . ucfirst($cat) . 'Plugin';
                 if (class_exists($class)) {
                     eval($class . '::embed();');
                 } else {
@@ -36,10 +34,7 @@ class zmgPluginHelper extends zmgError {
                 //TODO: implement support for other plugin types
                 if (is_array($plugins)) {
                     foreach ($plugins as $plugin) {
-                        require_once(DS.$cmp.'.php');
-                        if (class_exists($cmp)) {
-                            eval($cmp . '::start(&$this);');
-                        }
+                        //TODO
                     }
                 }
             }

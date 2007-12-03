@@ -29,14 +29,16 @@ require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgTemplateHelper.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'Zoom.php');
 $zoom = new Zoom($zoom_config);
 
-//load application classes
-//require_once(ZMG_ABS_PATH . DS.'lib'.DS.'phpInputFilter'.DS.'class.inputfilter.php');
-//require_once(ZMG_ABS_PATH . '/lib/table.class.php');
-require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgJson.php');
-
 $zoom->fireEvents('onstartup');
 
 $zoom->hasAccess() or die('Restricted access');
+
+//load core classes
+require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgJson.php');
+require_once(ZMG_ABS_PATH . DS.'lib'.DS.'core'.DS.'zmgComment.php');
+require_once(ZMG_ABS_PATH . DS.'lib'.DS.'core'.DS.'zmgEditMonitor.php');
+require_once(ZMG_ABS_PATH . DS.'lib'.DS.'core'.DS.'zmgGallery.php');
+require_once(ZMG_ABS_PATH . DS.'lib'.DS.'core'.DS.'zmgMedium.php');
 
 //set error handling options
 zmgError::setErrorHandling($zoom->getConfig('app/errors/defaultmode'),
@@ -291,7 +293,7 @@ function zmgAmpReplace( $text ) {
   * @param String $source
   * @return String $source
   */
-function jsySQLEscape($string) {
+function zmgSQLEscape($string) {
     // depreciated function
     if (version_compare(phpversion(),"4.3.0", "<")) mysql_escape_string($string);
     // current function

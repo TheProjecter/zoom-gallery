@@ -20,6 +20,7 @@
     * renamed 'catkeywords' to 'keywords'
     * renamed 'hideMsg' to 'hide_msg'
     * renamed 'catmembers' to 'members'
+    * renamed 'custom_order' to 'ordering' (Joomla! convention)
    
     SQL:
       ALTER TABLE `jos_zmg_galleries` CHANGE `catid` `gid` INT( 11 ) NOT NULL AUTO_INCREMENT ,
@@ -30,7 +31,8 @@
       CHANGE `catpassword` `password` VARCHAR( 100 ) NOT NULL ,
       CHANGE `catkeywords` `keywords` VARCHAR( 240 ) NOT NULL ,
       CHANGE `hideMsg` `hide_msg` TINYINT( 1 ) NOT NULL DEFAULT '0',
-      CHANGE `catmembers` `members` VARCHAR( 240 ) NOT NULL;
+      CHANGE `catmembers` `members` VARCHAR( 240 ) NOT NULL,
+      CHANGE `custom_order` `ordering` INT( 20 ) NULL DEFAULT NULL; 
   
   '#__zmg_media':
     * renamed 'imgid' field to 'mid'
