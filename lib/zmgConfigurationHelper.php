@@ -71,32 +71,62 @@ class zmgConfigurationHelper extends zmgError {
         }
         return false;
     }
-    function update() {
+    function update($config) {
         
     }
     function save() {
-        
+        $content = $this->_buildMetaBlock() . $this->_buildLocaleBlock()
+         . $this->_buildDatabaseBlock() . $this->_buildFilesystemBlock()
+         . $this->_buildSmartyBlock() . $this->_buildLayoutBlock()
+         . $this->_buildAppBlock();
+        echo str_replace("\n", "<br/>", $content); 
+        //zmgWriteFile(ZMG_ABS_PATH .DS.'etc'.DS.'app.config.php', $content);
     }
     function _buildMetaBlock() {
-        
+        return $this->_generateBlock("\$zoomConfig", 'meta',
+          $this->_config['meta']);
     }
     function _buildLocaleBlock() {
-        
+        return $this->_generateBlock("\$zoomConfig", 'locale',
+          $this->_config['locale']);
     }
     function _buildDatabaseBlock() {
-        
+        return $this->_generateBlock("\$zoomConfig", 'db',
+          $this->_config['db']);
     }
     function _buildFilesystemBlock() {
-        
+        return $this->_generateBlock("\$zoomConfig", 'filesystem',
+          $this->_config['filesystem']);
     }
     function _buildSmartyBlock() {
-        
+        return $this->_generateBlock("\$zoomConfig", 'smarty',
+          $this->_config['smarty']);
     }
     function _buildLayoutBlock() {
-        
+        return $this->_generateBlock("\$zoomConfig", 'layout',
+          $this->_config['layout']);
     }
     function _buildAppBlock() {
-        
+        //TODO: find a way to process constants - how to put them back in the config file?
+        return $this->_generateBlock("\$zoomConfig", 'app',
+          $this->_config['app']);
+    }
+    function _generateBlock($prefix, $title, $value) {
+        $block = "";
+        if (is_array($value)) {
+            $prefix = $prefix . "['{$title}']";
+            $block .= $prefix . " = array();\n";
+            foreach ($value as $title2 => $value2) {
+                $block .= zmgConfigurationHelper::_generateBlock($prefix,
+                  $title2, $value2);
+            }
+        } else {
+            if (is_string($value)) {
+                $value = "\"{$value}\"";
+            }
+            $block .= "{$prefix}['{$title}'] = {$value};\n";
+        }
+        return $block;
     }
 }
 ?>
