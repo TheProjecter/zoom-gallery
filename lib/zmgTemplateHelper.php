@@ -58,8 +58,14 @@ class zmgTemplateHelper extends Smarty {
             return zmgError::throwError('No view specified.');
         $this->_active_view = $view;
     }
+    
+    function get() {
+        return $this->_active_view;
+    }
 
     function run() {
+        global $zoom;
+        
         if (empty($this->_active_view))
             return zmgError::throwError('No active view specified. Unable to run application.');
 
@@ -81,6 +87,8 @@ class zmgTemplateHelper extends Smarty {
           $this->_viewtype);
         if ($res) {
             $tpl_file = trim($res->firstChild->getAttribute('href'));
+            
+            $this->assign('zoom', $zoom);
 
             $this->display($tpl_file);
         } else {

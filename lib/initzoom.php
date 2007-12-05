@@ -69,13 +69,6 @@ $zoom->restoreSession();
 
 $zoom->fireEvents('oncontentstart');
 
-//$zoom->template->assign('pagetitle',    $zoom->getConfig('meta/title'));
-//$zoom->template->assign('pagedescr',    $zoom->getConfig('meta/description'));
-//$zoom->template->assign('pagekeywords', $zoom->getConfig('meta/keywords'));
-//$zoom->template->assign('pageauthor',   $zoom->getConfig('meta/author'));
-//$zoom->template->assign('pageencoding', $zoom->getConfig('locale/encoding'));
-//$zoom->template->assign('username',     $zoom->user->get('username'));
-
 $zoom->fireEvents('oncontent');
 
 /**
