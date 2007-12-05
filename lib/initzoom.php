@@ -29,9 +29,15 @@ require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgTemplateHelper.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'Zoom.php');
 $zoom = new Zoom($zoom_config);
 
+if (!class_exists('InputFilter')) {
+    require_once(ZMG_ABS_PATH . DS.'lib'.DS.'phpinputfilter'.DS.'inputfilter.php');
+}
+
 $zoom->fireEvents('onstartup');
 
 $zoom->hasAccess() or die('Restricted access');
+
+$zoom->view->setViewType(zmgEnv::getViewType());
 
 //load core classes
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgJson.php');

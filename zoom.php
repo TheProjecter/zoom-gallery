@@ -11,6 +11,7 @@
 //list of global constants:
 define("_ZMG_EXEC", 1);
 define("ZMG_ABS_PATH", dirname(__FILE__));
+define("ZMG_ADMIN", 0);
 
 //load all required libraries
 require(ZMG_ABS_PATH . '/lib/initzoom.php');

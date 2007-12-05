@@ -8,3 +8,57 @@
  * @license http://www.gnu.org/copyleft/gpl.html GPL
  */
 
+#zmg_admin_cont
+{
+    position: relative;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+#zmg_menu_tree
+{
+    position: relative;
+    width: 350px;
+    border: 1px solid #a9a9a9;
+    overflow-x: auto;
+    overflow-y: visible;
+    height: auto;
+    float: left;
+    display: inline;
+}
+
+#zmg_view_content
+{
+    position: relative;
+    float: right;
+    display: inline;
+}
+
+.mooTree_node
+{
+    font-family: Verdana, Arial, Helvetica;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+.mooTree_text
+{
+    padding-top: 3px;
+    height: 15px;
+    cursor: pointer;
+}
+
+.mooTree_img
+{
+    float: left;
+    width: 18px;
+    height: 18px;
+    overflow: hidden;
+}
+
+.mooTree_selected
+{
+    background-color: #e0f0ff;
+    font-weight: bold;
+}

@@ -22,16 +22,16 @@
     </views>
     <resources xml:base="default/">
         <resource name="stylesheet" xml:base="css/">
-            <file href="zmg_default.css" />
+            <file href="zmg_default.css"/>
         </resource>
         <resource name="javascript" xml:base="js/">
             <file href="zmg_default.js" />
         </resource>
-        <resource name="template" view="singlepage" xml:base="">
-            <file href="default.html.tpl" />
+        <resource name="template" type="html" view="singlepage" xml:base="">
+            <file href="default.html.tpl"/>
         </resource>
         <resource name="preview" xml:base="images/">
-            <file href="default_preview.png" />
+            <file href="default_preview.png"/>
         </resource>
     </resources>
 </manifest>
