@@ -46,7 +46,8 @@ class Zoom extends zmgError {
      */
 	function Zoom(&$config) {
         $this->_config = new zmgConfigurationHelper($config);
-        $this->view    = new zmgTemplateHelper($this->getConfig('smarty'));
+        $this->view    = new zmgTemplateHelper($this->getConfig('smarty'),
+          $this->getConfig('app/secret'));
         $this->plugins = new zmgPluginHelper();
 
         $this->loadEvents(); //TODO: use cached events list
@@ -145,7 +146,7 @@ class Zoom extends zmgError {
     		echo @header("Content-type:text/xml; charset=" . $encoding);
     	} else if ($type == "plain") {
     		echo @header("Content-type:text/plain; charset=" . $encoding);
-    	} else if ($type == "js") {
+    	} else if ($type == "js" || $type == "json") {
             echo @header("Content-type:text/javascript; charset=" . $encoding);
         }
     }

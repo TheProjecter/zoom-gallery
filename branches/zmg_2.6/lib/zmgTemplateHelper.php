@@ -23,11 +23,15 @@ class zmgTemplateHelper extends Smarty {
     var $_template_name = null;
     
     var $_active_view = null;
+    
+    var $_viewtype = null;
+    
+    var $_secret = null;
 
     /**
      * The class constructor.
      */
-    function zmgTemplateHelper(&$config) {
+    function zmgTemplateHelper(&$config, $secret) {
         //Smarty options:
         $this->template_dir = $config['template_dir'];
         $this->compile_dir  = $config['compile_dir'];
@@ -35,8 +39,18 @@ class zmgTemplateHelper extends Smarty {
         $this->config_dir   = $config['config_dir'];
         
         //Helper options:
-        $this->_active_template = $config['active_template'];
+        if (ZMG_ADMIN) {
+            $this->_active_template = "admin";
+        } else {
+            $this->_active_template = $config['active_template'];
+        }
+        $this->_secret = $secret;
+        
         $this->_loadManifest();
+    }
+    
+    function setViewType($view = 'html') {
+        $this->_viewtype = $view;
     }
 
     function set($view) {
@@ -49,8 +63,22 @@ class zmgTemplateHelper extends Smarty {
         if (empty($this->_active_view))
             return zmgError::throwError('No active view specified. Unable to run application.');
 
+        //mootools & Ajax preparing stuff
+        if ($this->_viewtype == "html") {
+            zmgEnv::includeMootools();
+            zmgEnv::appendPageHeader($this->_prepareAjax());
+        }
+
+        //put the HTML headers in the head section of the parent (hosting) document
+        $headers = $this->getHTMLHeaders(zmgEnv::getSiteURL()
+          . '/components/com_zoom/var/www/templates');
+        foreach ($headers as $header) {
+            zmgEnv::appendPageHeader($header);
+        }
+        
         //get template file that belongs to the active view:
-        $res = & $this->_getResource('template', $this->_active_view);
+        $res = & $this->_getResource('template', $this->_active_view,
+          $this->_viewtype);
         if ($res) {
             $tpl_file = trim($res->firstChild->getAttribute('href'));
 
@@ -58,6 +86,21 @@ class zmgTemplateHelper extends Smarty {
         } else {
             return zmgError::throwError('No template resource found. Unable to run application.');
         }
+    }
+    
+    function _prepareAjax() {
+        return ("<script language=\"javascript\" type=\"text/javascript\">\n"
+         . "<!--\n"
+         . "\tif (!window.ZMG_CONST) window.ZMG_CONST = {};\n"
+         . "\tZMG_CONST.id          = '".md5($this->_secret)."';\n"
+         . "\tZMG_CONST.active_view = '".$this->_active_view."';\n"
+         . "\tZMG_CONST.is_admin    = ".((ZMG_ADMIN) ? "true" : "false")."\n"
+         . "\tZMG_CONST.site_uri    = document.location.protocol + '//' + document.location.host + document.location.pathname.replace(/\/(administrator\/)?index(2)?\.php$/i, '');\n"
+         . "\tZMG_CONST.req_uri     = ZMG_CONST.site_uri + \"".zmgEnv::getAjaxURL()."\";\n"
+         . "\tZMG_CONST.res_path    = ZMG_CONST.site_uri + \"/components/com_zoom/var/www/templates/"
+         . $this->_active_template."\";\n"
+         . "//-->\n"
+         . "</script>\n");
     }
     
     function _getInfo() {
@@ -131,12 +174,12 @@ class zmgTemplateHelper extends Smarty {
         return null;
     }
     
-    function &_getResource($type, $view = null) {
+    function &_getResource($name, $view = null, $type = 'html') {
         if (empty($this->_manifest))
             return zmgError::throwError('Template manifest not loaded yet.');
 
         $els = & $this->_manifest->getElementsByTagName('resource');
-        if ($type == "html_head") {
+        if ($name == "html_head") {
             $files = array();
             for ($i = 0; $i < $els->getLength(); $i++) {
                 $res = & $els->item($i);
@@ -148,7 +191,7 @@ class zmgTemplateHelper extends Smarty {
                 }
             }
             return $files;
-        } else if ($type == "preview") {
+        } else if ($name == "preview") {
             for ($i = 0; $i < $els->getLength(); $i++) {
                 $res = & $els->item($i);
                 if ($res->hasAttribute('name')) {
@@ -158,15 +201,16 @@ class zmgTemplateHelper extends Smarty {
                 }
             }
             return "";
-        } else if ($type == "template") {
+        } else if ($name == "template") {
             if (empty($view))
                 $view = $this->_active_view;
                 
             $tpls = array();
             for ($i = 0; $i < $els->getLength(); $i++) {
                 $res = & $els->item($i);
-                if ($res->hasAttribute('name')) {
+                if ($res->hasAttribute('name') && $res->hasAttribute('type')) {
                     if ($res->getAttribute('name') == "template"
+                      && $res->getAttribute('type') == $type
                       && $res->hasAttribute('view')) {
                         $tpls[] = & $res;
                     }
@@ -192,17 +236,23 @@ class zmgTemplateHelper extends Smarty {
     }
 
     function getHTMLHeaders($path_prefix = "") {
+        $ret = array();
+        
+        if ($this->_viewtype != "html")
+            return $ret;
+        
         $headers = & $this->_getResource('html_head');
         $path_prefix .= DS.$this->_manifest->documentElement->getAttribute('xml:base');
-        $ret = array();
         foreach ($headers as &$res) {
             $name = $res->getAttribute('name');
             $dir  = $res->getAttribute('xml:base');
             $file = $res->firstChild->getAttribute('href');
             if ($name == "stylesheet") {
-                $ret[] = '<link rel="stylesheet" href="' . $path_prefix.$dir.$file . '" type="text/css"/>';
+                $ret[] = '<link rel="stylesheet" href="' . $path_prefix.$dir
+                  .$file . '" type="text/css"/>';
             } else if ($name == "javascript") {
-                $ret[] = '<script src="' . $path_prefix.$dir.$file . '" type="text/javascript"></script>';
+                $ret[] = '<script src="' . $path_prefix.$dir.$file
+                  . '" type="text/javascript"></script>';
             }
         }
         return $ret;

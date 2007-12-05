@@ -31,6 +31,21 @@ class zmgEnv extends zmgError {
         return substr_replace(JURI::root(), '', -1, 1);
     }
     
+    function getViewType() {
+        $no_html = intval(zmgGetParam($_GET, 'no_html', 0));
+        if ($no_html === 1) {
+            return "json";
+        }
+        return "html";
+    }
+    
+    function getAjaxURL() {
+        if (ZMG_ADMIN) {
+            return "/administrator/index.php?option=com_zoom&no_html=1";
+        }
+        return "/index.php?option=com_zoom&no_html=1";
+    }
+    
     function sefRouteURL($value) {
         // Replace all &amp; with & as the router doesn't understand &amp;
         $url = str_replace('&amp;', '&', $value);
@@ -38,6 +53,22 @@ class zmgEnv extends zmgError {
         $uri    = & JURI::getInstance();
         $prefix = $uri->toString(array('scheme', 'host', 'port'));
         return $prefix.JRoute::_($url);
+    }
+    
+    function setPageTitle($title) {
+        $document = & JFactory::getDocument();
+        $document->setTitle($title);
+    }
+    
+    function appendPageHeader($html) {
+        $document = & JFactory::getDocument();
+        if ($document->getType() == 'html') {
+            $document->addCustomTag($html);
+        }
+    }
+    
+    function includeMootools() {
+        JHTML::_('behavior.mootools');
     }
 }
 ?>

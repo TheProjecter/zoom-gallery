@@ -24,7 +24,7 @@ class zmgEnv extends zmgError {
         // Session Cookie `name`
         $sessionCookieName = mosMainFrame::sessionCookieName();
         // Get Session Cookie `value`
-        $sessioncookie = jsyGetParam($_COOKIE, $sessionCookieName, null);
+        $sessioncookie = zmgGetParam($_COOKIE, $sessionCookieName, null);
         // Session ID / `value`
         return mosMainFrame::sessionCookieValue($sessioncookie);
     }
@@ -34,8 +34,30 @@ class zmgEnv extends zmgError {
         return $mosConfig_live_site;
     }
     
+    function getAjaxURL() {
+        if (ZMG_ADMIN) {
+            return "/administrator/index2.php?option=com_zoom&no_html=1";
+        }
+        return "/index.php?option=com_zoom&no_html=1";
+    }
+    
     function sefRouteURL($value) {
         return sefRelToAbs($value);
+    }
+    
+    function setPageTitle($title) {
+        global $mainframe;
+        $mainframe->setPageTitle($title);
+    }
+    
+    function appendPageHeader($html) {
+        global $mainframe;
+        $mainframe->addCustomHeadTag($html);
+    }
+    
+    function includeMootools() {
+        zmgEnv::appendPageHeader('<script src="' . zmgEnv::getSiteURL()
+         . '/components/com_zoom/var/www/shared/mootools.js" type="text/javascript"></script>');
     }
 }
 ?>
