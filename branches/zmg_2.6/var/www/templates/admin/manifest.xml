@@ -38,26 +38,8 @@
         <resource name="template" type="json" view="admin:treemenu" xml:base="">
             <file href="treemenu.json.tpl"/>
         </resource>
-        <resource name="template" type="json" view="admin:settings" xml:base="">
+        <resource name="template" type="json" view="admin:settings:*" xml:base="">
             <file href="settings.json.tpl"/>
-        </resource>
-        <resource name="template" type="json" view="admin:settings:meta" xml:base="">
-            <file href="settings_meta.json.tpl"/>
-        </resource>
-        <resource name="template" type="json" view="admin:settings:locale" xml:base="">
-            <file href="settings_locale.json.tpl"/>
-        </resource>
-        <resource name="template" type="json" view="admin:settings:filesystem" xml:base="">
-            <file href="settings_filesystem.json.tpl"/>
-        </resource>
-        <resource name="template" type="json" view="admin:settings:layout" xml:base="">
-            <file href="settings_layout.json.tpl"/>
-        </resource>
-        <resource name="template" type="json" view="admin:settings:app" xml:base="">
-            <file href="settings_app.json.tpl"/>
-        </resource>
-        <resource name="template" type="json" view="admin:settings:info" xml:base="">
-            <file href="settings_info.json.tpl"/>
         </resource>
         <resource name="preview" xml:base="images/">
             <file href="admin_preview.png"/>
