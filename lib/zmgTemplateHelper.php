@@ -24,6 +24,8 @@ class zmgTemplateHelper extends Smarty {
     
     var $_active_view = null;
     
+    var $_active_subview = null;
+    
     var $_viewtype = null;
     
     var $_secret = null;
@@ -55,19 +57,25 @@ class zmgTemplateHelper extends Smarty {
 
     function set($view) {
         if (empty($view))
-            return zmgError::throwError('No view specified.');
+            return $this->throwError('No view specified.');
         $this->_active_view = $view;
     }
     
     function get() {
         return $this->_active_view;
     }
+    
+    function getSubView() {
+        if (!$this->_active_subview) {
+            $view_tokens = split(':', $this->_active_view);
+            $this->_active_subview = $view_tokens[count($view_tokens) - 1];
+        }
+        return $this->_active_subview;
+    }
 
-    function run() {
-        global $zoom;
-        
+    function run(&$zoom) {
         if (empty($this->_active_view))
-            return zmgError::throwError('No active view specified. Unable to run application.');
+            return $this->throwError('No active view specified. Unable to run application.');
 
         //mootools & Ajax preparing stuff
         if ($this->_viewtype == "html") {
@@ -87,25 +95,30 @@ class zmgTemplateHelper extends Smarty {
           $this->_viewtype);
         if ($res) {
             $tpl_file = trim($res->firstChild->getAttribute('href'));
-            
+
             $this->assign('zoom', $zoom);
+            
+            $this->assign('subview', $this->getSubView());
+            
+            $this->assign('site_url', zmgEnv::getSiteURL());
 
             $this->display($tpl_file);
         } else {
-            return zmgError::throwError('No template resource found. Unable to run application.');
+            return $this->throwError('No template resource found. Unable to run application.');
         }
     }
     
     function _prepareAjax() {
         return ("<script language=\"javascript\" type=\"text/javascript\">\n"
          . "<!--\n"
-         . "\tif (!window.ZMG_CONST) window.ZMG_CONST = {};\n"
-         . "\tZMG_CONST.id          = '".md5($this->_secret)."';\n"
-         . "\tZMG_CONST.active_view = '".$this->_active_view."';\n"
-         . "\tZMG_CONST.is_admin    = ".((ZMG_ADMIN) ? "true" : "false")."\n"
-         . "\tZMG_CONST.site_uri    = document.location.protocol + '//' + document.location.host + document.location.pathname.replace(/\/(administrator\/)?index(2)?\.php$/i, '');\n"
-         . "\tZMG_CONST.req_uri     = ZMG_CONST.site_uri + \"".zmgEnv::getAjaxURL()."\";\n"
-         . "\tZMG_CONST.res_path    = ZMG_CONST.site_uri + \"/components/com_zoom/var/www/templates/"
+         . "\tif (!window.ZMG) window.ZMG = {};\n"
+         . "\tZMG.CONST = {};\n"
+         . "\tZMG.CONST.id          = '".md5($this->_secret)."';\n"
+         . "\tZMG.CONST.active_view = '".$this->_active_view."';\n"
+         . "\tZMG.CONST.is_admin    = ".((ZMG_ADMIN) ? "true" : "false")."\n"
+         . "\tZMG.CONST.site_uri    = document.location.protocol + '//' + document.location.host + document.location.pathname.replace(/\/(administrator\/)?index(2)?\.php$/i, '');\n"
+         . "\tZMG.CONST.req_uri     = ZMG.CONST.site_uri + \"".zmgEnv::getAjaxURL()."\";\n"
+         . "\tZMG.CONST.res_path    = ZMG.CONST.site_uri + \"/components/com_zoom/var/www/templates/"
          . $this->_active_template."\";\n"
          . "//-->\n"
          . "</script>\n");
@@ -113,7 +126,7 @@ class zmgTemplateHelper extends Smarty {
     
     function _getInfo() {
         if (empty($this->_manifest))
-            return zmgError::throwError('Template manifest not loaded yet.');
+            return $this->throwError('Template manifest not loaded yet.');
             
         $els = & $this->_manifest->getElementsByTagName('template');
         if ($els->getLength() < 1)
@@ -131,7 +144,7 @@ class zmgTemplateHelper extends Smarty {
     
     function getTemplateName() {
         if (empty($this->_manifest))
-            return zmgError::throwError('Template manifest not loaded yet.');
+            return $this->throwError('Template manifest not loaded yet.');
         
         if (empty($this->_template_name)) {
             $els = & $this->_manifest->getElementsByTagName('template');
@@ -145,46 +158,87 @@ class zmgTemplateHelper extends Smarty {
         return $this->_template_name;
     }
     
-    function &_getView($name, $inheritedBy = null) {
+    function &_getView($name, $tpl_inherits) {
         if (empty($this->_manifest))
-            return zmgError::throwError('Template manifest not loaded yet.');
+            return $this->throwError('Template manifest not loaded yet.');
         
         $els = & $this->_manifest->getElementsByTagName('view');
         if ($els->getLength() <= 0)
-            return zmgError::throwError('Invalid manifest; no view(s) defined.');
+            return $this->throwError('Invalid manifest; no view(s) defined.');
         
-        $view_tokens = split(':', $name);
+        $view_tokens      = split(':', $name);
+        $view_token_count = count($view_tokens);
+        
+        //holds the resulting <view> tag resource pointer
+        $view  = null;
+        $views = array();
+        
+        //find the correct <view> tags for this specific view.
         for ($i = 0; $i < $els->getLength(); $i++) {
             $res = & $els->item($i);
             if ($res->hasAttribute('name')) {
-                if (!empty($inheritedBy) && $res->hasAttribute('inherits')) {
+                if ($res->getAttribute('name') == $name) {
+                    $views[] = & $res;
+                } else if ($res->hasAttribute('inherits')) {
                     $list = split(',', $res->getAttribute('inherits'));
                     foreach ($list as $inherit) {
                         $inh_tokens = split(':', $inherit);
                         //loop through the tokens FORWARD, to make wildcard
-                        //matching possible (i.e. 'gallery:*')
+                        //matching possible for a <view> tag (i.e. 'gallery:*')
                         for ($j = 0; $j < count($inh_tokens) &&
                           isset($view_tokens[$j]); $j++) {
                             $val = trim($inh_tokens[$j]);
                             if ($val == "*") {
-                                return $res;
+                                $views[] = & $res;
+                                break;
                             } else if ($val == trim($view_tokens[$j])) {
-                                return $res;
+                                if ($j == ($view_token_count - 1)) {
+                                    $views[] = & $res;
+                                    break;
+                                } else if ($j >= $view_token_count) {
+                                    break;
+                                }
+                                //only here the loop will continue forward
+                                //(nothing is returned...yet)
+                            } else {
+                                break;
                             }
                         }
                     }
-                } else if ($res->getAttribute('name') == $name) {
-                    return $res;
                 }
             }
         }
         
+        $tpl_tokens  = split(':', $tpl_inherits);
+        $tpl_token_count = count($tpl_tokens);
+        //now, search for THE ONE view that matches with one of the views we retrieved
+        foreach ($views as &$a_view) {
+            $a_view_tokens = split(':', $a_view->getAttribute('name'));
+            //loop through the tokens FORWARD, to make wildcard
+            //matching possible for a <view> tag (i.e. 'gallery:*')
+            for ($k = 0; $k < count($a_view_tokens) && isset($view_tokens[$k]); $k++) {
+                $val = trim($a_view_tokens[$k]);
+                if ($val == "*") {
+                    return $a_view;
+                } else if ($val == trim($tpl_tokens[$k])) {
+                    if ($k == ($tpl_token_count - 1)) {
+                        return $a_view;
+                    } else if ($k >= $tpl_token_count) {
+                        break;
+                    }
+                    //only here the loop will continue forward
+                    //(nothing is returned...yet)
+                } else {
+                    break;
+                }
+            }
+        }
         return null;
     }
     
     function &_getResource($name, $view = null, $type = 'html') {
         if (empty($this->_manifest))
-            return zmgError::throwError('Template manifest not loaded yet.');
+            return $this->throwError('Template manifest not loaded yet.');
 
         $els = & $this->_manifest->getElementsByTagName('resource');
         if ($name == "html_head") {
@@ -214,6 +268,8 @@ class zmgTemplateHelper extends Smarty {
                 $view = $this->_active_view;
                 
             $tpls = array();
+            //build an array of template resources that match our primary 
+            //criteria (it MUST have a name attribute and MUST match a viewType).
             for ($i = 0; $i < $els->getLength(); $i++) {
                 $res = & $els->item($i);
                 if ($res->hasAttribute('name') && $res->hasAttribute('type')) {
@@ -240,7 +296,7 @@ class zmgTemplateHelper extends Smarty {
             }
         }
         
-        return zmgError::throwError('Invalid resource type.');
+        return $this->throwError('Invalid '.$name.'-resource type for view: '.$view);
     }
 
     function getHTMLHeaders($path_prefix = "") {
@@ -274,7 +330,7 @@ class zmgTemplateHelper extends Smarty {
             $tpl_file = $this->template_dir.DS.$this->_active_template.DS."manifest.xml";
 
             if (!file_exists($tpl_file))
-                return zmgError::throwError('Template manifest not found ('.$tpl_file.').');
+                return $this->throwError('Template manifest not found ('.$tpl_file.').');
 
             require_once(ZMG_ABS_PATH . DS.'lib'.DS.'domit'.DS.'xml_domit_lite_include.php');
             $this->_manifest = & new DOMIT_Lite_Document();
@@ -282,12 +338,12 @@ class zmgTemplateHelper extends Smarty {
             
             if (!$this->_manifest->loadXML($tpl_file, false, true)) {
                 unset($this->_manifest);
-                return zmgError::throwError('DOMIT error: could not open document.');
+                return $this->throwError('DOMIT error: could not open document.');
             }
             
             if ($this->_manifest->documentElement->getTagName() != "manifest") {
                 unset($this->_manifest);
-                return zmgError::throwError('Invalid template manifest.');
+                return $this->throwError('Invalid template manifest.');
             }
             
             //set the basedir of the template where we can find the .tpl files
@@ -305,7 +361,15 @@ class zmgTemplateHelper extends Smarty {
             zmgWriteFile($this->cache_dir .DS.$this->_active_template.'_tpl.cache',
               serialize($this->_manifest));
         } else {
-            zmgError::throwError('ZMG cache directory not writable.');
+            $this->throwError('ZMG cache directory not writable.');
+        }
+    }
+    
+    function throwError($message) {
+        if (!zmgEnv::isRPC()) {
+            return zmgError::throwError($message);
+        } else {
+            return Zoom::sendHeaders($this->_viewtype, true, $message);
         }
     }
 }

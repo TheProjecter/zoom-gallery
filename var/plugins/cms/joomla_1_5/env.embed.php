@@ -32,11 +32,19 @@ class zmgEnv extends zmgError {
     }
     
     function getViewType() {
-        $no_html = intval(zmgGetParam($_GET, 'no_html', 0));
-        if ($no_html === 1) {
+        $forcetype = trim(zmgGetParam($_GET, 'forcetype', ''));
+        if (zmgEnv::isRPC() && $forcetype != "html") {
             return "json";
         }
         return "html";
+    }
+    
+    function isRPC() {
+        $no_html = intval(zmgGetParam($_GET, 'no_html', 0));
+        if ($no_html === 1) {
+            return true;
+        }
+        return false;
     }
     
     function getAjaxURL() {

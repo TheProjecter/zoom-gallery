@@ -13,13 +13,14 @@
         <view name="admin:gallerymanager"/>
         <view name="admin:mediamanager"/>
         <view name="admin:thumbcoder"/>
-        <view name="admin:settings"/>
+        <view name="admin:settings:overview"/>
         <view name="admin:settings:meta"/>
         <view name="admin:settings:locale"/>
         <view name="admin:settings:filesystem"/>
         <view name="admin:settings:layout"/>
         <view name="admin:settings:app"/>
         <view name="admin:settings:info"/>
+        <view name="allsettings" inherits="admin:settings:*"/>
         <view name="singlepage" inherits="admin:*"/>
     </views>
     <resources xml:base="default/">
@@ -30,7 +31,22 @@
             <file href="zmg_admin.js"/>
         </resource>
         <resource name="javascript" xml:base="js/">
+            <file href="zmg_admin_events.js"/>
+        </resource>
+        <resource name="javascript" xml:base="../shared/">
+            <file href="ajaxqueue.js"/>
+        </resource>
+        <resource name="javascript" xml:base="js/">
+            <file href="livegrid.js"/>
+        </resource>
+        <resource name="javascript" xml:base="js/">
+            <file href="moocheck.js"/>
+        </resource>
+        <resource name="javascript" xml:base="js/">
             <file href="mootree.js"/>
+        </resource>
+        <resource name="javascript" xml:base="js/">
+            <file href="simpletabs.js"/>
         </resource>
         <resource name="template" type="html" view="singlepage" xml:base="">
             <file href="admin.html.tpl"/>
@@ -38,8 +54,26 @@
         <resource name="template" type="json" view="admin:treemenu" xml:base="">
             <file href="treemenu.json.tpl"/>
         </resource>
-        <resource name="template" type="json" view="admin:settings:*" xml:base="">
+        <resource name="template" type="json" view="allsettings" xml:base="">
             <file href="settings.json.tpl"/>
+        </resource>
+        <resource name="template" type="html" view="admin:settings:meta" xml:base="">
+            <file href="settings_meta.html.tpl"/>
+        </resource>
+        <resource name="template" type="html" view="admin:settings:locale" xml:base="">
+            <file href="settings_locale.html.tpl"/>
+        </resource>
+        <resource name="template" type="html" view="admin:settings:filesystem" xml:base="">
+            <file href="settings_filesystem.html.tpl"/>
+        </resource>
+        <resource name="template" type="html" view="admin:settings:layout" xml:base="">
+            <file href="settings_layout.html.tpl"/>
+        </resource>
+        <resource name="template" type="html" view="admin:settings:app" xml:base="">
+            <file href="settings_app.html.tpl"/>
+        </resource>
+        <resource name="template" type="html" view="admin:settings:info" xml:base="">
+            <file href="settings_info.html.tpl"/>
         </resource>
         <resource name="preview" xml:base="images/">
             <file href="admin_preview.png"/>

@@ -642,7 +642,7 @@ var MooTreeNode = new Class({
 	},
 	
 	_importJSON: function(json) {
-	    var o = eval('(' + json + ')');
+	    var o = Json.evaluate(json);
 	    for (var i in o) {
 	        this._importJSONNode(o[i])
 	    }

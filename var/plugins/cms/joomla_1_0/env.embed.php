@@ -34,6 +34,22 @@ class zmgEnv extends zmgError {
         return $mosConfig_live_site;
     }
     
+    function getViewType() {
+        $forcetype = trim(zmgGetParam($_GET, 'forcetype', ''));
+        if (zmgEnv::isRPC() && $forcetype != "html") {
+            return "json";
+        }
+        return "html";
+    }
+    
+    function isRPC() {
+        $no_html = intval(zmgGetParam($_GET, 'no_html', 0));
+        if ($no_html === 1) {
+            return true;
+        }
+        return false;
+    }
+    
     function getAjaxURL() {
         if (ZMG_ADMIN) {
             return "/administrator/index2.php?option=com_zoom&no_html=1";

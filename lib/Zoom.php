@@ -86,6 +86,12 @@ class Zoom extends zmgError {
     function getConfig($path) {
     	return $this->_config->get($path);
     }
+    function getAbstractValue($class, $func) {
+        if (class_exists($class) && method_exists($class, $method)) {
+            return eval($class . '::' . $func . '()');
+        }
+        return null;
+    }
     /**
      * Load all available custom events from the /var/events folder.
      */
@@ -133,11 +139,14 @@ class Zoom extends zmgError {
         //HTTP/1.0
         echo @header("Pragma: no-cache");
         
-        $encoding = $this->getConfig('locale/encoding');
+        $encoding = "UTF-8";
+        if (method_exists($this, 'getConfig')) {
+            $encoding = $this->getConfig('locale/encoding');
+        }
         
         if ($error) {
             echo @header("zmg_result: KO");
-            echo @header("zmg_msg: " + $error_msg);
+            echo @header("zmg_message: " . urlencode($error_msg));
         } else {
             echo @header("zmg_result: OK");
         }
