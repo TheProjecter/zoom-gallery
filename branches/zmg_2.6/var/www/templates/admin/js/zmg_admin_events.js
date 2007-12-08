@@ -10,70 +10,146 @@ ZMG.Events = Class({
 ZMG.Events.Server = Class({
     initialize: function() {
         this.settingsTabs = null;
+        this.settingsMap  = [];
+        this.activeView   = null;
     },
     onview: function(text, xml, data, resp) {
-        var view = data.view;
-        if (view == "admin:settings:overview") {
+        var key, view = data.view;
+        if (view == "admin:gallerymanager") {
+            this.Server.ongallerymanager(text);
+        } else if (view == "admin:mediamanager") {
+            var o = Json.evaluate(text);
+            this.Server.onmediamanager(o);
+        } else if (view == "admin:settings:overview") {
             var o = Json.evaluate(text);
             this.Server.onsettingsoverview(o);
         } else if (view == "admin:settings:meta") {
-            this.Server.onsettingsmeta(text);
+            key = this.Server.ongetsettingskey(view);
+            this.Server.onloadsettingstab(key, text);
         } else if (view == "admin:settings:locale") {
-            this.Server.onsettingslocale(text);
+            key = this.Server.ongetsettingskey(view);
+            this.Server.onloadsettingstab(key, text);
         } else if (view == "admin:settings:filesystem") {
-            this.Server.onsettingsfilesystem(text);
+            key = this.Server.ongetsettingskey(view);
+            this.Server.onloadsettingstab(key, text);
         } else if (view == "admin:settings:layout") {
-            this.Server.onsettingslayout(text);
+            key = this.Server.ongetsettingskey(view);
+            this.Server.onloadsettingstab(key, text);
         } else if (view == "admin:settings:app") {
-            this.Server.onsettingsapp(text);
+            key = this.Server.ongetsettingskey(view);
+            this.Server.onloadsettingstab(key, text);
         } else if (view == "admin:settings:info") {
-            this.Server.onsettingsinfo(text);
+            key = this.Server.ongetsettingskey(view);
+            this.Server.onloadsettingstab(key, text);
         }
         ZMG.Admin.Events.Client.onhideloader();
     },
-    onsettingsoverview: function(node) {
-        if (this.settingsTabs) return;
-        //first, initialize the SimpleTabs widget
-        this.settingsTabs = new SimpleTabs(ZMG.Admin.nodeContent, {
-            entrySelector: 'li a',
-            ajaxOptions: {
-                method: 'get'
-            },
-            onShow: function(toggle, container, idx) {
-                toggle.addClass('tab-selected');
-                container.effect('opacity').start(0, 1); // 1) first start the effect
-                container.setStyle('display', ''); // 2) then show the element, to prevent flickering
-                
-                var klass = ZMG.Admin.Events;
-                var entry = klass.Server.settingsTabs.entries[idx];
-                if (!entry.loaded && entry.data) {
-                    klass.Client.onviewselect(entry.data[0], entry.data[1]);
-                }
-            }
-        });
-        for (var i in node.tabs) {
-            this.settingsTabs.addTab(node.tabs[i].name, node.tabs[i].title,
-              node.tabs[i].url, node.tabs[i].data);
+    ongallerymanager: function(html) {
+        if (!ZMG.Admin.cacheElement('zmg_view_gm')) {
+            var oGM = new Element('div', { id: 'zmg_view_gm' });
+            ZMG.Admin.cacheElement('zmg_view_content').adopt(oGM);
+            
+            oGM.innerHTML = html;
         }
-        ZMG.Admin.Events.Client.requestingTabs = false;
+        this.onactivateview('zmg_view_gm');
     },
-    onsettingsmeta: function(html) {
-        ZMG.Admin.Events.Client.onloadsettingstab(0, html);
+    onmediamanager: function(node) {
+        if (!ZMG.Admin.cacheElement('zmg_view_mm')) {
+            var oMM = new Element('div', { id: 'zmg_view_mm' });
+            ZMG.Admin.cacheElement('zmg_view_content').adopt(oMM);
+            oMM.innerHTML = '<div id="zmg_mm_lgrid" class="lgrid">\
+                <div class="lgrid-pagination"><a href="javascript:void(null)">First</a> | <a href="javascript:void(null)">Prev Page</a> | <a href="javascript:void(null)">Prev</a> | <a href="javascript:void(null)">Next</a> | <a href="javascript:void(null)">Next Page</a> | <a href="javascript:void(null)">Last</a></div>\
+                <div class="lgrid-nav"><span></span><span></span></div>\
+                <div class="lgrid-scroller lgrid-body" style="height: 600px">\
+                </div>\
+            </div>';
+            
+            var el = $('zmg_mm_lgrid');
+            var nav = el.getElement('.lgrid-nav');
+
+            this.liveGrid = new LiveGrid(el, {
+                scroller: el.getElement('.lgrid-scroller'),
+                body: el.getElement('.lgrid-body'),
+                count: node.mediumcount || 1,
+                url: ZMG.CONST.req_uri + "&view=admin:mediamanager:getmedia",
+                onComplete: function(xhr) {
+                    nav.getFirst().setHTML(xhr.running ? (xhr.running + ' request(s) ... ') : '');
+                },
+                onScroll: function(from, to) {
+                    nav.getLast().setHTML('Entries ', from, ' - ', to, ' of ', this.count, ' ... Page ', this.page);
+                },
+                requestData: {big: '1'}
+            });
+            
+            var paging = this.liveGrid.element.getElements('.lgrid-pagination a');
+            paging[0].addEvent('click', this.liveGrid.scrollComplete.bind(this.liveGrid, [-1]));
+            paging[1].addEvent('click', this.liveGrid.scrollByPage.bind(this.liveGrid, [-1]));
+            paging[2].addEvent('click', this.liveGrid.scrollBy.bind(this.liveGrid, [-1]));
+            paging[3].addEvent('click', this.liveGrid.scrollBy.bind(this.liveGrid, [1]));
+            paging[4].addEvent('click', this.liveGrid.scrollByPage.bind(this.liveGrid, [1]));
+            paging[5].addEvent('click', this.liveGrid.scrollComplete.bind(this.liveGrid, [1]));
+        }
+        this.onactivateview('zmg_view_mm');
     },
-    onsettingslocale: function(html) {
-        ZMG.Admin.Events.Client.onloadsettingstab(1, html);
+    onsettingsoverview: function(node) {
+        if (!ZMG.Admin.cacheElement('zmg_view_settings')) {
+            //first, build the settings container DIV
+            var oSettings = new Element('div', { id: 'zmg_view_settings' });
+            ZMG.Admin.cacheElement('zmg_view_content').adopt(oSettings);
+            
+            //second, initialize the SimpleTabs widget
+            this.settingsTabs = new SimpleTabs(oSettings, {
+                entrySelector: 'li a',
+                ajaxOptions: {
+                    method: 'get'
+                },
+                onShow: function(toggle, container, idx) {
+                    toggle.addClass('tab-selected');
+                    container.effect('opacity').start(0, 1); // 1) first start the effect
+                    container.setStyle('display', ''); // 2) then show the element, to prevent flickering
+                    
+                    var klass = ZMG.Admin.Events;
+                    var entry = klass.Server.settingsTabs.entries[idx];
+                    if (!entry.loaded && entry.data) {
+                        klass.Client.onviewselect(entry.data[0], entry.data[1]);
+                    } else {
+                        klass.Client.onping();
+                    }
+                }
+            });
+            for (var i in node.tabs) {
+                this.settingsTabs.addTab(node.tabs[i].name, node.tabs[i].title,
+                  node.tabs[i].url, node.tabs[i].data);
+                this.settingsMap.push(node.tabs[i].data[0]);
+            }
+            ZMG.Admin.Events.Client.requestingTabs = false;
+        }
+        this.onactivateview('zmg_view_settings');
     },
-    onsettingsfilesystem: function(html) {
-        ZMG.Admin.Events.Client.onloadsettingstab(2, html);
+    onloadsettingstab: function(idx, html) {
+        if (!this.settingsTabs.entries[idx].loaded) {
+            this.settingsTabs.entries[idx].container.innerHTML = html;
+            this.settingsTabs.entries[idx].loaded = true;
+            //turn checkboxes and radiobuttons into fancy looking elements
+            FancyForm.start($A(this.settingsTabs.entries[idx].container
+              .getElementsByTagName('input')));
+        }
+        this.settingsTabs.select(idx);
     },
-    onsettingslayout: function(html) {
-        ZMG.Admin.Events.Client.onloadsettingstab(3, html);
+    onactivateview: function(el) {
+        if (!ZMG.Admin.cacheElement(el)) return;
+        var oParent = ZMG.Admin.cacheElement('zmg_view_content');
+        for (var i = 0; i < oParent.childNodes.length; i++)
+            if (typeof oParent.childNodes[i].setStyle == "function")
+                oParent.childNodes[i].setStyle('display', 'none');
+        this.activeView = ZMG.Admin.cacheElement(el);
+        this.activeView.setStyle('display', '');
     },
-    onsettingsapp: function(html) {
-        ZMG.Admin.Events.Client.onloadsettingstab(4, html);
-    },
-    onsettingsinfo: function(html) {
-        ZMG.Admin.Events.Client.onloadsettingstab(5, html);
+    ongetsettingskey: function(view) {
+        for (var i = 0; i < this.settingsMap.length; i++)
+            if (this.settingsMap[i] == view)
+                return i;
+        return 0;
     },
     onerror: function() {
         console.dir(arguments);
@@ -90,7 +166,7 @@ ZMG.Events.Client = Class({
     },
     onloadnavigation: function() {
         this.menuTree = new MooTreeControl({
-            div     : ZMG.Admin.nodeMenuTree,
+            div     : ZMG.Admin.cacheElement('zmg_menu_tree'),
             mode    : 'files',
             grid    : true,
             theme   : ZMG.CONST.res_path + '/images/mootree.gif',
@@ -104,7 +180,18 @@ ZMG.Events.Client = Class({
                     var forcetype = "";
                     if (node.data.extra && node.data.extra.forcetype)
                         forcetype = node.data.extra.forcetype;
-                    ZMG.Admin.Events.Client.onviewselect(node.id, forcetype);
+                    
+                    var load = true;
+                    var tabs = ZMG.Admin.Events.Server.settingsTabs;
+                    if (tabs && node.id.indexOf('settings:') > -1) {
+                        var key = ZMG.Admin.Events.Server.ongetsettingskey(node.id);
+                        if (tabs.entries[key].loaded) {
+                            tabs.select(key);
+                            load = false;
+                        }
+                    }
+                    if (load)
+                        ZMG.Admin.Events.Client.onviewselect(node.id, forcetype);
                 }
             },
             onExpand: function(node, state) {
@@ -117,16 +204,6 @@ ZMG.Events.Client = Class({
         });
         
         this.menuTree.root.load(ZMG.CONST.req_uri + '&view=admin:treemenu');
-    },
-    onloadsettingstab: function(idx, html) {
-        var tabs = ZMG.Admin.Events.Server.settingsTabs;
-        if (!tabs.entries[idx].loaded) {
-            tabs.entries[idx].container.innerHTML = html;
-            tabs.entries[idx].loaded = true;
-            //turn checkboxes and radiobuttons into fancy looking elements
-            FancyForm.start();
-        }
-        tabs.select(idx);
     },
     onviewselect: function(view, forcetype) {
         if (!ZMG.Admin.Events.Server.settingsTabs && !this.requestingTabs) {
@@ -157,18 +234,18 @@ ZMG.Events.Client = Class({
         this.onshowloader();
         window.setTimeout(f.bind(this), 20); // allowing a small delay for the browser to draw the loader-icon.
     },
+    onping: function() {
+        this.onviewselect('ping');
+    },
     onshowloader: function() {
-        ZMG.Admin.nodeLoader.setStyles({
-            'display': '',
-            'height' : ZMG.Admin.nodeContainer.parentNode.offsetHeight
-        });
+        ZMG.Admin.cacheElement('zmg_admin_loader').setStyle('display', '');
     },
     onhideloader: function() {
-        ZMG.Admin.nodeLoader.setStyle('display', 'none');
+        ZMG.Admin.cacheElement('zmg_admin_loader').setStyle('display', 'none');
     },
     onwindowresize: function() {
-        var width = ZMG.Admin.nodeContainer.offsetWidth;
-        ZMG.Admin.nodeContent.style.width = (width - 358) + "px";
+        var width = ZMG.Admin.cacheElement('zmg_admin_cont').offsetWidth;
+        ZMG.Admin.cacheElement('zmg_view_content').style.width = (width - 358) + "px";
     },
     onerror: function() {
         console.dir(arguments);

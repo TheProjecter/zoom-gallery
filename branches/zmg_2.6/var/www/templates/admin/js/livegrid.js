@@ -132,12 +132,14 @@ var LiveGrid = new Class({
 		this.setRowState(offset, length, true);
 		if (!this.xhr) {
 			this.xhr = new AjaxQueue(this.options.url, {
-				ajaxOptions: this.options.ajaxOptions
-			}).addEvents({
+				ajaxOptions: this.options.ajaxOptions,
 				onSuccess: (this.options.responseHandler || this.responseHandler).bind(this),
 				onFailure: this.onFailure.bind(this),
 				onComplete: this.onComplete.bind(this)
 			});
+			//this.xhr.addEvents({
+			//	
+			//});
 		};
 		var data = $merge(this.options.ajaxData);
 		data[this.options.requestVars.offset] = offset;
@@ -149,7 +151,7 @@ var LiveGrid = new Class({
 	responseHandler: function(text, xml, data) {
 		data.offset = data[this.options.requestVars.offset];
 		data.length = data[this.options.requestVars.length];
-		this.populate(Json.decode(text), data.offset);
+		this.populate(Json.evaluate(text), data.offset);
 	},
 
 	onFailure: function(data) {

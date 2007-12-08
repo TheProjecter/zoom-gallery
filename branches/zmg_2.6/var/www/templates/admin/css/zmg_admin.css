@@ -29,6 +29,11 @@
     font-style: italic;
 }
 
+#zmg_admin_cont select
+{
+    width: 150px;
+}
+
 #zmg_admin_loader
 {
     position: absolute;
@@ -43,6 +48,7 @@
 #zmg_menu_tree
 {
     position: relative;
+    background: #e2e9ec url(../images/glass-bg.gif) repeat-x top left;
     width: 350px;
     border: 1px solid #a9a9a9;
     overflow-x: auto;
@@ -83,7 +89,8 @@
 
 .mooTree_selected
 {
-    background-color: #e0f0ff;
+    background: #e0f0ff url(../images/item-over-sel.gif) repeat-x top left;
+    border-top: 1px solid #b7d0d9;
     font-weight: bold;
 }
 
@@ -152,4 +159,83 @@
     background: url(../images/rdo_off.png) no-repeat;
     cursor: pointer;
     cursor: hand;
+}
+
+.lgrid-nav
+{
+    float:                  right;
+}
+.lgrid-pagination
+{
+    display:                block;
+}
+.lgrid-pagination a
+{
+
+}
+
+.lgrid-scroller
+{
+    height:                 150px;
+    overflow:               auto;
+    clear:                  both;
+    border:                 1px solid #aaa;
+}
+.lgrid-body div
+{
+    border-bottom:          1px dotted #ddd;
+    color:                  #333;
+    padding:                4px;
+    height:                 76px;
+    overflow:               hidden;
+}
+.view-floated .lgrid-body div
+{
+    float:                  left;
+    width:                  215px;
+    height:                 140px;
+    font-size:              0.9em;
+    border:                 5px solid #fff;
+    overflow:               hidden;
+}
+.view-floated .lgrid-body div dt
+{
+    clear:                  left;
+}
+.view-floated .lgrid-body div dd
+{
+    clear:                  left;
+}
+
+.lgrid-body div img
+{
+    float:                  left;
+}
+
+.lgrid-body div b
+{
+    float:                  left;
+    font-size:              13px;
+    font-weight:            bold;
+    color:                  #ccc;
+}
+.lgrid-body div dt
+{
+    float:                  left;
+    font-size:              13px;
+    margin-left:            2em;
+    margin-top:             0.3em;
+
+}
+.lgrid-body div dd
+{
+    float:                  left;
+    margin-left:            2em;
+    margin-top:             4px;
+    color:                  #aaa;
+}
+
+.row-even
+{
+    background-color:       #e0f0ff;
 }

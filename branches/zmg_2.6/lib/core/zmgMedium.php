@@ -37,6 +37,8 @@ class zmgMedium extends zmgTable {
     
     var $gid = null;
     
+    var $gallery_dir = null;
+    
     var $uid = null;
     
     var $members = null;

@@ -1,8 +1,8 @@
 <table width="85%" border="0" class="adminform">
 <tr>
   <th colspan="3">
-    {t}Here you are able to change storage settings for your gallery like filesystem
-    path to your galleries and media, directory and file permissions and upload settings.{/t} 
+    {t}Here you are able to change layout settings for your gallery that will determine
+    the look and feel of it.{/t} 
   </th>
 </tr>
 <tr>
@@ -141,10 +141,23 @@
 </tr>
 <tr>
   <td>
-    <label for="zmg_layout_ordering_galleries">{t}Gallery ordering method{/t}</label>
+    <label for="zmg_layout_ordering_galleries">{t}(sub-)Gallery ordering method{/t}</label>
   </td>
   <td>
-    <input type="text" name="zmg_layout_ordering_galleries" id="zmg_layout_ordering_galleries" value="{$zoom->getConfig('layout/ordering/galleries')}" size="70"/>
+    <select name="zmg_layout_ordering_galleries" id="zmg_layout_ordering_galleries">
+      <option value="1"{if $zoom->getConfig('layout/ordering/galleries') eq 1} selected="selected"{/if}>
+        {t}by Date, ascending{/t}
+      </option>
+      <option value="2"{if $zoom->getConfig('layout/ordering/galleries') eq 2} selected="selected"{/if}>
+        {t}by Date, descending{/t}
+      </option>
+      <option value="3"{if $zoom->getConfig('layout/ordering/galleries') eq 3} selected="selected"{/if}>
+        {t}by Name, ascending{/t}
+      </option>
+      <option value="4"{if $zoom->getConfig('layout/ordering/galleries') eq 4} selected="selected"{/if}>
+        {t}by Name, descending{/t}
+      </option>
+    </select>
   </td>
 </tr>
 <tr>
@@ -152,7 +165,26 @@
     <label for="zmg_layout_ordering_media">{t}Media ordering method{/t}</label>
   </td>
   <td>
-    <input type="text" name="zmg_layout_ordering_media" id="zmg_layout_ordering_media" value="{$zoom->getConfig('layout/ordering/media')}" size="70"/>
+    <select name="zmg_layout_ordering_media" id="zmg_layout_ordering_media">
+      <option value="1"{if $zoom->getConfig('layout/ordering/media') eq 1} selected="selected"{/if}>
+        {t}by Date, ascending{/t}
+      </option>
+      <option value="2"{if $zoom->getConfig('layout/ordering/media') eq 2} selected="selected"{/if}>
+        {t}by Date, descending{/t}
+      </option>
+      <option value="3"{if $zoom->getConfig('layout/ordering/media') eq 3} selected="selected"{/if}>
+        {t}by Filename, ascending{/t}
+      </option>
+      <option value="4"{if $zoom->getConfig('layout/ordering/media') eq 4} selected="selected"{/if}>
+        {t}by Filename, descending{/t}
+      </option>
+      <option value="3"{if $zoom->getConfig('layout/ordering/media') eq 5} selected="selected"{/if}>
+        {t}by Name, ascending{/t}
+      </option>
+      <option value="4"{if $zoom->getConfig('layout/ordering/media') eq 6} selected="selected"{/if}>
+        {t}by Name, descending{/t}
+      </option>
+    </select>
   </td>
 </tr>
 <tr>

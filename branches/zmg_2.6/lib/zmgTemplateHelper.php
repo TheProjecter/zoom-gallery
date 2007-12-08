@@ -76,6 +76,12 @@ class zmgTemplateHelper extends Smarty {
     function run(&$zoom) {
         if (empty($this->_active_view))
             return $this->throwError('No active view specified. Unable to run application.');
+            
+        if (zmgEnv::isRPC() && $this->_active_view == "ping") {
+            Zoom::sendHeaders($this->_viewtype);
+            echo "                                         ";
+            return;
+        }
 
         //mootools & Ajax preparing stuff
         if ($this->_viewtype == "html") {

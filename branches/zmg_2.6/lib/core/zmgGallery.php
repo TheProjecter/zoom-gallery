@@ -62,7 +62,7 @@ class zmgGallery extends zmgTable {
      * @var int
      * @access public
      */
-    var $subcat_id = null;
+    var $sub_gid = null;
     /**
      * @var int
      * @access public
