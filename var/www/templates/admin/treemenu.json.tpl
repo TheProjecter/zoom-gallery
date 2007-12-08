@@ -6,7 +6,7 @@
         'icon': ZMG.CONST.res_path + '/images/sample_icons.gif#2',
         'openicon': '',
         'open': false,
-        'load': ''
+        'load': ZMG.CONST.req_uri + '&view=admin:gallerymanager:getgalleries&sub=0&pos=0'
     },
     'mediamanager': {
         'text': '{/literal}{t}Media Manager{/t}{literal}',
@@ -14,7 +14,19 @@
         'icon': '',
         'openicon': '',
         'open': false,
-        'load': ''
+        'load': '',
+        'children': {
+            'upload' : {
+                'text': '{/literal}{t}Upload new media{/t}{literal}',
+                'id'  : 'admin:mediamanager:upload',
+                'icon': '',
+                'openicon': '',
+                'load': '',
+                 'extra': {
+                    'forcetype': 'html'
+                } 
+            }
+        }
     },
     'thumbcoder': {
         'text': '{/literal}{t}Zoom Thumb coder{/t}{literal}',

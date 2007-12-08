@@ -10,8 +10,10 @@
     <views>
         <view name="admin:home"/>
         <view name="admin:treemenu"/>
+        <view name="admin:toolbarbuttons"/>
         <view name="admin:gallerymanager"/>
-        <view name="admin:mediamanager"/>
+        <view name="admin:gallerymanager:getgalleries"/>
+        <view name="admin:mediamanager:getmedia"/>
         <view name="admin:thumbcoder"/>
         <view name="admin:settings:overview"/>
         <view name="admin:settings:meta"/>
@@ -20,6 +22,7 @@
         <view name="admin:settings:layout"/>
         <view name="admin:settings:app"/>
         <view name="admin:settings:info"/>
+        <view name="allgallerymanager" inherits="admin:gallerymanager:*"/>
         <view name="allsettings" inherits="admin:settings:*"/>
         <view name="singlepage" inherits="admin:*"/>
     </views>
@@ -54,8 +57,20 @@
         <resource name="template" type="json" view="admin:treemenu" xml:base="">
             <file href="treemenu.json.tpl"/>
         </resource>
+        <resource name="template" type="json" view="admin:toolbarbuttons" xml:base="">
+            <file href="toolbarbuttons.json.tpl"/>
+        </resource>
         <resource name="template" type="json" view="allsettings" xml:base="">
             <file href="settings.json.tpl"/>
+        </resource>
+        <resource name="template" type="json" view="allgallerymanager" xml:base="">
+            <file href="gallerymanager.json.tpl"/>
+        </resource>
+        <resource name="template" type="json" view="admin:mediamanager" xml:base="">
+            <file href="mediamanager.json.tpl"/>
+        </resource>
+        <resource name="template" type="json" view="admin:mediamanager:getmedia" xml:base="">
+            <file href="mediamanager_getmedia.json.tpl"/>
         </resource>
         <resource name="template" type="html" view="admin:settings:meta" xml:base="">
             <file href="settings_meta.html.tpl"/>

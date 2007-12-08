@@ -633,6 +633,7 @@ var MooTreeNode = new Class({
 		// called on success - import nodes from the root element:
 		this.control.disable();
 		this.clear();
+		console.dir(xml);
 		if (!xml && text)
 		    this._importJSON(text);
 		else

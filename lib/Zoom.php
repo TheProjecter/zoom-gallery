@@ -92,6 +92,106 @@ class Zoom extends zmgError {
         }
         return null;
     }
+    function getGalleryCount() {
+        $db = & zmgDatabase::getDBO();
+        $db->setQuery('SELECT COUNT(gid) AS total FROM #__zmg_galleries');
+        if ($db->query()) {
+            return intval($db->loadResult());
+        }
+        return 0;
+    }
+    function getMediumCount() {
+        $db = & zmgDatabase::getDBO();
+        $db->setQuery('SELECT COUNT(mid) AS total FROM #__zmg_media');
+        if ($db->query()) {
+            return intval($db->loadResult());
+        }
+        return 0;
+    }
+    function getGalleries($sub_gid = 0, $pos = 0) {
+        $ret  = array();
+
+        $db   = & zmgDatabase::getDBO();
+        $db->setQuery("SELECT gid FROM #__zmg_galleries WHERE sub_gid=$sub_gid AND pos=$pos");
+        $rows = $db->loadRowList();
+        if ($rows) {
+            foreach ($rows as $row) {
+                $gallery = new zmgGallery(&$db);
+                $gallery->load($row[0]);
+                $ret[]   = $gallery;
+            }
+        }
+        return $ret;
+    }
+    function getMedia($gid = 0, $offset = 0, $length = 0) {
+        $ret  = array();
+
+        $db   = & zmgDatabase::getDBO();
+        
+        $query = "SELECT mid FROM #__zmg_media";
+        if ($gid === 0) {
+            $query .= " ORDER BY gid, " . $this->getMediaOrdering();
+        } else {
+            $query .= " WHERE gid=$gid ORDER BY " . $this->getMediaOrdering();
+        }
+        if ($length > 0) {
+            $query .= " LIMIT $offset, $length";
+        }
+        
+        $a_gallery = null;
+        $a_gallery_dir = "";
+        
+        $db->setQuery($query);
+        $rows = $db->loadRowList();
+        if ($rows) {
+            foreach ($rows as $row) {
+                $medium = new zmgMedium(&$db);
+                $medium->load($row[0]);
+                $gid = intval($medium->gid);
+                if ($a_gallery !== $gid) {
+                    $a_gallery = $gid;
+                    $a_gallery_dir = $medium->gallery_dir = $this->getGalleryDir($a_gallery);
+                } else {
+                    $medium->gallery_dir = $a_gallery_dir; 
+                }
+                $ret[] = $medium;
+            }
+        }
+        return $ret;
+    }
+    function getGalleryDir($gid) {
+        $db = & zmgDatabase::getDBO();
+        $db->setQuery("SELECT dir FROM #__zmg_galleries WHERE gid=$gid");
+        if ($db->query()) {
+            return trim($db->loadResult());
+        }
+        return null;
+    }
+    function getParamInt($name, $default = 0) {
+        return intval(zmgGetParam($_REQUEST, $name, $default));
+    }
+    /**
+     * Return the method of ordering for galleries.
+     * @return string
+     * @access public
+     */
+    function getGalleriesOrdering() {
+        $methods = array("", "ordering, gid ASC", "ordering, gid DESC",
+          "ordering, name ASC", "ordering, name DESC");
+          
+        return $methods[intval($this->getConfig('layout/ordering/galleries'))];
+    }
+    /**
+     * Return the method of ordering for media.
+     * @return string
+     * @access public
+     */
+    function getMediaOrdering() {
+        $methods = array("", "date_add ASC", "date_add DESC", "filename ASC",
+          "filename DESC", "name ASC", "name DESC");
+          
+        return $methods[intval($this->getConfig('layout/ordering/media'))];
+    }
     /**
      * Load all available custom events from the /var/events folder.
      */

@@ -18,6 +18,7 @@
     * renamed 'catimg' to 'cover_img'
     * renamed 'catpassword' to 'password'
     * renamed 'catkeywords' to 'keywords'
+    * renamed 'subcat_id' to 'sub_gid'
     * renamed 'hideMsg' to 'hide_msg'
     * renamed 'catmembers' to 'members'
     * renamed 'custom_order' to 'ordering' (Joomla! convention)
@@ -30,6 +31,7 @@
       CHANGE `catimg` `cover_img` INT( 11 ) NULL DEFAULT '0',
       CHANGE `catpassword` `password` VARCHAR( 100 ) NOT NULL ,
       CHANGE `catkeywords` `keywords` VARCHAR( 240 ) NOT NULL ,
+      CHANGE `subcat_id` `sub_gid` INT( 11 ) NOT NULL DEFAULT '0',
       CHANGE `hideMsg` `hide_msg` TINYINT( 1 ) NOT NULL DEFAULT '0',
       CHANGE `catmembers` `members` VARCHAR( 240 ) NOT NULL,
       CHANGE `custom_order` `ordering` INT( 20 ) NULL DEFAULT NULL; 
