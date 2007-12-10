@@ -29,6 +29,8 @@ class zmgTemplateHelper extends Smarty {
     var $_viewtype = null;
     
     var $_secret = null;
+    
+    var $_constants = null;
 
     /**
      * The class constructor.
@@ -46,7 +48,8 @@ class zmgTemplateHelper extends Smarty {
         } else {
             $this->_active_template = $config['active_template'];
         }
-        $this->_secret = $secret;
+        $this->_secret    = $secret;
+        $this->_constants = array();
         
         $this->_loadManifest();
     }
@@ -84,7 +87,7 @@ class zmgTemplateHelper extends Smarty {
         }
 
         //mootools & Ajax preparing stuff
-        if ($this->_viewtype == "html") {
+        if (!zmgEnv::isRPC() && $this->_viewtype == "html") {
             zmgEnv::includeMootools();
             zmgEnv::appendPageHeader($this->_prepareAjax());
         }
@@ -114,8 +117,18 @@ class zmgTemplateHelper extends Smarty {
         }
     }
     
+    function appendConstant($name = null, $value = null) {
+        if (!$name) {
+            return $this->throwError('No name specified for constant');
+        }
+        if (!$value) {
+            return $this->throwError('No value specified for constant ' . $name);
+        }
+        $this->_constants[trim($name)] = is_string($value) ? trim($value) : intval($value);
+    }
+    
     function _prepareAjax() {
-        return ("<script language=\"javascript\" type=\"text/javascript\">\n"
+        $ret = ("<script language=\"javascript\" type=\"text/javascript\">\n"
          . "<!--\n"
          . "\tif (!window.ZMG) window.ZMG = {};\n"
          . "\tZMG.CONST = {};\n"
@@ -125,8 +138,15 @@ class zmgTemplateHelper extends Smarty {
          . "\tZMG.CONST.site_uri    = document.location.protocol + '//' + document.location.host + document.location.pathname.replace(/\/(administrator\/)?index(2)?\.php$/i, '');\n"
          . "\tZMG.CONST.req_uri     = ZMG.CONST.site_uri + \"".zmgEnv::getAjaxURL()."\";\n"
          . "\tZMG.CONST.res_path    = ZMG.CONST.site_uri + \"/components/com_zoom/var/www/templates/"
-         . $this->_active_template."\";\n"
-         . "//-->\n"
+         . $this->_active_template."\";\n");
+        
+        if (count($this->_constants)) {
+            foreach ($this->_constants as $name => $value) {
+                $ret .= "\tZMG.CONST.$name = $value;\n";
+            }
+        }
+        
+        return $ret . ("//-->\n"
          . "</script>\n");
     }
     

@@ -145,7 +145,8 @@ var SimpleTabs = new Class({
 	},
 	
 	onMouseEnter: function(evt, index) {
-	    this.entries[index].toggle.addClass(this.options.classTabHover);
+	    if (index !== this.selected)
+	       this.entries[index].toggle.addClass(this.options.classTabHover);
     },
     
     onMouseLeave: function(evt, index) {
@@ -167,6 +168,7 @@ var SimpleTabs = new Class({
 			params.concat([current.toggle, current.container, this.selected]);
 			this.fireEvent('onHide', [current.toggle, current.container, this.selected]);
 		}
+		this.onMouseLeave(null, index);
 		this.fireEvent('onShow', params);
 		if (entry.url && !entry.loaded) {
 			this.ajax = new Ajax(entry.url, $merge({

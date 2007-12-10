@@ -22,6 +22,9 @@ class viewchooser {
         $view = trim(zmgGetParam($_REQUEST, 'view', ZMG_ADMIN ? 'admin:home' : 'gallery'));
         $zoom->view->set($view);
         
+        if (ZMG_ADMIN) {
+            $zoom->view->appendConstant('mediumcount', $zoom->getMediumCount());
+        }
         /*
         switch ($page) {
             case 'editimg':

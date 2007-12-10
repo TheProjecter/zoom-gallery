@@ -28,6 +28,7 @@ var LiveGrid = new Class({
 		onRequest: Class.empty,
 		onComplete: Class.empty,
 		onPopulate: Class.empty,
+		onRowClick: Class.empty,
 		scrollOptions: {},
 		requestVars: {
 			offset: 'offset',
@@ -176,7 +177,9 @@ var LiveGrid = new Class({
 	},
 
 	populateRow: function(row, html) {
-		return row.setHTML(html);
+		row.setHTML(html);
+		row.addEvent('click', this.options.onRowClick.bindWithEvent(this));
+		return row;
 	},
 
 	scrollTo: function(row) {

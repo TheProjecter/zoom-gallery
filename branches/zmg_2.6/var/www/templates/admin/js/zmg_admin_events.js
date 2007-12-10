@@ -18,8 +18,8 @@ ZMG.Events.Server = Class({
         if (view == "admin:gallerymanager") {
             this.Server.ongallerymanager(text);
         } else if (view == "admin:mediamanager") {
-            var o = Json.evaluate(text);
-            this.Server.onmediamanager(o);
+            //var o = Json.evaluate(text);
+            this.Server.onmediamanager(text);
         } else if (view == "admin:settings:overview") {
             var o = Json.evaluate(text);
             this.Server.onsettingsoverview(o);
@@ -53,41 +53,72 @@ ZMG.Events.Server = Class({
         }
         this.onactivateview('zmg_view_gm');
     },
-    onmediamanager: function(node) {
+    onmediamanager: function(html) {
         if (!ZMG.Admin.cacheElement('zmg_view_mm')) {
             var oMM = new Element('div', { id: 'zmg_view_mm' });
             ZMG.Admin.cacheElement('zmg_view_content').adopt(oMM);
-            oMM.innerHTML = '<div id="zmg_mm_lgrid" class="lgrid">\
-                <div class="lgrid-pagination"><a href="javascript:void(null)">First</a> | <a href="javascript:void(null)">Prev Page</a> | <a href="javascript:void(null)">Prev</a> | <a href="javascript:void(null)">Next</a> | <a href="javascript:void(null)">Next Page</a> | <a href="javascript:void(null)">Last</a></div>\
-                <div class="lgrid-nav"><span></span><span></span></div>\
-                <div class="lgrid-scroller lgrid-body" style="height: 600px">\
-                </div>\
-            </div>';
+            oMM.innerHTML = html;
             
-            var el = $('zmg_mm_lgrid');
-            var nav = el.getElement('.lgrid-nav');
+            var el    = $('zmg_mm_lgrid');
+            var nav   = el.getElement('.lgrid-nav');
+            var pager = $('lgrid-nav-pager');
+            var paging = [];
 
             this.liveGrid = new LiveGrid(el, {
                 scroller: el.getElement('.lgrid-scroller'),
                 body: el.getElement('.lgrid-body'),
-                count: node.mediumcount || 1,
+                editpanel: el.getElement('.lgrid-panel-edit'),
+                count: ZMG.CONST.mediumcount || 1,
                 url: ZMG.CONST.req_uri + "&view=admin:mediamanager:getmedia",
                 onComplete: function(xhr) {
                     nav.getFirst().setHTML(xhr.running ? (xhr.running + ' request(s) ... ') : '');
                 },
+                onRowClick: function(e) {
+                    e = new Event(e);
+                    var el = e.target;
+                    while (el.tagName.toLowerCase() != "div")
+                        el = el.parentNode;
+                    var img_id = el.getElementsByTagName('img')[0].id.split('_')[0];
+                    ZMG.Admin.Events.Client.onlivegridbodyslide(this);
+                },
                 onScroll: function(from, to) {
-                    nav.getLast().setHTML('Entries ', from, ' - ', to, ' of ', this.count, ' ... Page ', this.page);
+                    nav.getLast().setHTML('Displaying entries ', from, ' - ', to, ' of ', this.count);
+                    pager.value = this.page;
+                    if (!paging.length) return;
+                    if (this.page > 1) {
+                        paging[0].getParent().removeClass('lgrid-nav-btn-disabled');
+                        paging[1].getParent().removeClass('lgrid-nav-btn-disabled');
+                    } else {
+                        paging[0].getParent().addClass('lgrid-nav-btn-disabled');
+                        paging[1].getParent().addClass('lgrid-nav-btn-disabled');
+                    }
+                    if (this.page >= Math.ceil(this.count / this.perPage)) {
+                        paging[2].getParent().addClass('lgrid-nav-btn-disabled');
+                        paging[3].getParent().addClass('lgrid-nav-btn-disabled');
+                    } else {
+                        paging[2].getParent().removeClass('lgrid-nav-btn-disabled');
+                        paging[3].getParent().removeClass('lgrid-nav-btn-disabled');
+                    }
                 },
                 requestData: {big: '1'}
             });
             
-            var paging = this.liveGrid.element.getElements('.lgrid-pagination a');
+            ZMG.Admin.Events.Client.onwindowresize();
+            
+            var self = this; 
+            ['first', 'prev', 'next', 'last'].each(function(set) {
+                paging.push(self.liveGrid.element.getElement('.lgrid-nav-btn-' + set));
+            });
             paging[0].addEvent('click', this.liveGrid.scrollComplete.bind(this.liveGrid, [-1]));
+            paging[0].getParent().addClass('lgrid-nav-btn-disabled');
             paging[1].addEvent('click', this.liveGrid.scrollByPage.bind(this.liveGrid, [-1]));
-            paging[2].addEvent('click', this.liveGrid.scrollBy.bind(this.liveGrid, [-1]));
-            paging[3].addEvent('click', this.liveGrid.scrollBy.bind(this.liveGrid, [1]));
-            paging[4].addEvent('click', this.liveGrid.scrollByPage.bind(this.liveGrid, [1]));
-            paging[5].addEvent('click', this.liveGrid.scrollComplete.bind(this.liveGrid, [1]));
+            paging[1].getParent().addClass('lgrid-nav-btn-disabled');
+            //paging[2].addEvent('click', this.liveGrid.scrollBy.bind(this.liveGrid, [-1]));
+            //paging[3].addEvent('click', this.liveGrid.scrollBy.bind(this.liveGrid, [1]));
+            paging[2].addEvent('click', this.liveGrid.scrollByPage.bind(this.liveGrid, [1]));
+            paging[3].addEvent('click', this.liveGrid.scrollComplete.bind(this.liveGrid, [1]));
+            
+            pager.addEvent('change', ZMG.Admin.Events.Client.onlivegridpager.bind(this.liveGrid, [pager]));
         }
         this.onactivateview('zmg_view_mm');
     },
@@ -110,10 +141,11 @@ ZMG.Events.Server = Class({
                     
                     var klass = ZMG.Admin.Events;
                     var entry = klass.Server.settingsTabs.entries[idx];
+                    klass.Server.onactivateview('zmg_view_settings');
                     if (!entry.loaded && entry.data) {
                         klass.Client.onviewselect(entry.data[0], entry.data[1]);
                     } else {
-                        klass.Client.onping();
+                        klass.Client.onping(idx);
                     }
                 }
             });
@@ -125,6 +157,7 @@ ZMG.Events.Server = Class({
             ZMG.Admin.Events.Client.requestingTabs = false;
         }
         this.onactivateview('zmg_view_settings');
+        ZMG.Admin.Events.Client.onviewselect('admin:settings:meta', 'html');
     },
     onloadsettingstab: function(idx, html) {
         if (!this.settingsTabs.entries[idx].loaded) {
@@ -134,6 +167,7 @@ ZMG.Events.Server = Class({
             FancyForm.start($A(this.settingsTabs.entries[idx].container
               .getElementsByTagName('input')));
         }
+        this.onactivateview('zmg_view_settings');
         this.settingsTabs.select(idx);
     },
     onactivateview: function(el) {
@@ -161,6 +195,9 @@ ZMG.Events.Client = Class({
         this.requestQueue = null;
         this.menuTree = null;
         this.requestingTabs = false;
+        //LiveGrid content sliders
+        this.bodySlide = null;
+        this.editSlide = null;
         
         window.addEvent('resize', this.onwindowresize.bind(this));
         
@@ -178,6 +215,27 @@ ZMG.Events.Client = Class({
     onpinmouseclick: function(e) {
         //TODO
         alert('unpin!');
+    },
+    onlivegridpager: function(oPager) {
+        var diff = parseInt(oPager.value) - this.page;
+        if ((this.page + diff) > 0 && (this.page + diff) <= Math.ceil(this.count / this.perPage))
+            this.scrollByPage(diff);
+    },
+    onlivegridbodyslide: function(livegrid) {
+        if (!this.bodySlide) {
+            this.bodySlide = new Fx.Slide(livegrid.body, {mode: 'horizontal'});
+            this.editSlide = new Fx.Slide(livegrid.options.editpanel,
+              {mode: 'horizontal'});
+        }
+        this.bodySlide.slideOut();
+        this.editSlide.slideOut();
+        livegrid.scrollComplete(-1);
+    },
+    onlivegrideditslide: function() {
+        if (this.bodySlide) {
+            this.bodySlide.slideIn();
+            this.editSlide.slideIn();
+        }
     },
     onloadnavigation: function() {
         this.menuTree = new MooTreeControl({
@@ -261,6 +319,14 @@ ZMG.Events.Client = Class({
     onwindowresize: function() {
         var width = ZMG.Admin.cacheElement('zmg_admin_cont').offsetWidth;
         ZMG.Admin.cacheElement('zmg_view_content').style.width = (width - 258) + "px";
+        if (ZMG.Admin.Events.Server.liveGrid) {
+            var gridWidth = (width - 278);
+            ZMG.Admin.Events.Server.liveGrid.gridWidth = gridWidth; 
+            ZMG.Admin.Events.Server.liveGrid.body.style.width =
+              ZMG.Admin.Events.Server.liveGrid.options.editpanel.style.width =
+              gridWidth + "px";
+            ZMG.Admin.Events.Server.liveGrid.options.editpanel.style.left = gridWidth + "px"; 
+        }
     },
     onerror: function() {
         console.dir(arguments);

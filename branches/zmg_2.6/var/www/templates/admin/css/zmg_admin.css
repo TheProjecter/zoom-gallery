@@ -185,10 +185,9 @@
 {
     background: #6b869f;
     border: 1px solid #abc;
-    padding-bottom: 2px;
     overflow: hidden;
     margin: 0;
-    padding: 0;
+    padding: 0 0 2px 0;
     zoom: 1;
 }
 
@@ -197,6 +196,8 @@
     position: relative;
     overflow: hidden;
     width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 ul.tab-strip
@@ -212,7 +213,7 @@ ul.tab-strip
 
 .tab-strip a,
 .tab-strip span,
-.tab-strip em,
+.tab-strip em
 {
     display: block;
 }
@@ -220,12 +221,14 @@ ul.tab-strip
 ul.tab-strip li
 {
     float: left;
+    line-height: 15px;
     margin: 0 0 0 2px;
     padding: 0;
 }
 .tab-strip a
 {
-    text-decoration: none!important;
+    text-decoration: none !important;
+    margin: 2px 0 0 2px;
     -moz-outline: none;
     outline: none;
     cursor: pointer;
@@ -272,6 +275,8 @@ ul.tab-strip li
     padding: 4px 0;
     color: #333;
     font-size: 11px;
+    font-style: normal;
+    font-weight: normal;
     white-space: nowrap;
 }
 
@@ -280,11 +285,19 @@ ul.tab-strip li
     cursor: default;
 }
 
-tab-selected span.tab-text
+.tab-selected span.tab-text
 {
     cursor: default;
-    color: #15428b;
+    color: #fff;
+    font-style: normal;
     font-weight: bold;
+}
+
+.tab-over span.tab-text
+{
+    color: #111;
+    font-style: normal;
+    font-weight: normal;
 }
 
 tab-strip .tab-selected .tab-right
@@ -345,26 +358,124 @@ tab-strip .tab-selected .tab-right span.tab-text
     cursor: hand;
 }
 
+.lgrid-toolbar
+{
+    position: relative;
+    background-image: url(../images/panel/white-top-bottom.gif);
+    border: 1px solid #abc;
+    padding: 5px 3px 4px 5px;
+    margin: 0;
+    color: #fafafa;
+    font-family: tahoma,arial,verdana,sans-serif;
+    font-size: 11px;
+    font-size-adjust: none;
+    font-stretch: normal;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: bold;
+    line-height: 16px;
+    overflow: hidden;
+}
+
 .lgrid-nav
 {
+    position: relative;
     float: right;
+    padding: 0;
+    margin: 0;
 }
+
 .lgrid-pagination
 {
-    display: block;
+    position: relative;
+    float: left;
+    padding: 0;
+    margin: 0;
 }
-.lgrid-pagination a
-{
 
+.lgrid-nav-btn
+{
+    
+    width: 16px;
+}
+
+.lgrid-nav-btn.over
+{
+    
+    width: 16px;
+}
+
+.lgrid-nav-btn div
+{
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    cursor: hand;
+}
+
+.lgrid-nav-btn-disabled div
+{
+    cursor: default;
+}
+
+.lgrid-nav-btn .lgrid-nav-btn-first
+{
+    background: transparent url(../images/panel/page-first.gif) no-repeat top left;
+}
+
+.lgrid-nav-btn-disabled .lgrid-nav-btn-first
+{
+    background-image: url(../images/panel/page-first-disabled.gif);
+}
+
+.lgrid-nav-btn .lgrid-nav-btn-prev
+{
+    background: transparent url(../images/panel/page-prev.gif) no-repeat top left;
+}
+
+.lgrid-nav-btn-disabled .lgrid-nav-btn-prev
+{
+    background-image: url(../images/panel/page-prev-disabled.gif);
+}
+
+.lgrid-nav-btn .lgrid-nav-btn-next
+{
+    background: transparent url(../images/panel/page-next.gif) no-repeat top left;
+}
+
+.lgrid-nav-btn-disabled .lgrid-nav-btn-next
+{
+    background-image: url(../images/panel/page-next-disabled.gif);
+}
+
+.lgrid-nav-btn .lgrid-nav-btn-last
+{
+    background: transparent url(../images/panel/page-last.gif) no-repeat top left;
+}
+
+.lgrid-nav-btn-disabled .lgrid-nav-btn-last
+{
+    background-image: url(../images/panel/page-last-disabled.gif);
 }
 
 .lgrid-scroller
 {
-    height: 150px;
-    overflow: auto;
+    position: relative;
+    height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
     clear: both;
     border: 1px solid #aaa;
 }
+
+.lgrid-body,
+.lgrid-panel-edit
+{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
 .lgrid-body div
 {
     background: transparent url(../images/listArrow.png) no-repeat right center;
