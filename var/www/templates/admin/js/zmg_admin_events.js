@@ -140,7 +140,7 @@ ZMG.Events.Server = Class({
         if (!ZMG.Admin.cacheElement(el)) return;
         var oParent = ZMG.Admin.cacheElement('zmg_view_content');
         for (var i = 0; i < oParent.childNodes.length; i++)
-            if (typeof oParent.childNodes[i].setStyle == "function")
+            if (oParent.childNodes[i].nodeType == 1)
                 oParent.childNodes[i].setStyle('display', 'none');
         this.activeView = ZMG.Admin.cacheElement(el);
         this.activeView.setStyle('display', '');
@@ -163,10 +163,25 @@ ZMG.Events.Client = Class({
         this.requestingTabs = false;
         
         window.addEvent('resize', this.onwindowresize.bind(this));
+        
+        var el = ZMG.Admin.cacheElement('zmg_tree_toolpin');
+        el.onmouseover = this.onpinmouseenter.bindWithEvent(el);
+        el.onmouseout  = this.onpinmouseleave.bindWithEvent(el);
+        el.onclick     = this.onpinmouseclick.bindWithEvent(el);
+    },
+    onpinmouseenter: function(e) {
+        this.addClass('zmg_tool_pinned_hover');
+    },
+    onpinmouseleave: function(e) {
+        this.removeClass('zmg_tool_pinned_hover');
+    },
+    onpinmouseclick: function(e) {
+        //TODO
+        alert('unpin!');
     },
     onloadnavigation: function() {
         this.menuTree = new MooTreeControl({
-            div     : ZMG.Admin.cacheElement('zmg_menu_tree'),
+            div     : ZMG.Admin.cacheElement('zmg_tree_body'),
             mode    : 'files',
             grid    : true,
             theme   : ZMG.CONST.res_path + '/images/mootree.gif',
@@ -245,7 +260,7 @@ ZMG.Events.Client = Class({
     },
     onwindowresize: function() {
         var width = ZMG.Admin.cacheElement('zmg_admin_cont').offsetWidth;
-        ZMG.Admin.cacheElement('zmg_view_content').style.width = (width - 358) + "px";
+        ZMG.Admin.cacheElement('zmg_view_content').style.width = (width - 258) + "px";
     },
     onerror: function() {
         console.dir(arguments);

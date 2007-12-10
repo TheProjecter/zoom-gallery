@@ -8,12 +8,29 @@
  * @license http://www.gnu.org/copyleft/gpl.html GPL
  */
 
+.zmg_clear
+{
+    clear: both;
+    height: 0;
+    overflow: hidden;
+    line-height: 0;
+    font-size: 0;
+    padding: 0;
+    margin: 0;
+}
+
 #zmg_admin_cont
 {
     position: relative;
     width: 100%;
     height: 100%;
     overflow: visible;
+}
+
+#zmg_admin_cont ol,
+#zmg_admin_cont ul
+{
+    list-style: none;
 }
 
 #zmg_admin_cont .subheader
@@ -45,17 +62,87 @@
     z-index: 50;
 }
 
-#zmg_menu_tree
+.zmg_panel
 {
     position: relative;
-    background: #e2e9ec url(../images/glass-bg.gif) repeat-x top left;
-    width: 350px;
-    border: 1px solid #a9a9a9;
-    overflow-x: auto;
-    overflow-y: visible;
-    height: auto;
+    border: 1px solid #abc;
+    width: 250px;
+    overflow: hidden;
     float: left;
     display: inline;
+    z-index: 1;
+}
+
+.zmg_border_panel
+{
+    /*left: 0;
+    position: absolute;
+    top: 0; */
+}
+
+.zmg_panel_header
+{
+    color: #fafafa;
+    border: 1px solid #abc;
+    background-image: url(../images/panel/white-top-bottom.gif);
+    font-family: tahoma,arial,verdana,sans-serif;
+    font-size: 11px;
+    font-size-adjust: none;
+    font-stretch: normal;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: bold;
+    line-height: 15px;
+    overflow: hidden;
+    padding: 5px 3px 4px 5px;
+}
+
+.zmg_tool
+{
+    background-image: url(../images/panel/tool-sprites.gif);
+    margin-left: 2px;
+    height: 15px;
+    width: 15px;
+    float: right;
+    overflow: hidden;
+    cursor: pointer;
+    cursor: hand;
+}
+
+.zmg_tool_pinned
+{
+    background-position: 0 -135px; 
+}
+
+.zmg_tool_pinned_hover
+{
+    background-position: -15px -135px; 
+}
+
+.zmg_tool_unpinned
+{
+    background-position: 0 -150px; 
+}
+
+.zmg_tool_unpinned_hover
+{
+    background-position: -15px -150px; 
+}
+
+.zmg_panel_header_text
+{
+    
+}
+
+.zmg_panel_body
+{
+    border-color: #abc;
+    border-style: none solid solid none;
+    border-width: 0 1px 1px 0;
+    width: 248px;
+    height: auto;
+    overflow-x: auto;
+    overflow-y: visible;
 }
 
 #zmg_view_content
@@ -94,46 +181,143 @@
     font-weight: bold;
 }
 
+#zmg_view_settings
+{
+    background: #6b869f;
+    border: 1px solid #abc;
+    padding-bottom: 2px;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    zoom: 1;
+}
+
+.tab-strip-wrapper
+{
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+ul.tab-strip
+{
+    background: #dbdbdb url(../images/tabs/tab-strip-bg.gif) repeat-x bottom;
+    border-bottom: 1px solid #4c647e;
+    padding: 4px 0 0 2px;
+    margin: 0;
+    width: 5000px;
+    display: block;
+    zoom: 1;
+}
+
+.tab-strip a,
+.tab-strip span,
+.tab-strip em,
+{
+    display: block;
+}
+
+ul.tab-strip li
+{
+    float: left;
+    margin: 0 0 0 2px;
+    padding: 0;
+}
+.tab-strip a
+{
+    text-decoration: none!important;
+    -moz-outline: none;
+    outline: none;
+    cursor: pointer;
+    cursor: hand;
+}
+
+.tab-strip .tab-right
+{
+    background: transparent url(../images/tabs/tabs-sprite.gif) no-repeat 0 -51px;
+    padding-left: 10px;
+}
+
+.tab-strip .tab-left
+{
+    background: transparent url(../images/tabs/tabs-sprite.gif) no-repeat right -351px;
+    padding-right: 10px;
+}
+
+.tab-strip .tab-inner
+{
+    background: transparent url(../images/tabs/tabs-sprite.gif) repeat-x 0 -201px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    cursor: hand;
+}
+
+.tab-strip li.tab-edge
+{
+    float: left;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 none !important;
+    font-size: 1px !important;
+    line-height: 1px!important;
+    overflow: hidden;
+    zoom: 1;
+    background: transparent !important;
+    width:1px;
+}
+
+.tab-strip span.tab-text
+{
+    padding: 4px 0;
+    color: #333;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.tab-selected
+{
+    cursor: default;
+}
+
+tab-selected span.tab-text
+{
+    cursor: default;
+    color: #15428b;
+    font-weight: bold;
+}
+
+tab-strip .tab-selected .tab-right
+{
+    margin-bottom: -1px;
+}
+
+tab-strip .tab-selected .tab-right span.tab-text
+{
+    padding-bottom: 5px;
+}
+
+/* Tab bg image for each state */
+.tab-strip .tab-over .tab-right { background-position: 0 -101px; }
+.tab-strip .tab-over .tab-left { background-position: right -401px; }
+.tab-strip .tab-over .tab-inner { background-position: 0 -251px; }
+.tab-strip .tab-selected .tab-right { background-position: 0 0; }
+.tab-strip .tab-selected .tab-left { background-position: right -301px; }
+.tab-strip .tab-selected .tab-inner { background-position: 0 -151px; }
+
 .tab-wrapper
 {
-    padding:                1em 1.5em;
-    border:                 1px solid #eee;
+    background:#fff;
+    border: 1px solid #abc;
+    border-top: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
-.tab-menu
+
+.tab-wrapper .tab-container
 {
-    list-style:             none;
-    padding:                2px 0;
-    clear:                  both;
-    line-height:            17px;
-    font-size:              12px;
-}
-.tab-menu li
-{
-    display:                inline;
-    margin:                 0 2px;
-}
-.tab-menu li a
-{
-    padding:                1px 5px;
-    background-color:       #f5f5f5;
-    color:                  #222;
-    font-weight:            bold;
-    text-decoration:        none;
-}
-.tab-menu li a:hover,
-.tab-menu li a:focus
-{
-    background-color:       #FAEC8F;
-    border-bottom-color:    #999;
-}
-.tab-menu li a:hover
-{
-    background-color:       #FAEC8F;
-    border-bottom-color:    #999;
-}
-.tab-menu li.tab-selected a
-{
-    background-color:       #BCEC8F;
+    margin: 10px;
 }
 
 .checked
@@ -163,11 +347,11 @@
 
 .lgrid-nav
 {
-    float:                  right;
+    float: right;
 }
 .lgrid-pagination
 {
-    display:                block;
+    display: block;
 }
 .lgrid-pagination a
 {
@@ -176,66 +360,59 @@
 
 .lgrid-scroller
 {
-    height:                 150px;
-    overflow:               auto;
-    clear:                  both;
-    border:                 1px solid #aaa;
+    height: 150px;
+    overflow: auto;
+    clear: both;
+    border: 1px solid #aaa;
 }
 .lgrid-body div
 {
-    border-bottom:          1px dotted #ddd;
-    color:                  #333;
-    padding:                4px;
-    height:                 76px;
-    overflow:               hidden;
-}
-.view-floated .lgrid-body div
-{
-    float:                  left;
-    width:                  215px;
-    height:                 140px;
-    font-size:              0.9em;
-    border:                 5px solid #fff;
-    overflow:               hidden;
+    background: transparent url(../images/listArrow.png) no-repeat right center;
+    border-bottom: 1px dotted #e0e0e0;
+    color: #333;
+    padding: 4px;
+    height: 76px;
+    overflow: hidden;
+    cursor: pointer;
 }
 .view-floated .lgrid-body div dt
 {
-    clear:                  left;
+    clear: left;
 }
 .view-floated .lgrid-body div dd
 {
-    clear:                  left;
+    clear: left;
 }
 
 .lgrid-body div img
 {
-    float:                  left;
+    float: left;
 }
 
 .lgrid-body div b
 {
-    float:                  left;
-    font-size:              13px;
-    font-weight:            bold;
-    color:                  #ccc;
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    color: #ccc;
 }
 .lgrid-body div dt
 {
-    float:                  left;
-    font-size:              13px;
-    margin-left:            2em;
-    margin-top:             0.3em;
+    float: left;
+    font-size: 13px;
+    margin-left: 2em;
+    margin-top: 0.3em;
 
 }
 .lgrid-body div dd
 {
-    float:                  left;
-    margin-left:            2em;
-    margin-top:             4px;
-    color:                  #aaa;
+    float: left;
+    margin-left: 2em;
+    margin-top: 4px;
+    color: #aaa;
 }
 
 .row-even
 {
-    background-color:       #e0f0ff;
+    background-color: #fff;
 }

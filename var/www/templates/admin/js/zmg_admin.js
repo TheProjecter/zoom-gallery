@@ -8,7 +8,7 @@ ZMG.Admin = {
     start: function() {
         ZMG.Admin.cacheElement('zmg_admin_cont');
         ZMG.Admin.cacheElement('zmg_admin_loader');
-        ZMG.Admin.cacheElement('zmg_menu_tree');
+        ZMG.Admin.cacheElement('zmg_tree_body');
         ZMG.Admin.cacheElement('zmg_view_content');
         ZMG.Admin.Events = new ZMG.Events();
         //set correct dimensions of the admin content
