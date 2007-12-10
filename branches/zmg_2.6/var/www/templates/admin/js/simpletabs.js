@@ -44,8 +44,16 @@ var SimpleTabs = new Class({
 	options: {
 		show: 0,
 		entrySelector: '.tab-entry',
+		classClear: 'zmg_clear',
 		classWrapper: 'tab-wrapper',
-		classMenu: 'tab-menu',
+		classStripWrapper: 'tab-strip-wrapper',
+		classStrip: 'tab-strip',
+		classTabRight: 'tab-right',
+		classTabLeft: 'tab-left',
+		classTabInner: 'tab-inner',
+		classTabText: 'tab-text',
+		classTabEdge: 'tab-edge',
+		classTabHover: 'tab-over',
 		classContainer: 'tab-container',
 		onShow: function(toggle, container, index) {
 			toggle.addClass('tab-selected');
@@ -82,18 +90,22 @@ var SimpleTabs = new Class({
 
 	build: function() {
 		this.entries = [];
-		this.menu = new Element('ul', {'class': this.options.classMenu});
+		this.stripWrapper = new Element('div', {'class': this.options.classStripWrapper});
+		this.strip = new Element('ul', {'class': this.options.classStrip});
+		this.stripEdge = new Element('li', {'class': this.options.classTabEdge});
+		this.stripWrapper.adopt(this.strip.adopt(new Element('div', {'class': this.options.classClear}))
+		 .adopt(this.stripEdge));
 		this.wrapper = new Element('div', {'class': this.options.classWrapper});
 		this.element.getElements(this.options.entrySelector).each(function(el) {
 			var content = el.href || (this.options.getContent ? this.options.getContent.call(this, el) : el.getNext());
 			this.addTab(el.innerHTML, el.title || el.innerHTML, content);
 		}, this);
-		this.element.empty().adopt(this.menu).adopt(this.wrapper);
+		this.element.empty().adopt(this.stripWrapper).adopt(this.wrapper);
 		if (this.entries.length) this.select(this.options.show);
 	},
 
 	/**
-	 * Add a new tab at the end of the tab menu
+	 * Add a new tab at the end of the tab strip
 	 * 
 	 * @param {String} inner Text
 	 * @param {String} Title
@@ -102,18 +114,28 @@ var SimpleTabs = new Class({
 	addTab: function(text, title, content, data) {
 		if ($type(content) == 'string' && !$(content)) var url = content;
 		var container = $(content) || new Element('div');
+		
+		var fullText = ['<em class="', this.options.classTabLeft, '">',
+		  '<span class="', this.options.classTabInner, '"><span class="',
+		  this.options.classTabText, '">', text, '</span></span></em>'].join('');
+		
 		this.entries.push({
 			container: container.setStyle('display', 'none').addClass(this.options.classContainer).inject(this.wrapper),
 			toggle: new Element('li').adopt(new Element('a', {
-				href: '#',
-				title: title,
+				href   : '#',
+				title  : title,
+				'class': this.options.classTabRight,
 				events: {
-					click: this.onClick.bindWithEvent(this, [this.entries.length])
+					click    : this.onClick.bindWithEvent(this, [this.entries.length]),
+					mouseover: this.onMouseEnter.bindWithEvent(this, [this.entries.length]),
+					mouseout : this.onMouseLeave.bindWithEvent(this, [this.entries.length])
 				}
-			}).setHTML(text)).inject(this.menu),
-			url: url || null,
+			}).setHTML(fullText)).inject(this.strip),
+			url : url  || null,
 			data: data || null
 		});
+		this.strip.appendChild(this.stripEdge);
+		this.strip.appendChild(this.strip.getElementsByTagName('div')[0]);
 		return this;
 	},
 
@@ -121,6 +143,14 @@ var SimpleTabs = new Class({
 		evt.stop();
 		this.select(index);
 	},
+	
+	onMouseEnter: function(evt, index) {
+	    this.entries[index].toggle.addClass(this.options.classTabHover);
+    },
+    
+    onMouseLeave: function(evt, index) {
+        this.entries[index].toggle.removeClass(this.options.classTabHover);
+    },
 
 	/**
 	 * Select the tab via tab-index
