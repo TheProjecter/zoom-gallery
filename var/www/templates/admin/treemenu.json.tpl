@@ -26,6 +26,9 @@
                     'forcetype': 'html'
                 } 
             }
+        },
+        'extra': {
+            'forcetype': 'html'
         }
     },
     'thumbcoder': {

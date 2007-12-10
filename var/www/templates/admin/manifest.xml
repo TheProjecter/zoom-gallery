@@ -66,8 +66,8 @@
         <resource name="template" type="json" view="allgallerymanager" xml:base="">
             <file href="gallerymanager.json.tpl"/>
         </resource>
-        <resource name="template" type="json" view="admin:mediamanager" xml:base="">
-            <file href="mediamanager.json.tpl"/>
+        <resource name="template" type="html" view="admin:mediamanager" xml:base="">
+            <file href="mediamanager.html.tpl"/>
         </resource>
         <resource name="template" type="json" view="admin:mediamanager:getmedia" xml:base="">
             <file href="mediamanager_getmedia.json.tpl"/>
