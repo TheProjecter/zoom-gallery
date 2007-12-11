@@ -17,7 +17,7 @@ defined('_ZMG_EXEC') or die('Restricted access');
  * @package zmg
  * @static
  */
-class viewchooser {
+class viewpicker {
     function start(&$zoom) {
         $view = trim(zmgGetParam($_REQUEST, 'view', ZMG_ADMIN ? 'admin:home' : 'gallery'));
         $zoom->view->set($view);
