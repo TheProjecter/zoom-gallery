@@ -118,7 +118,7 @@ var SimpleTabs = new Class({
 		var fullText = ['<em class="', this.options.classTabLeft, '">',
 		  '<span class="', this.options.classTabInner, '"><span class="',
 		  this.options.classTabText, '">', text, '</span></span></em>'].join('');
-		
+
 		this.entries.push({
 			container: container.setStyle('display', 'none').addClass(this.options.classContainer).inject(this.wrapper),
 			toggle: new Element('li').adopt(new Element('a', {

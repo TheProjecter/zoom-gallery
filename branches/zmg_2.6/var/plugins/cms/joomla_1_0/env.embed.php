@@ -75,5 +75,18 @@ class zmgEnv extends zmgError {
         zmgEnv::appendPageHeader('<script src="' . zmgEnv::getSiteURL()
          . '/components/com_zoom/var/www/shared/mootools.js" type="text/javascript"></script>');
     }
+    
+    function getToolbarAssets() {
+        return array(
+            'classHelper' => 'mosMenuBar',
+            'node'        => 'toolbar',
+            'classButton' => 'button',
+            'commands' => array(
+                'title'  => 'title',
+                'back'   => 'back',
+                'spacer' => 'spacer'
+            )
+        );
+    }
 }
 ?>

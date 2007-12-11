@@ -49,6 +49,43 @@ class zmgMedium extends zmgTable {
         $this->zmgTable('#__zmg_media', 'mid', $db);
     }
     
+    function getAbsPath() {
+        if (!$this->gid) {
+            zmgError::throwError('zmgMedium: medium data not loaded yet');
+        }
+        
+        
+    }
+    
+    function getRelPath($mediapath = '') {
+        if (!$this->gid) {
+            zmgError::throwError('zmgMedium: medium data not loaded yet');
+        }
+        if (empty($mediapath)) {
+            $zoom = & zmgFactory::getZoom();
+            $mediapath = $zoom->getConfig('filesystem/mediapath');
+        }
+        
+        //TODO: add hotlinking protection
+        return zmgEnv::getSiteURL() . "/" . $mediapath
+         . $this->getGalleryDir() . "/thumbs/" . $this->filename;
+    }
+    
+    function getGalleryDir() {
+        if (!$this->gid) {
+            zmgError::throwError('zmgMedium: medium data not loaded yet');
+        }
+        
+        if (empty($this->gallery_dir)) {
+            $db = & zmgDatabase::getDBO();
+            $db->setQuery("SELECT dir FROM #__zmg_galleries WHERE gid=".$this->gid);
+            if ($db->query()) {
+                $this->gallery_dir = trim($db->loadResult());
+            }
+        }
+        return $this->gallery_dir;
+    }
+    
     function toJSON() {
         $json = new zmgJSON();
         return ("'medium': {
@@ -58,6 +95,7 @@ class zmgMedium extends zmgTable {
             'descr'    : ".$json->encode($this->descr).",
             'keywords' : ".$json->encode($this->keywords).",
             'date_add' : ".$json->encode($this->date_add).",
+            'url'      : ".$json->encode($this->getRelPath()).",
             'hits'     : $this->hits,
             'votenum'  : $this->votenum,
             'votesum'  : $this->votesum,

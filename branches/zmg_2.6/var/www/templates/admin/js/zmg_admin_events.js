@@ -16,6 +16,7 @@ ZMG.Events.Server = Class({
     onview: function(text, xml, data, resp) {
         var key, view = data.view;
         console.log('Server#onview: ', view);
+        ZMG.Admin.Events.Client.lastRequest = null;
         if (view == "admin:gallerymanager") {
             this.Server.ongallerymanager(text);
         } else if (view == "admin:mediamanager") {
@@ -23,6 +24,9 @@ ZMG.Events.Server = Class({
         } else if (view.indexOf('admin:mediamanager:get:') > -1) {
             var o = Json.evaluate(text);
             this.Server.onloadmediumdata(o);
+        } else if (view.indexOf('admin:toolbar:') > -1) {
+            var o = Json.evaluate(text);
+            this.Server.ontoolbar(o);
         } else if (view == "admin:settings:overview") {
             var o = Json.evaluate(text);
             this.Server.onsettingsoverview(o);
@@ -87,6 +91,7 @@ ZMG.Events.Server = Class({
                     
                     //fetch the data for this gallery from the server
                     ZMG.Admin.Events.Client.onviewselect('admin:mediamanager:get:' + img_id);
+                    window.setTimeout("ZMG.Admin.Events.Client.onviewselect('admin:toolbar:mediumedit');", 20);
                 },
                 onScroll: function(from, to) {
                     nav.getLast().setHTML('Displaying entries ', from, ' - ', to, ' of ', this.count);
@@ -108,6 +113,25 @@ ZMG.Events.Server = Class({
                     }
                 },
                 requestData: {big: '1'}
+            });
+            
+            var self = this;
+            //setup the tabs for Medium property editing:
+            new SimpleTabs($('zmg_edit_medium_tabs'), {
+                entrySelector: 'li a',
+                onShow: function(toggle, container, idx) {
+                    toggle.addClass('tab-selected');
+                    container.effect('opacity').start(0, 1); // 1) first start the effect
+                    container.setStyle('display', ''); // 2) then show the element, to prevent flickering
+                },
+                getContent: function(el) {
+                    var content, rel = el.innerHTML.toString().toLowerCase();
+                    self.liveGrid.options.editpanel.getElements('div.tab-container')
+                     .each(function(el) {
+                        if (el.getAttribute('rel') == rel) content = el;
+                    });
+                    return content;
+                }
             });
             
             ZMG.Admin.Events.Client.onwindowresize();
@@ -134,6 +158,7 @@ ZMG.Events.Server = Class({
             var data = node.data.medium;
             var form = ZMG.Admin.cacheElement('zmg_form_edit_medium');
             form.reset();
+            ZMG.Admin.cacheElement('zmg_edit_medium_thumbnail').src = data.url;
             ZMG.Admin.cacheElement('zmg_edit_filename').innerHTML = data.filename;
             ZMG.Admin.cacheElement('zmg_edit_name').value = data.name;
             ZMG.Admin.cacheElement('zmg_edit_keywords').value = data.keywords;
@@ -143,14 +168,27 @@ ZMG.Events.Server = Class({
             ZMG.Admin.cacheElement('zmg_edit_descr').value = data.descr;
         }
     },
+    ontoolbar: function(node) {
+        var name = node.toolbar.shift();
+        ZMG.Admin.Events.Client.toolbar.create(name, node.toolbar);
+        ZMG.Admin.Events.Client.toolbar.show(name);
+    },
     onsettingsoverview: function(node) {
         if (!ZMG.Admin.cacheElement('zmg_view_settings')) {
             //first, build the settings container DIV
-            var oSettings = new Element('div', { id: 'zmg_view_settings' });
+            var oSettings = new Element('div', {
+                id: 'zmg_view_settings',
+                'class': 'tab-all-container'
+            });
+            var oForm = new Element('form', {
+                'name': 'zmg_settings_form',
+                'id'  : 'zmg_settings_form' 
+            });
+            oSettings.adopt(oForm);
             ZMG.Admin.cacheElement('zmg_view_content').adopt(oSettings);
             
             //second, initialize the SimpleTabs widget
-            this.settingsTabs = new SimpleTabs(oSettings, {
+            this.settingsTabs = new SimpleTabs(oForm, {
                 entrySelector: 'li a',
                 ajaxOptions: {
                     method: 'get'
@@ -199,6 +237,8 @@ ZMG.Events.Server = Class({
                 oParent.childNodes[i].setStyle('display', 'none');
         this.activeView = ZMG.Admin.cacheElement(el);
         this.activeView.setStyle('display', '');
+        window.setTimeout("ZMG.Admin.Events.Client.onviewselect('admin:toolbar:"
+          + el + "');", 100);
     },
     ongetsettingskey: function(view) {
         for (var i = 0; i < this.settingsMap.length; i++)
@@ -214,8 +254,10 @@ ZMG.Events.Server = Class({
 ZMG.Events.Client = Class({
     initialize: function() {
         this.requestQueue = null;
+        this.lastRequest = null;
         this.menuTree = null;
         this.requestingTabs = false;
+        this.toolbar = new ZMG.Toolbar();
         //LiveGrid content sliders
         this.bodySlide = null;
         this.editSlide = null;
@@ -250,14 +292,16 @@ ZMG.Events.Client = Class({
         }
         this.bodySlide.slideOut();
         this.editSlide.slideOut();
-        ZMG.Admin.cacheElement('zmg_lgrid_pagination').setStyle('display', 'none');
+        ZMG.Admin.cacheElement('zmg_lgrid_pagination').setStyle('visibility', 'hidden');
         livegrid.scrollComplete(-1);
+        this.toolbar.show('mediumedit');
     },
     onlivegrideditslide: function() {
         if (this.bodySlide) {
             this.bodySlide.slideIn();
             this.editSlide.slideIn();
-            ZMG.Admin.cacheElement('zmg_lgrid_pagination').setStyle('display', '');
+            ZMG.Admin.cacheElement('zmg_lgrid_pagination').setStyle('visibility', 'visible');
+            this.toolbar.show('zmg_view_mm');
         }
     },
     onloadnavigation: function() {
@@ -272,6 +316,7 @@ ZMG.Events.Client = Class({
                 color : '#a0a0a0'
             },
             onSelect: function(node, state) {
+                if (!node.id) return;
                 if (state) {
                     var forcetype = "";
                     if (node.data.extra && node.data.extra.forcetype)
@@ -315,7 +360,9 @@ ZMG.Events.Client = Class({
         }
         if (forcetype)
             vars.forcetype = forcetype;
-            
+        
+        var valid = true;
+        
         if (!this.requestQueue) {
             this.requestQueue = new AjaxQueue(ZMG.CONST.req_uri, {
                 ajaxOptions: {
@@ -324,14 +371,45 @@ ZMG.Events.Client = Class({
                 onSuccess: ZMG.Admin.Events.Server.onview.bind(ZMG.Admin.Events),
                 onFailure: ZMG.Admin.Events.Server.onerror.bind(ZMG.Admin.Events),
             });
+        } else {
+            //prevent duplicate requests:
+            if (this.lastRequest == vars.view)
+                valid = false;
         }
         
-        var self = this;
+        if (valid) {
+            this.lastRequest = vars.view;
+            var self = this;
+            var f = function() {
+                self.requestQueue.request(vars || '');
+            };
+            this.onshowloader();
+            // allowing a small delay for the browser to draw the loader-icon.
+            window.setTimeout(f.bind(this), 20);
+        }
+    },
+    onmm_uploadclick: function(e) {
+        
+    },
+    onsettingssaveclick: function(e) {
+        var data = FormSerializer.serialize($('zmg_settings_form'));
+        var url  = ZMG.CONST.req_uri + "&view=admin:settings:store";
         var f = function() {
-            self.requestQueue.request(vars || '');
+            new XHR({
+                method: 'POST',
+                onSuccess: ZMG.Admin.Events.Server.onview.bind(ZMG.Admin.Events),
+                onFailure: ZMG.Admin.Events.Server.onerror.bind(ZMG.Admin.Events)
+            }).send(url, data || '');
         };
-        this.onshowloader();
+        
         window.setTimeout(f.bind(this), 20); // allowing a small delay for the browser to draw the loader-icon.
+    },
+    onmediumbackclick: function(e) {
+        this.toolbar.clear();
+        this.onlivegrideditslide();
+    },
+    onmediumsaveclick: function(e) {
+        
     },
     onping: function() {
         this.onviewselect('ping');

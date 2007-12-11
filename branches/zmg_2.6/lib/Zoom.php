@@ -11,6 +11,29 @@
 
 defined('_ZMG_EXEC') or die('Restricted access');
 
+class zmgFactory {
+    function &getZoom(&$config = null) {
+        static $instance;
+        
+        if (!is_object($instance)) {
+            if (!$config) {
+                $config = & zmgFactory::getConfig();
+            }
+
+            $instance = new Zoom($config);
+        }
+
+        return $instance;
+    }
+    
+    function &getConfig() {
+        //load the configuration file
+        require(ZMG_ABS_PATH . DS.'etc'.DS.'app.config.php');
+        
+        return $zoom_config;
+    }
+}
+
 /**
  * Main application class
  * @package zmg
@@ -153,11 +176,11 @@ class Zoom extends zmgError {
         if ($rows) {
             foreach ($rows as $row) {
                 $medium = new zmgMedium(&$db);
-                $medium->load($row[0]);
-                $gid = intval($medium->gid);
+                $gid = intval($row[0]);
+                $medium->load($gid);
                 if ($a_gallery !== $gid) {
                     $a_gallery = $gid;
-                    $a_gallery_dir = $medium->gallery_dir = $this->getGalleryDir($a_gallery);
+                    $a_gallery_dir = $medium->getGalleryDir();
                 } else {
                     $medium->gallery_dir = $a_gallery_dir; 
                 }
@@ -176,14 +199,6 @@ class Zoom extends zmgError {
             return $medium->toXML();
         }
         return $medium;
-    }
-    function getGalleryDir($gid) {
-        $db = & zmgDatabase::getDBO();
-        $db->setQuery("SELECT dir FROM #__zmg_galleries WHERE gid=$gid");
-        if ($db->query()) {
-            return trim($db->loadResult());
-        }
-        return null;
     }
     function getParamInt($name, $default = 0) {
         return intval(zmgGetParam($_REQUEST, $name, $default));

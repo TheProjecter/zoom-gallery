@@ -79,8 +79,8 @@ class zmgConfigurationHelper extends zmgError {
          . $this->_buildDatabaseBlock() . $this->_buildFilesystemBlock()
          . $this->_buildSmartyBlock() . $this->_buildLayoutBlock()
          . $this->_buildAppBlock();
-        echo str_replace("\n", "<br/>", $content); 
-        //zmgWriteFile(ZMG_ABS_PATH .DS.'etc'.DS.'app.config.php', $content);
+        //echo str_replace("\n", "<br/>", $content); 
+        zmgWriteFile(ZMG_ABS_PATH .DS.'etc'.DS.'app.config.php', $content);
     }
     function _buildMetaBlock() {
         return $this->_generateBlock("\$zoomConfig", 'meta',
