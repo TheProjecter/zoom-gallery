@@ -78,5 +78,18 @@ class zmgEnv extends zmgError {
     function includeMootools() {
         JHTML::_('behavior.mootools');
     }
+    
+    function getToolbarAssets() {
+        return array(
+            'classHelper' => 'JToolBarHelper',
+            'node'        => 'toolbar',
+            'classButton' => 'button',
+            'commands' => array(
+                'title'  => 'title',
+                'back'   => 'back',
+                'spacer' => 'spacer'
+            )
+        );
+    }
 }
 ?>

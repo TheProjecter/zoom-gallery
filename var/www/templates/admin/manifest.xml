@@ -10,7 +10,7 @@
     <views>
         <view name="admin:home"/>
         <view name="admin:treemenu"/>
-        <view name="admin:toolbarbuttons"/>
+        <view name="admin:dispatchresult"/>
         <view name="admin:gallerymanager"/>
         <view name="admin:gallerymanager:getgalleries"/>
         <view name="admin:mediamanager:getmedia"/>
@@ -24,6 +24,8 @@
         <view name="admin:settings:layout"/>
         <view name="admin:settings:app"/>
         <view name="admin:settings:info"/>
+        <view name="admin:toolbar"/>
+        <view name="alltoolbar" inherits="admin:toolbar:*"/>
         <view name="allgallerymanager" inherits="admin:gallerymanager:*"/>
         <view name="allsettings" inherits="admin:settings:*"/>
         <view name="singlepage" inherits="admin:*"/>
@@ -37,6 +39,9 @@
         </resource>
         <resource name="javascript" xml:base="js/">
             <file href="zmg_admin_events.js"/>
+        </resource>
+        <resource name="javascript" xml:base="js/">
+            <file href="zmg_toolbar.js"/>
         </resource>
         <resource name="javascript" xml:base="../shared/">
             <file href="ajaxqueue.js"/>
@@ -59,7 +64,10 @@
         <resource name="template" type="json" view="admin:treemenu" xml:base="">
             <file href="treemenu.json.tpl"/>
         </resource>
-        <resource name="template" type="json" view="admin:toolbarbuttons" xml:base="">
+        <resource name="template" type="json" view="admin:dispatchresult" xml:base="">
+            <file href="dispatchresult.json.tpl"/>
+        </resource>
+        <resource name="template" type="json" view="alltoolbar" xml:base="">
             <file href="toolbarbuttons.json.tpl"/>
         </resource>
         <resource name="template" type="json" view="allsettings" xml:base="">

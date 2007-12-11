@@ -88,6 +88,9 @@ class zmgTemplateHelper extends Smarty {
 
         //mootools & Ajax preparing stuff
         if (!zmgEnv::isRPC() && $this->_viewtype == "html") {
+            if (ZMG_ADMIN) {
+                $this->_buildAdminToolbar();
+            }
             zmgEnv::includeMootools();
             zmgEnv::appendPageHeader($this->_prepareAjax());
         }
@@ -110,6 +113,8 @@ class zmgTemplateHelper extends Smarty {
             $this->assign('subview', $this->getSubView());
             
             $this->assign('site_url', zmgEnv::getSiteURL());
+            
+            $this->assign('mediapath', $zoom->getConfig('filesystem/mediapath'));
             
             $this->assign('result_ok', 'OK');
             
@@ -138,7 +143,7 @@ class zmgTemplateHelper extends Smarty {
          . "\tZMG.CONST = {};\n"
          . "\tZMG.CONST.id          = '".md5($this->_secret)."';\n"
          . "\tZMG.CONST.active_view = '".$this->_active_view."';\n"
-         . "\tZMG.CONST.is_admin    = ".((ZMG_ADMIN) ? "true" : "false")."\n"
+         . "\tZMG.CONST.is_admin    = ".((ZMG_ADMIN) ? "true" : "false").";\n"
          . "\tZMG.CONST.site_uri    = document.location.protocol + '//' + document.location.host + document.location.pathname.replace(/\/(administrator\/)?index(2)?\.php$/i, '');\n"
          . "\tZMG.CONST.req_uri     = ZMG.CONST.site_uri + \"".zmgEnv::getAjaxURL()."\";\n"
          . "\tZMG.CONST.res_path    = ZMG.CONST.site_uri + \"/components/com_zoom/var/www/templates/"
@@ -152,6 +157,21 @@ class zmgTemplateHelper extends Smarty {
         
         return $ret . ("//-->\n"
          . "</script>\n");
+    }
+    
+    function _buildAdminToolbar() {
+        if (!ZMG_ADMIN)
+            return $this->throwError('Function may only be called in admin mode.');
+            
+        $assets = zmgEnv::getToolbarAssets();
+        $zoom   = & zmgFactory::getZoom();
+        eval($assets['classHelper'].'::'.$assets['commands']['title'].'("'
+         . $zoom->getConfig('meta/title').'");');
+        eval($assets['classHelper'].'::'.$assets['commands']['back'].'();');
+        eval($assets['classHelper'].'::'.$assets['commands']['spacer'].'();');
+        
+        $this->appendConstant('toolbar_node', '"'.$assets['node'].'"');
+        $this->appendConstant('toolbar_buttonclass', '"'.$assets['classButton'].'"');
     }
     
     function _getInfo() {

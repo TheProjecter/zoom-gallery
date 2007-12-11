@@ -55,11 +55,27 @@
 {
     position: absolute;
     background: url(../images/spinner_small.gif) no-repeat 2px 2px;
-    top: 0px;
-    right: 0px;
+    top: 6px;
+    right: 2px;
     width: 20px;
     height: 20px;
     z-index: 50;
+}
+
+.zmg_tb_icon_mm_upload
+{
+    background-image: url(../images/toolbar/icon-32-upload.png)
+}
+
+.zmg_tb_icon_mediumback
+{
+    background-image: url(../images/toolbar/icon-32-back.png)
+}
+
+.zmg_tb_icon_mediumsave,
+.zmg_tb_icon_settingssave
+{
+    background-image: url(../images/toolbar/icon-32-save.png)
 }
 
 .zmg_panel
@@ -152,6 +168,17 @@
     display: inline;
 }
 
+.zmg_thumbnail_container
+{
+    position: relative;
+    background-color: #f9f9f9;
+    border: 1px solid #d5d5d5;
+    padding: 4px;
+    margin: 4px 0 4px 0;
+    width: auto;
+    display: block;
+}
+
 .mooTree_node
 {
     font-family: Verdana, Arial, Helvetica;
@@ -181,7 +208,7 @@
     font-weight: bold;
 }
 
-#zmg_view_settings
+.tab-all-container
 {
     background: #6b869f;
     border: 1px solid #abc;
@@ -382,7 +409,7 @@ tab-strip .tab-selected .tab-right span.tab-text
     position: relative;
     float: right;
     padding: 0;
-    margin: 0;
+    margin: 0 20px 0 0;
 }
 
 .lgrid-pagination

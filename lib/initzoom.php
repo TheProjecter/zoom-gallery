@@ -16,9 +16,6 @@ if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
 //load the error handling base class
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgError.php');
 
-//load the configuration file
-require(ZMG_ABS_PATH . DS.'etc'.DS.'app.config.php');
-
 //initialize Smarty template engine
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'smarty'.DS.'Smarty.class.php');
 
@@ -27,7 +24,7 @@ require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgConfigurationHelper.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgPluginHelper.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgTemplateHelper.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'Zoom.php');
-$zoom = new Zoom($zoom_config);
+$zoom = & zmgFactory::getZoom();
 
 if (!class_exists('InputFilter')) {
     require_once(ZMG_ABS_PATH . DS.'lib'.DS.'phpinputfilter'.DS.'inputfilter.php');
