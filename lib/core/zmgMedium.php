@@ -48,5 +48,24 @@ class zmgMedium extends zmgTable {
     function zmgMedium(&$db) {
         $this->zmgTable('#__zmg_media', 'mid', $db);
     }
+    
+    function toJSON() {
+        $json = new zmgJSON();
+        return ("'medium': {
+            'mid'      : $this->mid,
+            'name'     : ".$json->encode($this->name).",
+            'filename' : ".$json->encode($this->filename).",
+            'descr'    : ".$json->encode($this->descr).",
+            'keywords' : ".$json->encode($this->keywords).",
+            'date_add' : ".$json->encode($this->date_add).",
+            'hits'     : $this->hits,
+            'votenum'  : $this->votenum,
+            'votesum'  : $this->votesum,
+            'published': $this->published,
+            'gid'      : $this->gid,
+            'uid'      : $this->uid,
+            'members'  : ".$json->encode($this->members)."
+        }");
+    }
 }
 ?>

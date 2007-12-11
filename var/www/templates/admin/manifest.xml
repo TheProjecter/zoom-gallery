@@ -14,6 +14,8 @@
         <view name="admin:gallerymanager"/>
         <view name="admin:gallerymanager:getgalleries"/>
         <view name="admin:mediamanager:getmedia"/>
+        <view name="admin:mediamanager:get"/>
+        <view name="getmediumdata" inherits="admin:mediamanager:get:*"/>
         <view name="admin:thumbcoder"/>
         <view name="admin:settings:overview"/>
         <view name="admin:settings:meta"/>
@@ -71,6 +73,9 @@
         </resource>
         <resource name="template" type="json" view="admin:mediamanager:getmedia" xml:base="">
             <file href="mediamanager_getmedia.json.tpl"/>
+        </resource>
+        <resource name="template" type="json" view="getmediumdata" xml:base="">
+            <file href="mediamanager_getmediumdata.json.tpl"/>
         </resource>
         <resource name="template" type="html" view="admin:settings:meta" xml:base="">
             <file href="settings_meta.html.tpl"/>

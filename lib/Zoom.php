@@ -92,6 +92,13 @@ class Zoom extends zmgError {
         }
         return null;
     }
+    function jsonHelper($input, $type = 'encode') {
+        $json = new zmgJSON();
+        if ($type == "decode") {
+            return $json->decode($input);
+        }
+        return $json->encode($input);
+    }
     function getGalleryCount() {
         $db = & zmgDatabase::getDBO();
         $db->setQuery('SELECT COUNT(gid) AS total FROM #__zmg_galleries');
@@ -159,6 +166,17 @@ class Zoom extends zmgError {
         }
         return $ret;
     }
+    function getMedium($mid, $ret_type = 'object') {
+        $mid = intval($mid);
+        $medium = new zmgMedium(zmgDatabase::getDBO());
+        $medium->load($mid);
+        if ($ret_type == "json") {
+            return $medium->toJSON();
+        } else if ($ret_type == "xml") {
+            return $medium->toXML();
+        }
+        return $medium;
+    }
     function getGalleryDir($gid) {
         $db = & zmgDatabase::getDBO();
         $db->setQuery("SELECT dir FROM #__zmg_galleries WHERE gid=$gid");
@@ -169,6 +187,10 @@ class Zoom extends zmgError {
     }
     function getParamInt($name, $default = 0) {
         return intval(zmgGetParam($_REQUEST, $name, $default));
+    }
+    function concat() {
+        $args = func_get_args();
+        return join($args, '');
     }
     /**
      * Return the method of ordering for galleries.
