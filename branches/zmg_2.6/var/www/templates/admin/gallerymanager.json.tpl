@@ -4,7 +4,7 @@
     {if $subview eq 'getgalleries'}
         {foreach item=gallery from=$zoom->getGalleries($zoom->getParamInt('sub'),$zoom->getParamInt('pos'))}
             '{$gallery->gid}':{literal} {{/literal}
-                'text': '{$gallery->name}',
+                'text': {$zoom->jsonHelper($gallery->name)},
 		        'id'  : 'gid:{$gallery->gid}',
 		        'icon': ZMG.CONST.res_path + '/images/sample_icons.gif#3',
 		        'openicon': '',

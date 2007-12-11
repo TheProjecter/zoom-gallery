@@ -110,6 +110,10 @@ class zmgTemplateHelper extends Smarty {
             $this->assign('subview', $this->getSubView());
             
             $this->assign('site_url', zmgEnv::getSiteURL());
+            
+            $this->assign('result_ok', 'OK');
+            
+            $this->assign('result_ko', 'KO');
 
             $this->display($tpl_file);
         } else {

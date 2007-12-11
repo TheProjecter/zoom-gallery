@@ -472,14 +472,22 @@ tab-strip .tab-selected .tab-right span.tab-text
 .lgrid-panel-edit
 {
     position: absolute;
+    border-bottom: 1px solid #e0e0e0;
     top: 0px;
     left: 0px;
+    padding: 0;
+    margin: 0;
+}
+
+.lgrid-panel-edit
+{
+    padding-right: 4px;
 }
 
 .lgrid-body div
 {
     background: transparent url(../images/listArrow.png) no-repeat right center;
-    border-bottom: 1px dotted #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
     color: #333;
     padding: 4px;
     height: 76px;

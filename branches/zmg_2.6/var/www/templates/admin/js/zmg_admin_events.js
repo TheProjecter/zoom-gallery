@@ -15,11 +15,14 @@ ZMG.Events.Server = Class({
     },
     onview: function(text, xml, data, resp) {
         var key, view = data.view;
+        console.log('Server#onview: ', view);
         if (view == "admin:gallerymanager") {
             this.Server.ongallerymanager(text);
         } else if (view == "admin:mediamanager") {
-            //var o = Json.evaluate(text);
             this.Server.onmediamanager(text);
+        } else if (view.indexOf('admin:mediamanager:get:') > -1) {
+            var o = Json.evaluate(text);
+            this.Server.onloadmediumdata(o);
         } else if (view == "admin:settings:overview") {
             var o = Json.evaluate(text);
             this.Server.onsettingsoverview(o);
@@ -58,6 +61,7 @@ ZMG.Events.Server = Class({
             var oMM = new Element('div', { id: 'zmg_view_mm' });
             ZMG.Admin.cacheElement('zmg_view_content').adopt(oMM);
             oMM.innerHTML = html;
+            FancyForm.start($A(oMM.getElementsByTagName('input')));
             
             var el    = $('zmg_mm_lgrid');
             var nav   = el.getElement('.lgrid-nav');
@@ -80,6 +84,9 @@ ZMG.Events.Server = Class({
                         el = el.parentNode;
                     var img_id = el.getElementsByTagName('img')[0].id.split('_')[0];
                     ZMG.Admin.Events.Client.onlivegridbodyslide(this);
+                    
+                    //fetch the data for this gallery from the server
+                    ZMG.Admin.Events.Client.onviewselect('admin:mediamanager:get:' + img_id);
                 },
                 onScroll: function(from, to) {
                     nav.getLast().setHTML('Displaying entries ', from, ' - ', to, ' of ', this.count);
@@ -122,6 +129,20 @@ ZMG.Events.Server = Class({
         }
         this.onactivateview('zmg_view_mm');
     },
+    onloadmediumdata: function(node) {
+        if (node.result == "OK") {
+            var data = node.data.medium;
+            var form = ZMG.Admin.cacheElement('zmg_form_edit_medium');
+            form.reset();
+            ZMG.Admin.cacheElement('zmg_edit_filename').innerHTML = data.filename;
+            ZMG.Admin.cacheElement('zmg_edit_name').value = data.name;
+            ZMG.Admin.cacheElement('zmg_edit_keywords').value = data.keywords;
+            //ZMG.Admin.cacheElement('zmg_edit_gimg');
+            //ZMG.Admin.cacheElement('zmg_edit_pimg');
+            ZMG.Admin.cacheElement('zmg_edit_published').checked = (data.published);
+            ZMG.Admin.cacheElement('zmg_edit_descr').value = data.descr;
+        }
+    },
     onsettingsoverview: function(node) {
         if (!ZMG.Admin.cacheElement('zmg_view_settings')) {
             //first, build the settings container DIV
@@ -160,7 +181,7 @@ ZMG.Events.Server = Class({
         ZMG.Admin.Events.Client.onviewselect('admin:settings:meta', 'html');
     },
     onloadsettingstab: function(idx, html) {
-        if (!this.settingsTabs.entries[idx].loaded) {
+        if (!this.settingsTabs.entries[idx].loaded && html) {
             this.settingsTabs.entries[idx].container.innerHTML = html;
             this.settingsTabs.entries[idx].loaded = true;
             //turn checkboxes and radiobuttons into fancy looking elements
@@ -229,12 +250,14 @@ ZMG.Events.Client = Class({
         }
         this.bodySlide.slideOut();
         this.editSlide.slideOut();
+        ZMG.Admin.cacheElement('zmg_lgrid_pagination').setStyle('display', 'none');
         livegrid.scrollComplete(-1);
     },
     onlivegrideditslide: function() {
         if (this.bodySlide) {
             this.bodySlide.slideIn();
             this.editSlide.slideIn();
+            ZMG.Admin.cacheElement('zmg_lgrid_pagination').setStyle('display', '');
         }
     },
     onloadnavigation: function() {
@@ -265,6 +288,9 @@ ZMG.Events.Client = Class({
                     }
                     if (load)
                         ZMG.Admin.Events.Client.onviewselect(node.id, forcetype);
+                    else
+                        ZMG.Admin.Events.Server.onloadsettingstab(
+                          ZMG.Admin.Events.Server.ongetsettingskey(node.id, null));
                 }
             },
             onExpand: function(node, state) {
@@ -324,8 +350,8 @@ ZMG.Events.Client = Class({
             ZMG.Admin.Events.Server.liveGrid.gridWidth = gridWidth; 
             ZMG.Admin.Events.Server.liveGrid.body.style.width =
               ZMG.Admin.Events.Server.liveGrid.options.editpanel.style.width =
-              gridWidth + "px";
-            ZMG.Admin.Events.Server.liveGrid.options.editpanel.style.left = gridWidth + "px"; 
+              (gridWidth - 4) + "px";
+            ZMG.Admin.Events.Server.liveGrid.options.editpanel.style.left = (gridWidth + 4) + "px"; 
         }
     },
     onerror: function() {
