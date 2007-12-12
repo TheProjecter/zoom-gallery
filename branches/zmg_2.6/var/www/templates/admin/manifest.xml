@@ -11,6 +11,7 @@
         <view name="admin:home"/>
         <view name="admin:treemenu"/>
         <view name="admin:dispatchresult"/>
+        <view name="dispatchresult" inherits="admin:dispatchresult:*"/>
         <view name="admin:gallerymanager"/>
         <view name="admin:gallerymanager:getgalleries"/>
         <view name="admin:mediamanager:getmedia"/>
@@ -43,6 +44,9 @@
         <resource name="javascript" xml:base="js/">
             <file href="zmg_toolbar.js"/>
         </resource>
+        <resource name="javascript" xml:base="js/">
+            <file href="zmg_tooltip.js"/>
+        </resource>
         <resource name="javascript" xml:base="../shared/">
             <file href="ajaxqueue.js"/>
         </resource>
@@ -64,7 +68,7 @@
         <resource name="template" type="json" view="admin:treemenu" xml:base="">
             <file href="treemenu.json.tpl"/>
         </resource>
-        <resource name="template" type="json" view="admin:dispatchresult" xml:base="">
+        <resource name="template" type="json" view="dispatchresult" xml:base="">
             <file href="dispatchresult.json.tpl"/>
         </resource>
         <resource name="template" type="json" view="alltoolbar" xml:base="">

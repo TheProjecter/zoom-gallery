@@ -71,44 +71,70 @@ class zmgConfigurationHelper extends zmgError {
         }
         return false;
     }
-    function update($config) {
-        
+    function update($vars) {
+        $updated = false;
+        foreach ($vars as $config => $value) {
+            $config = trim($config);
+            if (strstr($config, 'zmg_')) {
+                $real = str_replace('_', '/', str_replace('zmg_', '', $config));
+                if ($this->set($real, zmgSQLEscape(trim($value)))) {
+                    $updated = true;
+                }
+            }
+        }
+        if ($updated) {
+            $this->save();
+            return true;
+        }
+        return false;
     }
     function save() {
-        $content = $this->_buildMetaBlock() . $this->_buildLocaleBlock()
+        $content = "<?php\n"
+         . "/**\n"
+         . " * zOOm Media Gallery! - a multi-gallery component\n" 
+         . " * \n"
+         . " * @package zmg\n"
+         . " * @author Mike de Boer <mdeboer AT ebuddy.com>\n"
+         . " * @copyright Copyright &copy; 2007, Mike de Boer. All rights reserved.\n"
+         . " * @license http://www.gnu.org/copyleft/gpl.html GPL\n"
+         . " */\n\n"
+         . "defined('_ZMG_EXEC') or die('Restricted access');\n\n"
+         . "\$zoom_config = array();\n"
+         . $this->_buildMetaBlock() . $this->_buildLocaleBlock()
          . $this->_buildDatabaseBlock() . $this->_buildFilesystemBlock()
          . $this->_buildSmartyBlock() . $this->_buildLayoutBlock()
-         . $this->_buildAppBlock();
+         . $this->_buildAppBlock()
+         . "?>\n";
         //echo str_replace("\n", "<br/>", $content); 
         zmgWriteFile(ZMG_ABS_PATH .DS.'etc'.DS.'app.config.php', $content);
     }
     function _buildMetaBlock() {
-        return $this->_generateBlock("\$zoomConfig", 'meta',
+        return $this->_generateBlock("\$zoom_config", 'meta',
           $this->_config['meta']);
     }
     function _buildLocaleBlock() {
-        return $this->_generateBlock("\$zoomConfig", 'locale',
+        return $this->_generateBlock("\$zoom_config", 'locale',
           $this->_config['locale']);
     }
     function _buildDatabaseBlock() {
-        return $this->_generateBlock("\$zoomConfig", 'db',
+        return $this->_generateBlock("\$zoom_config", 'db',
           $this->_config['db']);
     }
     function _buildFilesystemBlock() {
-        return $this->_generateBlock("\$zoomConfig", 'filesystem',
+        return $this->_generateBlock("\$zoom_config", 'filesystem',
           $this->_config['filesystem']);
     }
     function _buildSmartyBlock() {
-        return $this->_generateBlock("\$zoomConfig", 'smarty',
+        return $this->_generateBlock("\$zoom_config", 'smarty',
           $this->_config['smarty']);
     }
     function _buildLayoutBlock() {
-        return $this->_generateBlock("\$zoomConfig", 'layout',
+        return $this->_generateBlock("\$zoom_config", 'layout',
           $this->_config['layout']);
     }
     function _buildAppBlock() {
         //TODO: find a way to process constants - how to put them back in the config file?
-        return $this->_generateBlock("\$zoomConfig", 'app',
+        return $this->_generateBlock("\$zoom_config", 'app',
           $this->_config['app']);
     }
     function _generateBlock($prefix, $title, $value) {

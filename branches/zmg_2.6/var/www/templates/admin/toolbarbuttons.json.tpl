@@ -7,11 +7,11 @@
             'mediumedit',
             {
                 'id': 'mediumback',
-                'title': '{/literal}{t}Back{/t}{literal}'
+                'title': {/literal}{t escape='json'}Back{/t}{literal}
             },
             {
                 'id': 'mediumsave',
-                'title': '{/literal}{t}Save{/t}{literal}'
+                'title': {/literal}{t escape='json'}Save{/t}{literal}
             }
             {/literal}
         {elseif $subview eq 'zmg_view_mm'}
@@ -19,7 +19,7 @@
             'zmg_view_mm',
             {
                 'id': 'mm_upload',
-                'title': '{/literal}{t}Upload{/t}{literal}'
+                'title': {/literal}{t escape='json'}Upload{/t}{literal}
             }
             {/literal}
         {elseif $subview eq 'zmg_view_settings'}
@@ -27,7 +27,7 @@
             'zmg_view_settings',
             {
                 'id': 'settingssave',
-                'title': '{/literal}{t}Save{/t}{literal}'
+                'title': {/literal}{t escape='json'}Save{/t}{literal}
             }
             {/literal}
         {else}

@@ -20,6 +20,21 @@ defined('_ZMG_EXEC') or die('Restricted access');
 class viewpicker {
     function start(&$zoom) {
         $view = trim(zmgGetParam($_REQUEST, 'view', ZMG_ADMIN ? 'admin:home' : 'gallery'));
+        
+        //check for dispatches that 'put' data (in contrary to 'get' requests)
+        if (strstr($view, 'store')) {
+            switch ($view) {
+                case "admin:settings:store":
+                    $zoom->setResult($zoom->updateConfig($_POST));
+                    break;
+                case "admin:mediumedit:store":
+                    break;
+            }
+            
+            $view = (ZMG_ADMIN ? "admin:dispatchresult" : "dispatchresult")
+             . ":" . str_replace(':', '_', str_replace('admin:', '', $view));
+        }
+        
         $zoom->view->set($view);
         
         if (ZMG_ADMIN) {

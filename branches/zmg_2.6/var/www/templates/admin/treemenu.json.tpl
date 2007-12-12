@@ -1,7 +1,7 @@
 {literal}
 {
     'gallerymanager': {
-        'text': '{/literal}{t}Gallery Manager{/t}{literal}',
+        'text': {/literal}{t escape='json'}Gallery Manager{/t}{literal},
         'id'  : 'admin:gallerymanager',
         'icon': ZMG.CONST.res_path + '/images/sample_icons.gif#2',
         'openicon': '',
@@ -9,7 +9,7 @@
         'load': ZMG.CONST.req_uri + '&view=admin:gallerymanager:getgalleries&sub=0&pos=0'
     },
     'mediamanager': {
-        'text': '{/literal}{t}Media Manager{/t}{literal}',
+        'text': {/literal}{t escape='json'}Media Manager{/t}{literal},
         'id'  : 'admin:mediamanager',
         'icon': '',
         'openicon': '',
@@ -17,7 +17,7 @@
         'load': '',
         'children': {
             'upload' : {
-                'text': '{/literal}{t}Upload new media{/t}{literal}',
+                'text': {/literal}{t escape='json'}Upload new media{/t}{literal},
                 'id'  : 'admin:mediamanager:upload',
                 'icon': '',
                 'openicon': '',
@@ -32,7 +32,7 @@
         }
     },
     'thumbcoder': {
-        'text': '{/literal}{t}Zoom Thumb coder{/t}{literal}',
+        'text': {/literal}{t escape='json'}Zoom Thumb coder{/t}{literal},
         'id'  : 'admin:thumbcoder',
         'icon': '',
         'openicon': '',
@@ -40,14 +40,14 @@
         'load': ''
     },
     'settings': {
-        'text': '{/literal}{t}Settings{/t}{literal}',
+        'text': {/literal}{t escape='json'}Settings{/t}{literal},
         'id'  : 'admin:settings:overview',
         'icon': '',
         'openicon': '',
         'open': false,
         'children': {
             'meta' : {
-                'text': '{/literal}{t}Metadata{/t}{literal}',
+                'text': {/literal}{t escape='json'}Metadata{/t}{literal},
 		        'id'  : 'admin:settings:meta',
 		        'icon': '',
 		        'openicon': '',
@@ -58,7 +58,7 @@
                 }
             },
             'locale' : {
-                'text': '{/literal}{t}Localization{/t}{literal}',
+                'text': {/literal}{t escape='json'}Localization{/t}{literal},
                 'id'  : 'admin:settings:locale',
                 'icon': '',
                 'openicon': '',
@@ -69,7 +69,7 @@
                 }
             },
             'filesystem' : {
-                'text': '{/literal}{t}Storage{/t}{literal}',
+                'text': {/literal}{t escape='json'}Storage{/t}{literal},
                 'id'  : 'admin:settings:filesystem',
                 'icon': '',
                 'openicon': '',
@@ -80,7 +80,7 @@
                 }
             },
             'layout' : {
-                'text': '{/literal}{t}Layout{/t}{literal}',
+                'text': {/literal}{t escape='json'}Layout{/t}{literal},
                 'id'  : 'admin:settings:layout',
                 'icon': '',
                 'openicon': '',
@@ -91,7 +91,7 @@
                 }
             },
             'app' : {
-                'text': '{/literal}{t}Application{/t}{literal}',
+                'text': {/literal}{t escape='json'}Application{/t}{literal},
                 'id'  : 'admin:settings:app',
                 'icon': '',
                 'openicon': '',
@@ -102,7 +102,7 @@
                 }
             },
             'info' : {
-                'text': '{/literal}{t}Info{/t}{literal}',
+                'text': {/literal}{t escape='json'}Info{/t}{literal},
                 'id'  : 'admin:settings:info',
                 'icon': '',
                 'openicon': '',
