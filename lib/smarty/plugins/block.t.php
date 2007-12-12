@@ -110,8 +110,10 @@ function smarty_block_t($params, $text, &$smarty)
 		switch ($escape) {
 			case 'javascript':
 			case 'js':
-				// javascript escape
-				$text = str_replace('\'', '\\\'', stripslashes($text));
+            case 'json':
+				// javascript escape {12-12-2007, mike: modified for JSON support in ZMG}
+                $json = new zmgJSON();
+				$text = $json->encode($text);
 				break;
 			case 'url':
 				// url escape

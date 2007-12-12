@@ -1,13 +1,13 @@
 if (!window.ZMG) window.ZMG = {};
 
-ZMG.Events = Class({
+ZMG.Events = new Class({
     initialize: function() {
         this.Server = new ZMG.Events.Server();
         this.Client = new ZMG.Events.Client();
     }
 });
 
-ZMG.Events.Server = Class({
+ZMG.Events.Server = new Class({
     initialize: function() {
         this.settingsTabs = null;
         this.settingsMap  = [];
@@ -50,6 +50,25 @@ ZMG.Events.Server = Class({
             this.Server.onloadsettingstab(key, text);
         }
         ZMG.Admin.Events.Client.onhideloader();
+    },
+    ondispatchresult: function(text, xml) {
+        var o = Json.evaluate(text);
+        if (o && o.action) {
+            
+            if (o.action == "settings_store") {
+                
+            } else if (o.action == "medium_store") {
+                
+            } else if (o.action == "gallery_store") {
+                
+            }
+            var pos = this.Client.toolbar.node.getCoordinates();
+            this.Client.tooltip.setContent(o.messages.title,
+              o.messages[o.result.toLowerCase()])
+              .locate(pos.left - 250, pos.top + 12).show();
+            window.setTimeout('ZMG.Admin.Events.Client.tooltip.hide()', 5500);
+        }
+        this.Client.onhideloader();
     },
     ongallerymanager: function(html) {
         if (!ZMG.Admin.cacheElement('zmg_view_gm')) {
@@ -251,13 +270,14 @@ ZMG.Events.Server = Class({
     }
 });
 
-ZMG.Events.Client = Class({
+ZMG.Events.Client = new Class({
     initialize: function() {
         this.requestQueue = null;
         this.lastRequest = null;
         this.menuTree = null;
         this.requestingTabs = false;
         this.toolbar = new ZMG.Toolbar();
+        this.tooltip = new ZMG.Tooltip();
         //LiveGrid content sliders
         this.bodySlide = null;
         this.editSlide = null;
@@ -396,12 +416,11 @@ ZMG.Events.Client = Class({
         var url  = ZMG.CONST.req_uri + "&view=admin:settings:store";
         var f = function() {
             new XHR({
-                method: 'POST',
-                onSuccess: ZMG.Admin.Events.Server.onview.bind(ZMG.Admin.Events),
+                onSuccess: ZMG.Admin.Events.Server.ondispatchresult.bind(ZMG.Admin.Events),
                 onFailure: ZMG.Admin.Events.Server.onerror.bind(ZMG.Admin.Events)
             }).send(url, data || '');
         };
-        
+        this.onshowloader();
         window.setTimeout(f.bind(this), 20); // allowing a small delay for the browser to draw the loader-icon.
     },
     onmediumbackclick: function(e) {
@@ -409,7 +428,16 @@ ZMG.Events.Client = Class({
         this.onlivegrideditslide();
     },
     onmediumsaveclick: function(e) {
-        
+        var data = FormSerializer.serialize($('zmg_form_edit_medium'));
+        var url  = ZMG.CONST.req_uri + "&view=admin:mediumedit:store";
+        var f = function() {
+            new XHR({
+                onSuccess: ZMG.Admin.Events.Server.ondispatchresult.bind(ZMG.Admin.Events),
+                onFailure: ZMG.Admin.Events.Server.onerror.bind(ZMG.Admin.Events)
+            }).send(url, data || '');
+        };
+        this.onshowloader();
+        window.setTimeout(f.bind(this), 20); // allowing a small delay for the browser to draw the loader-icon.
     },
     onping: function() {
         this.onviewselect('ping');

@@ -11,6 +11,9 @@
 
 defined('_ZMG_EXEC') or die('Restricted access');
 
+define('_ZMG_RPC_RESULT_OK', 'OK');
+define('_ZMG_RPC_RESULT_KO', 'KO');
+
 class zmgFactory {
     function &getZoom(&$config = null) {
         static $instance;
@@ -45,6 +48,12 @@ class Zoom extends zmgError {
      * @var array
      */
 	var $_config = null;
+    /**
+     * Internal variable for storing rpc-results temporarily
+     *
+     * @var string
+     */
+    var $_result = null;
     /**
      * Public variable, containing the zmgTemplateViewHelper/Smarty
      * templating engine class.
@@ -108,6 +117,9 @@ class Zoom extends zmgError {
      */
     function getConfig($path) {
     	return $this->_config->get($path);
+    }
+    function updateConfig($vars) {
+        return $this->_config->update($vars);
     }
     function getAbstractValue($class, $func) {
         if (class_exists($class) && method_exists($class, $method)) {
@@ -259,6 +271,17 @@ class Zoom extends zmgError {
             }
         }
     }
+    function setResult($result = true) {
+        $this->_result = ($result) ? _ZMG_RPC_RESULT_OK : _ZMG_RPC_RESULT_KO;
+    }
+    function getResult() {
+        if ($this->_result == null) {
+            return _ZMG_RPC_RESULT_OK;
+        }
+        $res = $this->_result;
+        $this->_result = null;
+        return $res;
+    }
     /**
      * Send a set of headers to the client (i.e. browser) to tell it how to display
      * the data inside the response body.
@@ -282,10 +305,10 @@ class Zoom extends zmgError {
         }
         
         if ($error) {
-            echo @header("zmg_result: KO");
+            echo @header("zmg_result: " . _ZMG_RPC_RESULT_KO);
             echo @header("zmg_message: " . urlencode($error_msg));
         } else {
-            echo @header("zmg_result: OK");
+            echo @header("zmg_result: " . _ZMG_RPC_RESULT_OK);
         }
         
         if ($type == "xml") {

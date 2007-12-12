@@ -23,10 +23,10 @@
 </tr>
 <tr>
   <td>
-    <label for="zmg_layout_media_columnsno">{t}Number of columns for media{/t}</label>
+    <label for="zmg_layout_medium_columnsno">{t}Number of columns for media{/t}</label>
   </td>
   <td>
-    <input type="text" name="zmg_layout_media_columnsno" id="zmg_layout_media_columnsno" value="{$zoom->getConfig('layout/media/columnsno')}" size="70"/>
+    <input type="text" name="zmg_layout_medium_columnsno" id="zmg_layout_medium_columnsno" value="{$zoom->getConfig('layout/medium/columnsno')}" size="70"/>
   </td>
 </tr>
 <tr>
