@@ -17,7 +17,7 @@
 // +----------------------------------------------------------------------+
 //
 // $Id:mime_parameter.php 106 2007-02-10 22:30:30Z kevinuru $
-defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.' );
+defined('_ZMG_EXEC') or die('Restricted access');
 
 /**
  * Class for working with MIME type parameters

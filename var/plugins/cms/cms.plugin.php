@@ -33,10 +33,9 @@ class zmgCmsPlugin extends zmgError {
             if ($version->RELEASE == "1.5") {
                 return "joomla_1_5";
             }
-        } else {
-            //legacy mode (?)
-            return "joomla_1_0";
         }
+        //legacy mode (?)
+        return "joomla_1_0";
     }
 }
 ?>

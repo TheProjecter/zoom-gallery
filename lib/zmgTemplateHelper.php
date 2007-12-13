@@ -137,6 +137,10 @@ class zmgTemplateHelper extends Smarty {
     }
     
     function _prepareAjax() {
+        $lifetime = (zmgEnv::getSessionLifetime() * 60000); //in milliseconds
+        $refreshTime =  ( $lifetime <= 60000 ) ? 30000 : $lifetime - 60000;
+        //refresh time is 1 minute less than the lifetime assigned in the CMS configuration
+        
         $ret = ("<script language=\"javascript\" type=\"text/javascript\">\n"
          . "<!--\n"
          . "\tif (!window.ZMG) window.ZMG = {};\n"
@@ -145,9 +149,11 @@ class zmgTemplateHelper extends Smarty {
          . "\tZMG.CONST.active_view = '".$this->_active_view."';\n"
          . "\tZMG.CONST.is_admin    = ".((ZMG_ADMIN) ? "true" : "false").";\n"
          . "\tZMG.CONST.site_uri    = document.location.protocol + '//' + document.location.host + document.location.pathname.replace(/\/(administrator\/)?index(2)?\.php$/i, '');\n"
-         . "\tZMG.CONST.req_uri     = ZMG.CONST.site_uri + \"".zmgEnv::getAjaxURL()."\";\n"
-         . "\tZMG.CONST.res_path    = ZMG.CONST.site_uri + \"/components/com_zoom/var/www/templates/"
-         . $this->_active_template."\";\n");
+         . "\tZMG.CONST.req_uri     = ZMG.CONST.site_uri + '".zmgEnv::getAjaxURL()."';\n"
+         . "\tZMG.CONST.res_path    = ZMG.CONST.site_uri + '/components/com_zoom/var/www/templates/"
+         . $this->_active_template."';\n"
+         . "\tZMG.CONST.base_path   = '".zmgGetBasePath()."';\n"
+         . "\tZMG.CONST.refreshtime = ".$refreshTime.";\n");
         
         if (count($this->_constants)) {
             foreach ($this->_constants as $name => $value) {
