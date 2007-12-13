@@ -10,13 +10,12 @@
     <views>
         <view name="admin:home"/>
         <view name="admin:treemenu"/>
-        <view name="admin:dispatchresult"/>
-        <view name="dispatchresult" inherits="admin:dispatchresult:*"/>
+        <view name="admin:dispatchresult" inherits="admin:dispatchresult:*"/>
         <view name="admin:gallerymanager"/>
         <view name="admin:gallerymanager:getgalleries"/>
         <view name="admin:mediamanager:getmedia"/>
-        <view name="admin:mediamanager:get"/>
-        <view name="getmediumdata" inherits="admin:mediamanager:get:*"/>
+        <view name="admin:mediamanager:get" inherits="admin:mediamanager:get:*"/>
+        <view name="admin:mediamanager:upload"/>
         <view name="admin:thumbcoder"/>
         <view name="admin:settings:overview"/>
         <view name="admin:settings:meta"/>
@@ -25,8 +24,7 @@
         <view name="admin:settings:layout"/>
         <view name="admin:settings:app"/>
         <view name="admin:settings:info"/>
-        <view name="admin:toolbar"/>
-        <view name="alltoolbar" inherits="admin:toolbar:*"/>
+        <view name="admin:toolbar" inherits="admin:toolbar:*"/>
         <view name="allgallerymanager" inherits="admin:gallerymanager:*"/>
         <view name="allsettings" inherits="admin:settings:*"/>
         <view name="singlepage" inherits="admin:*"/>
@@ -51,6 +49,9 @@
             <file href="ajaxqueue.js"/>
         </resource>
         <resource name="javascript" xml:base="js/">
+            <file href="fancyupload.js"/>
+        </resource>
+        <resource name="javascript" xml:base="js/">
             <file href="livegrid.js"/>
         </resource>
         <resource name="javascript" xml:base="js/">
@@ -62,16 +63,19 @@
         <resource name="javascript" xml:base="js/">
             <file href="simpletabs.js"/>
         </resource>
+        <resource name="javascript" xml:base="js/">
+            <file href="swiff.js"/>
+        </resource>
         <resource name="template" type="html" view="singlepage" xml:base="">
             <file href="admin.html.tpl"/>
         </resource>
         <resource name="template" type="json" view="admin:treemenu" xml:base="">
             <file href="treemenu.json.tpl"/>
         </resource>
-        <resource name="template" type="json" view="dispatchresult" xml:base="">
+        <resource name="template" type="json" view="admin:dispatchresult" xml:base="">
             <file href="dispatchresult.json.tpl"/>
         </resource>
-        <resource name="template" type="json" view="alltoolbar" xml:base="">
+        <resource name="template" type="json" view="admin:toolbar" xml:base="">
             <file href="toolbarbuttons.json.tpl"/>
         </resource>
         <resource name="template" type="json" view="allsettings" xml:base="">
@@ -86,8 +90,11 @@
         <resource name="template" type="json" view="admin:mediamanager:getmedia" xml:base="">
             <file href="mediamanager_getmedia.json.tpl"/>
         </resource>
-        <resource name="template" type="json" view="getmediumdata" xml:base="">
+        <resource name="template" type="json" view="admin:mediamanager:get" xml:base="">
             <file href="mediamanager_getmediumdata.json.tpl"/>
+        </resource>
+        <resource name="template" type="html" view="admin:mediamanager:upload" xml:base="">
+            <file href="mediamanager_upload.html.tpl"/>
         </resource>
         <resource name="template" type="html" view="admin:settings:meta" xml:base="">
             <file href="settings_meta.html.tpl"/>

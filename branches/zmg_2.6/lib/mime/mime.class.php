@@ -17,10 +17,9 @@
 // +----------------------------------------------------------------------+
 //
 // $Id:mime.class.php 139 2007-03-12 09:21:44Z mikedeboer $
-defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.' );
+defined('_ZMG_EXEC') or die('Restricted access');
 
-global $mosConfig_absolute_path;
-require_once($mosConfig_absolute_path . "/components/com_zoom/lib/mime/mime_helper.class.php");
+require_once(ZMG_ABS_PATH .DS.'lib'.DS.'mime'.DS.'mime_helper.class.php');
 
 /**
  * Class for working with MIME types
@@ -79,8 +78,7 @@ class MIME_Type {
      * @param  string $type MIME type
      * @return void
      */
-    function MIME_Type($type = false)
-    {
+    function MIME_Type($type = false) {
         if ($type) {
             $this->parse($type);
         }
@@ -93,13 +91,12 @@ class MIME_Type {
      * @param  $type string MIME type to parse
      * @return void
      */
-    function parse($type)
-    {
+    function parse($type) {
         global $mosConfig_absolute_path;
         $this->media = $this->getMedia($type);
         $this->subType = $this->getSubType($type);
         if (MIME_Type::hasParameters($type)) {
-            require_once $mosConfig_absolute_path.'/components/com_zoom/lib/mime/mime_parameter.php';
+            require_once(ZMG_ABS_PATH .DS.'lib'.DS.'mime'.DS.'mime_parameter.php');
             foreach (MIME_Type::getParameters($type) as $param) {
                 $param = &new MIME_Type_Parameter($param);
                 $this->parameters[$param->name] = $param;
@@ -115,8 +112,7 @@ class MIME_Type {
      * @return boolean true if $type has parameters, false otherwise
      * @static
      */
-    function hasParameters($type)
-    {
+    function hasParameters($type) {
         if (strstr($type, ';')) {
             return true;
         }
@@ -131,8 +127,7 @@ class MIME_Type {
      * @return array $type's parameters
      * @static
      */
-    function getParameters($type)
-    {
+    function getParameters($type) {
         $params = array();
         $tmp = explode(';', $type);
         for ($i = 1; $i < count($tmp); $i++) {
@@ -149,8 +144,7 @@ class MIME_Type {
      * @return string MIME type with parameters removed
      * @static
      */
-    function stripParameters($type)
-    {
+    function stripParameters($type) {
         if (strstr($type, ';')) {
             return substr($type, 0, strpos($type, ';'));
         }
@@ -166,8 +160,7 @@ class MIME_Type {
      * @return string $type's media
      * @static
      */
-    function getMedia($type)
-    {
+    function getMedia($type) {
         $tmp = explode('/', $type);
         return strtolower($tmp[0]);
     }
@@ -180,8 +173,7 @@ class MIME_Type {
      * @return string $type's subtype
      * @static
      */
-    function getSubType($type)
-    {
+    function getSubType($type) {
         $tmp = explode('/', $type);
         $tmp = explode(';', $tmp[1]);
         return strtolower(trim($tmp[0]));
@@ -195,8 +187,7 @@ class MIME_Type {
      *
      * @return string MIME type string
      */
-    function get()
-    {
+    function get() {
         $type = strtolower($this->media.'/'.$this->subType);
         if (count($this->parameters)) {
             foreach ($this->parameters as $key => $null) {
@@ -216,8 +207,7 @@ class MIME_Type {
      * @return boolean true if $type is experimental, false otherwise
      * @static
      */
-    function isExperimental($type)
-    {
+    function isExperimental($type) {
         if (substr(MIME_Type::getMedia($type), 0, 2) == 'x-' ||
             substr(MIME_Type::getSubType($type), 0, 2) == 'x-') {
             return true;
@@ -234,8 +224,7 @@ class MIME_Type {
      * @return boolean true if $type is a vendor type, false otherwise
      * @static
      */
-    function isVendor($type)
-    {
+    function isVendor($type) {
         if (substr(MIME_Type::getSubType($type), 0, 4) == 'vnd.') {
             return true;
         }
@@ -250,8 +239,7 @@ class MIME_Type {
      * @return boolean true if $type is a wildcard, false otherwise
      * @static
      */
-    function isWildcard($type)
-    {
+    function isWildcard($type) {
         if ($type == '*/*' || MIME_Type::getSubtype($type) == '*') {
             return true;
         }
@@ -269,8 +257,7 @@ class MIME_Type {
      * @param  string  $type MIME type to check
      * @return boolean true if there was a match, false otherwise
      */
-    function wildcardMatch($card, $type)
-    {
+    function wildcardMatch($card, $type) {
         if (!MIME_Type::isWildcard($card)) {
             return false;
         }
@@ -279,8 +266,7 @@ class MIME_Type {
             return true;
         }
         
-        if (MIME_Type::getMedia($card) ==
-            MIME_Type::getMedia($type)) {
+        if (MIME_Type::getMedia($card) == MIME_Type::getMedia($type)) {
             return true;
         }
         return false;
@@ -295,8 +281,7 @@ class MIME_Type {
      * @param  string $comment Comment for this parameter
      * @return void
      */
-    function addParameter($name, $value, $comment = false)
-    {
+    function addParameter($name, $value, $comment = false) {
         $tmp = &new MIME_Type_Parameter;
         $tmp->name = $name;
         $tmp->value = $value;
@@ -311,8 +296,7 @@ class MIME_Type {
      * @param  string $name Parameter name
      * @return void
      */
-    function removeParameter($name)
-    {
+    function removeParameter($name) {
         unset ($this->parameters[$name]);
     }
 
@@ -329,17 +313,15 @@ class MIME_Type {
      * @since 1.0.0beta1
      * @static
      */
-    function autoDetect($file, $custom_mime = null, $custom_ext = null, $params = false)
-    {
-        if (function_exists('mime_content_type')) {
+    function autoDetect($file, $custom_mime = null, $custom_ext = null, $params = false) {
+        $type = false;
+        if (function_exists('finfo_open')) {
+            // We have fileinfo
+            $finfo = finfo_open(FILEINFO_MIME);
+            $type = finfo_file($finfo, $file);
+            finfo_close($finfo);
+        } elseif (function_exists('mime_content_type')) {
             $type = mime_content_type($file);
-            if ($type == "application/octet-stream" || $type == "application/unknown") {
-                if (!empty($custom_mime)) {
-                	$type = $custom_mime;
-                } elseif (!empty($custom_ext)) {
-                    $type = MIME_Helper::convertExtensionToMime($custom_ext);
-                }
-            }
         } elseif (!empty($custom_mime)) {
             $type = $custom_mime;
         } else {
@@ -351,7 +333,15 @@ class MIME_Type {
             return $type;
         }
         //return PEAR::raiseError("Sorry, can't autodetect; you need the mime_magic extension or System_Command and 'file' installed to use this function.");
-
+        
+        if ($type == "application/octet-stream" || $type == "application/unknown") {
+            if (!empty($custom_mime)) {
+                $type = $custom_mime;
+            } elseif (!empty($custom_ext)) {
+                $type = MIME_Helper::convertExtensionToMime($custom_ext);
+            }
+        }
+        
         if (!MIME_Helper::convertMimeToExtension($type)) {
         	$type = MIME_Helper::convertExtensionToMime($custom_mime);
         }
@@ -385,8 +375,7 @@ class MIME_Type {
      * @since 1.0.0beta1
      * @static
      */
-    function _fileAutoDetect($file)
-    {
+    function _fileAutoDetect($file) {
         // Sanity checks
         if (!file_exists($file)) {
             //return PEAR::raiseError("File \"$file\" doesn't exist");

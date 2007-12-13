@@ -223,7 +223,7 @@ ZMG.Events.Server = new Class({
                     if (!entry.loaded && entry.data) {
                         klass.Client.onviewselect(entry.data[0], entry.data[1]);
                     } else {
-                        klass.Client.onping(idx);
+                        //klass.Client.onping(idx);
                     }
                 }
             });
@@ -285,9 +285,11 @@ ZMG.Events.Client = new Class({
         window.addEvent('resize', this.onwindowresize.bind(this));
         
         var el = ZMG.Admin.cacheElement('zmg_tree_toolpin');
-        el.onmouseover = this.onpinmouseenter.bindWithEvent(el);
-        el.onmouseout  = this.onpinmouseleave.bindWithEvent(el);
-        el.onclick     = this.onpinmouseclick.bindWithEvent(el);
+        el.onmouseover = this.onpinmouseenter;
+        el.onmouseout  = this.onpinmouseleave;
+        el.onclick     = this.onpinmouseclick;
+        
+        this.onping.periodical(ZMG.CONST.refreshtime);
     },
     onpinmouseenter: function(e) {
         this.addClass('zmg_tool_pinned_hover');
@@ -409,7 +411,7 @@ ZMG.Events.Client = new Class({
         }
     },
     onmm_uploadclick: function(e) {
-        
+        this.onviewselect('admin:mediamanager:upload');
     },
     onsettingssaveclick: function(e) {
         var data = FormSerializer.serialize($('zmg_settings_form'));
@@ -440,7 +442,7 @@ ZMG.Events.Client = new Class({
         window.setTimeout(f.bind(this), 20); // allowing a small delay for the browser to draw the loader-icon.
     },
     onping: function() {
-        this.onviewselect('ping');
+        ZMG.Admin.Client.onviewselect('ping');
     },
     onshowloader: function() {
         ZMG.Admin.cacheElement('zmg_admin_loader').setStyle('display', '');

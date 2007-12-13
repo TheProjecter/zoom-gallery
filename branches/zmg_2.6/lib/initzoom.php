@@ -369,6 +369,18 @@ function zmgWriteFile($filename, $content) {
     return true;
 }
 
+function zmgGetBasePath() {
+    $path = "";
+    if (strpos(php_sapi_name(), 'cgi') !== false && !empty($_SERVER['REQUEST_URI'])) {
+        //Apache CGI
+        $path =  rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+    } else {
+        //Others
+        $path =  rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+    }
+    return str_replace('/administrator', '', $path) . "/components/com_zoom";
+}
+
 /**
  * Format a backtrace error
  */

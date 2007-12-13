@@ -6,7 +6,7 @@
  * @author Bharat Mediratta <bharat@menalto.com>
  * @author Mike de Boer <mike@zoomfactory.org>
  */
-defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.' );
+defined('_ZMG_EXEC') or die('Restricted access');
 
 /**
  * A collection of useful mime type related utilities

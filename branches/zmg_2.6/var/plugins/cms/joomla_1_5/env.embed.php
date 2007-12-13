@@ -18,8 +18,8 @@ class zmgEnv extends zmgError {
     }
     
     function getSessionLifetime() {
-        $session = & JFactory::getSession();
-        return $session->getExpire();
+        $config = & JFactory::getConfig();
+        return $config->getValue('lifetime');
     }
     
     function getSessionID() {
