@@ -668,3 +668,54 @@ tab-strip .tab-selected .tab-right span.tab-text
 {
     cursor:move;
 }
+
+.upload-queue
+{
+    list-style-image: none;
+    list-style-position: outside;
+    list-style-type: none;
+}
+.zmg_fancyupload_queue li
+{
+    background: transparent url(../images/upload/upload.png) no-repeat 0 5px;
+    padding: 5px 0 5px 22px;
+}
+.upload-queue .queue-file
+{
+    font-weight: bold;
+}
+.zmg_fancyupload_queue .queue-size
+{
+    margin-left: 1em;
+    color: #AAAAAA;
+    font-size: 0.9em;
+}
+.zmg_fancyupload_queue .queue-loader
+{
+    position: relative;
+    background-color: #DDDDDD;
+    border: 1px inset #DDDDDD;
+    color: #FFFFFF;
+    font-size: 0.9em;
+    margin: 3px 15px;
+}
+.zmg_fancyupload_queue .queue-subloader
+{
+    position: absolute;
+    background-color: #81B466;
+    left: 0pt;
+    top: 0;
+    height: 100%;
+    width: 0;
+    text-align: center;
+}
+
+.zmg_fancyupload_queue .input-delete
+{
+    background: transparent url(../images/upload/delete.png) no-repeat top left;
+    border: medium none;
+    float: right;
+    height: 16px;
+    width: 16px;
+    text-decoration: none;
+}
