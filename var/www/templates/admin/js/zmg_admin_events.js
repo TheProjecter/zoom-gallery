@@ -24,6 +24,8 @@ ZMG.Events.Server = new Class({
         } else if (view.indexOf('admin:mediamanager:get:') > -1) {
             var o = Json.evaluate(text);
             this.Server.onloadmediumdata(o);
+        } else if (view == "admin:mediamanager:upload") {
+            this.Server.onmediamanagerupload(text);
         } else if (view.indexOf('admin:toolbar:') > -1) {
             var o = Json.evaluate(text);
             this.Server.ontoolbar(o);
@@ -171,6 +173,30 @@ ZMG.Events.Server = new Class({
             pager.addEvent('change', ZMG.Admin.Events.Client.onlivegridpager.bind(this.liveGrid, [pager]));
         }
         this.onactivateview('zmg_view_mm');
+    },
+    onmediamanagerupload: function(html) {
+        if (!ZMG.Admin.cacheElement('zmg_view_mm_upload')) {
+            var oUpload = new Element('div', { id: 'zmg_view_mm_upload' });
+            ZMG.Admin.cacheElement('zmg_view_content').adopt(oUpload);
+            oUpload.innerHTML = html;
+            
+            this.Uploader = new FancyUpload($('zmg_fancyupload_filedata'), {
+                swf: ZMG.CONST.base_path + '/var/www/templates/admin/other/uploader.swf',
+                multiple: true,
+                queued: true,
+                queueList: 'zmg_fancyupload_queue',
+                instantStart: false,
+                allowDuplicates: true,
+                types: {'All Files (*.*)': '*.*'},
+                onAllComplete: function(){
+                    //MediaManager.refreshFrame();
+                    alert('done!');
+                }
+            });
+            
+            $('zmg_fancyupload_clear').onclick = this.Uploader.clearList.bind(this.Uploader, [false]); 
+        }
+        this.onactivateview('zmg_view_mm_upload');
     },
     onloadmediumdata: function(node) {
         if (node.result == "OK") {
@@ -411,7 +437,7 @@ ZMG.Events.Client = new Class({
         }
     },
     onmm_uploadclick: function(e) {
-        this.onviewselect('admin:mediamanager:upload');
+        this.onviewselect('admin:mediamanager:upload', 'html');
     },
     onsettingssaveclick: function(e) {
         var data = FormSerializer.serialize($('zmg_settings_form'));
@@ -442,7 +468,7 @@ ZMG.Events.Client = new Class({
         window.setTimeout(f.bind(this), 20); // allowing a small delay for the browser to draw the loader-icon.
     },
     onping: function() {
-        ZMG.Admin.Client.onviewselect('ping');
+        ZMG.Admin.Events.Client.onviewselect('ping');
     },
     onshowloader: function() {
         ZMG.Admin.cacheElement('zmg_admin_loader').setStyle('display', '');
