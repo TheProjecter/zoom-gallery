@@ -1,4 +1,4 @@
-<form action="/playground/server/upload.php" method="post" id="zmg_fancyupload" enctype="multipart/form-data">
+<form action="" method="post" id="zmg_fancyupload" enctype="multipart/form-data">
     <div class="zmg_halfsize">
         <fieldset>
             <legend>{t}Select Files{/t}</legend>

@@ -590,7 +590,7 @@ class toolbox extends zoom {
         }
         imagedestroy($src_img);
         imagedestroy($dst_img);
-        return true; 
+        return true;
     }
     /**
     * Resize an image to a prefered size using the GD2 library.
@@ -774,7 +774,7 @@ class toolbox extends zoom {
         }
         imagedestroy($src_img);
         imagedestroy($dst_img);
-        return true; 
+        return true;
     }
     /**
     * Rotate an image with the prefered number of degrees using the GD2 library.

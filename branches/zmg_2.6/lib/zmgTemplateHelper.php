@@ -26,6 +26,8 @@ class zmgTemplateHelper extends Smarty {
     
     var $_active_subview = null;
     
+    var $_view_tokens = null;
+    
     var $_viewtype = null;
     
     var $_secret = null;
@@ -61,7 +63,8 @@ class zmgTemplateHelper extends Smarty {
     function set($view) {
         if (empty($view))
             return $this->throwError('No view specified.');
-        $this->_active_view = $view;
+        $this->_active_view = trim($view);
+        $this->_view_tokens = split(':', $view);
     }
     
     function get() {
@@ -75,6 +78,13 @@ class zmgTemplateHelper extends Smarty {
         }
         return $this->_active_subview;
     }
+    
+    function getViewTokens() {
+        if (is_array($this->_view_tokens)) {
+            return $this->_view_tokens;
+        }
+        return array();
+    }
 
     function run(&$zoom) {
         if (empty($this->_active_view))
@@ -85,7 +95,7 @@ class zmgTemplateHelper extends Smarty {
             echo "                                         ";
             return;
         }
-
+        
         //mootools & Ajax preparing stuff
         if (!zmgEnv::isRPC() && $this->_viewtype == "html") {
             if (ZMG_ADMIN) {
@@ -146,6 +156,8 @@ class zmgTemplateHelper extends Smarty {
          . "\tif (!window.ZMG) window.ZMG = {};\n"
          . "\tZMG.CONST = {};\n"
          . "\tZMG.CONST.id          = '".md5($this->_secret)."';\n"
+         . "\tZMG.CONST.result_ok   = '"._ZMG_RPC_RESULT_OK."';\n"
+         . "\tZMG.CONST.result_ko   = '"._ZMG_RPC_RESULT_KO."';\n"
          . "\tZMG.CONST.active_view = '".$this->_active_view."';\n"
          . "\tZMG.CONST.is_admin    = ".((ZMG_ADMIN) ? "true" : "false").";\n"
          . "\tZMG.CONST.site_uri    = document.location.protocol + '//' + document.location.host + document.location.pathname.replace(/\/(administrator\/)?index(2)?\.php$/i, '');\n"

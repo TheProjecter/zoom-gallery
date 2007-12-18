@@ -180,6 +180,10 @@ ZMG.Events.Server = new Class({
             ZMG.Admin.cacheElement('zmg_view_content').adopt(oUpload);
             oUpload.innerHTML = html;
             
+            var oForm = oUpload.getElementsByTagName('form')[0];
+            if (oForm)
+                oForm.action = ZMG.CONST.req_uri + "&view=admin:mediamanager:upload:store";
+            
             this.Uploader = new FancyUpload($('zmg_fancyupload_filedata'), {
                 swf: ZMG.CONST.base_path + '/var/www/templates/admin/other/uploader.swf',
                 multiple: true,
@@ -199,7 +203,7 @@ ZMG.Events.Server = new Class({
         this.onactivateview('zmg_view_mm_upload');
     },
     onloadmediumdata: function(node) {
-        if (node.result == "OK") {
+        if (node.result == ZMG.CONST.result_ok) {
             var data = node.data.medium;
             var form = ZMG.Admin.cacheElement('zmg_form_edit_medium');
             form.reset();
@@ -246,11 +250,8 @@ ZMG.Events.Server = new Class({
                     var klass = ZMG.Admin.Events;
                     var entry = klass.Server.settingsTabs.entries[idx];
                     klass.Server.onactivateview('zmg_view_settings');
-                    if (!entry.loaded && entry.data) {
+                    if (!entry.loaded && entry.data)
                         klass.Client.onviewselect(entry.data[0], entry.data[1]);
-                    } else {
-                        //klass.Client.onping(idx);
-                    }
                 }
             });
             for (var i in node.tabs) {
