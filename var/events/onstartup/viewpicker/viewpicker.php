@@ -22,12 +22,18 @@ class viewpicker {
         $view = trim(zmgGetParam($_REQUEST, 'view', ZMG_ADMIN ? 'admin:home' : 'gallery'));
         
         //check for dispatches that 'put' data (in contrary to 'get' requests)
-        if (strstr($view, 'store')) {
+        $view_tokens = split(':', $view);
+        if (in_array('store', $view_tokens) || in_array('update', $view_tokens)) {
             switch ($view) {
                 case "admin:settings:store":
                     $zoom->setResult($zoom->updateConfig($_POST));
                     break;
                 case "admin:mediumedit:store":
+                    break;
+                case "admin:mediaupload:store":
+                    
+                    break;
+                default:
                     break;
             }
             
