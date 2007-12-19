@@ -85,7 +85,6 @@ $zoom_config['layout']['ordering']['galleries'] = 1;
 $zoom_config['app'] = array();
 $zoom_config['app']['secret']          = "OI8euC5USKvSgkf4";
 $zoom_config['app']['version']         = "2.6 Alpha";
-$zoom_config['app']['safemodeversion'] = "1.1";
 $zoom_config['app']['features']        = array();
 $zoom_config['app']['features']['hotlinkprotection'] = 1;
 $zoom_config['app']['features']['comments']          = 1;
