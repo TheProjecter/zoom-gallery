@@ -101,6 +101,17 @@
                     'forcetype': 'html'
                 }
             },
+            'plugins' : {
+                'text': {/literal}{t escape='json'}Plugins{/t}{literal},
+                'id'  : 'admin:settings:plugins',
+                'icon': '',
+                'openicon': '',
+                'open': false,
+                'load': '',
+                'extra': {
+                    'forcetype': 'html'
+                }
+            },
             'info' : {
                 'text': {/literal}{t escape='json'}Info{/t}{literal},
                 'id'  : 'admin:settings:info',

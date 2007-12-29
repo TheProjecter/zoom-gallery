@@ -32,22 +32,13 @@ ZMG.Events.Server = new Class({
         } else if (view == "admin:settings:overview") {
             var o = Json.evaluate(text);
             this.Server.onsettingsoverview(o);
-        } else if (view == "admin:settings:meta") {
-            key = this.Server.ongetsettingskey(view);
-            this.Server.onloadsettingstab(key, text);
-        } else if (view == "admin:settings:locale") {
-            key = this.Server.ongetsettingskey(view);
-            this.Server.onloadsettingstab(key, text);
-        } else if (view == "admin:settings:filesystem") {
-            key = this.Server.ongetsettingskey(view);
-            this.Server.onloadsettingstab(key, text);
-        } else if (view == "admin:settings:layout") {
-            key = this.Server.ongetsettingskey(view);
-            this.Server.onloadsettingstab(key, text);
-        } else if (view == "admin:settings:app") {
-            key = this.Server.ongetsettingskey(view);
-            this.Server.onloadsettingstab(key, text);
-        } else if (view == "admin:settings:info") {
+        } else if (view == "admin:settings:meta"
+          || view == "admin:settings:locale"
+          || view == "admin:settings:filesystem"
+          || view == "admin:settings:layout"
+          || view == "admin:settings:app"
+          || view == "admin:settings:plugins"
+          || view == "admin:settings:info") {
             key = this.Server.ongetsettingskey(view);
             this.Server.onloadsettingstab(key, text);
         }

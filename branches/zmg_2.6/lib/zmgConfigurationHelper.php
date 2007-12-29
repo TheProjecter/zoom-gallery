@@ -58,36 +58,64 @@ class zmgConfigurationHelper extends zmgError {
         $config_val  = &$this->_config;
         for ($i = 0; $i < count($path_tokens); $i++) {
             if (isset($config_val[$path_tokens[$i]])) {
+                if ($i == (count($path_tokens) - 1)) {
+                    $config_val[$path_tokens[$i]] = $value;
+                    return true;
+                }
                 $config_val = & $config_val[$path_tokens[$i]];
             } else {
-                //path appears to be invalid
-                $config_val = null;
-                break;
+                return false;
             }
-        }
-        if ($config_val) {
-            $config_val = $value;
-            return true;
         }
         return false;
     }
-    function update($vars) {
+    function update($vars, $isPlugin = false) {
         $updated = false;
-        foreach ($vars as $config => $value) {
-            $config = trim($config);
-            if (strstr($config, 'zmg_')) {
-                $real = str_replace('_', '/', str_replace('zmg_', '', $config));
-                if ($this->set($real, zmgSQLEscape(trim($value)))) {
-                    $updated = true;
+        if (!$isPlugin) {
+            foreach ($vars as $config => $value) {
+                $config = trim($config);
+                if (strstr($config, 'zmg_')) {
+                    $real = str_replace('_', '/', str_replace('zmg_', '', $config));
+                    if ($this->set($real, zmgSQLEscape(trim($value)))) {
+                        $updated = true;
+                    }
                 }
             }
+        } else {
+            echo "updating plugin config..";
+            $keys = array_keys($vars);
+            if (!$this->_config['plugins'][$keys[0]]) {
+                array_merge($this->_config, $vars);
+                print_r($this->_config);
+                $updated = true;
+            }
         }
+        
         if ($updated) {
             $this->save();
             return true;
         }
         return false;
     }
+    
+    function fromPlugin($plugin) {
+        if (isset($this->_config['plugins'][$plugin['name']])) {
+            //zmgError::throwError('Config already exists!'); //TEMP ECHO
+            return;
+        }
+
+        $this->_config['plugins'][$plugin['name']] = array();
+        
+        foreach ($plugin['settings'] as $cat => $settings) {
+            $this->_config['plugins'][$plugin['name']][$cat] = array();
+            foreach ($settings as $name => $setting) {
+                $this->_config['plugins'][$plugin['name']][$cat][$name] = $setting['default'];
+            }
+        }
+        
+        $this->save();
+    }
+    
     function save() {
         $content = "<?php\n"
          . "/**\n"
@@ -103,9 +131,11 @@ class zmgConfigurationHelper extends zmgError {
          . $this->_buildMetaBlock() . $this->_buildLocaleBlock()
          . $this->_buildDatabaseBlock() . $this->_buildFilesystemBlock()
          . $this->_buildSmartyBlock() . $this->_buildLayoutBlock()
-         . $this->_buildAppBlock()
+         . $this->_buildAppBlock() . "\n"
+         . "\$zoom_config['events'] = array();\n\n"
+         . $this->_buildPluginsBlock()
          . "?>\n";
-        //echo str_replace("\n", "<br/>", $content); 
+        //echo $content; 
         zmgWriteFile(ZMG_ABS_PATH .DS.'etc'.DS.'app.config.php', $content);
     }
     function _buildMetaBlock() {
@@ -136,6 +166,10 @@ class zmgConfigurationHelper extends zmgError {
         //TODO: find a way to process constants - how to put them back in the config file?
         return $this->_generateBlock("\$zoom_config", 'app',
           $this->_config['app']);
+    }
+    function _buildPluginsBlock() {
+        return $this->_generateBlock("\$zoom_config", 'plugins',
+          $this->_config['plugins']);
     }
     function _generateBlock($prefix, $title, $value) {
         $block = "";

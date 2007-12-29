@@ -34,6 +34,12 @@
                 'url'  : '',
                 'data' : ['admin:settings:app', 'html']
             },
+            'plugins': {
+                'name' : {/literal}{t escape='json'}Plugins{/t}{literal},
+                'title': {/literal}{t escape='json'}View and change plugin settings{/t}{literal},
+                'url'  : '',
+                'data' : ['admin:settings:plugins', 'html']
+            },
             'info': {
                 'name' : {/literal}{t escape='json'}Info{/t}{literal},
                 'title': {/literal}{t escape='json'}View info about Zoom Media Gallery{/t}{literal},

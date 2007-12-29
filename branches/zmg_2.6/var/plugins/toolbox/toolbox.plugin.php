@@ -11,9 +11,44 @@
 
 defined('_ZMG_EXEC') or die('Restricted access');
 
+
+$GLOBALS['_ZMG_TOOLBOX_TOOLS'] = array(
+    'document',
+    'gd1x',
+    'gd2x',
+    'imagemagick',
+    'mime',
+    'music',
+    'netpbm',
+    'video',
+    'watermark'
+);
+
+$GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'] = array(
+    'imagemagick',
+    'netpbm',
+    'gd1x',
+    'gd2x'
+);
+
 class zmgToolboxPlugin extends zmgError {
     function embed() {
+        $zoom = & zmgFactory::getZoom();
         
+        $imagetools_loaded = false;
+        foreach ($GLOBALS['_ZMG_TOOLBOX_TOOLS'] as $tool) {
+            if (in_array($tool, $GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'])) {
+                if (!$imagetools_loaded) {
+                    $imagetools_loaded = true;
+                    $imagetool = intval($zoom->getConfig('plugins/toolbox/general/conversiontool'));
+                    require_once(ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS.'toolbox'
+                     .DS.'tools'.DS.$GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'][$imagetool - 1].'.tool.php');
+                }
+            } else {
+                require_once(ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS.'toolbox'
+                 .DS.'tools'.DS.$tool.'.tool.php');
+            }
+        }
     }
     function registerError($title, $descr) {
         static $zmgToolboxErrors;

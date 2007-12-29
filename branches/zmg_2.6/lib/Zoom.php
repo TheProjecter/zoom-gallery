@@ -118,11 +118,20 @@ class Zoom extends zmgError {
     function getConfig($path) {
     	return $this->_config->get($path);
     }
-    function updateConfig($vars) {
-        return $this->_config->update($vars);
+    function getTableName($name) {
+        $prefix = $this->_config->get('db/prefix');
+        $table  = $this->_config->get('db/tables/' . $name);
+        
+        if (!empty($prefix) && !empty($table)) {
+            return "#__" . $prefix . $table;
+        }
+        return null;
+    }
+    function updateConfig($vars, $isPlugin = false) {
+        return $this->_config->update($vars, $isPlugin);
     }
     function getAbstractValue($class, $func) {
-        if (class_exists($class) && method_exists($class, $method)) {
+        if (class_exists($class) && method_exists($class, $func)) {
             return eval($class . '::' . $func . '()');
         }
         return null;
