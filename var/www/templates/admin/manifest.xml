@@ -23,6 +23,7 @@
         <view name="admin:settings:filesystem"/>
         <view name="admin:settings:layout"/>
         <view name="admin:settings:app"/>
+        <view name="admin:settings:plugins"/>
         <view name="admin:settings:info"/>
         <view name="admin:toolbar" inherits="admin:toolbar:*"/>
         <view name="allgallerymanager" inherits="admin:gallerymanager:*"/>
@@ -110,6 +111,9 @@
         </resource>
         <resource name="template" type="html" view="admin:settings:app" xml:base="">
             <file href="settings_app.html.tpl"/>
+        </resource>
+        <resource name="template" type="html" view="admin:settings:plugins" xml:base="">
+            <file href="settings_plugins.html.tpl"/>
         </resource>
         <resource name="template" type="html" view="admin:settings:info" xml:base="">
             <file href="settings_info.html.tpl"/>

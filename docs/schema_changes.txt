@@ -1,3 +1,25 @@
+19/12/2007:
+
+  ======= framework changes =======
+  * added table '#__zmg_plugins'
+  
+  SQL:
+    DROP TABLE IF EXISTS jos_zmg_plugins;
+    CREATE TABLE IF NOT EXISTS jos_zmg_plugins (
+      pid int(11) NOT NULL auto_increment,
+      `name` varchar(150) NOT NULL default '',
+      title text NOT NULL,
+      ordering int(11) NOT NULL default '0',
+      iscore tinyint(4) NOT NULL default '0',
+      enabled tinyint(4) NOT NULL default '1',
+      PRIMARY KEY  (pid)
+    ) ENGINE=MyISAM;
+    
+    INSERT INTO `jos_zmg_plugins` (`pid`, `name`, `title`, `ordering`, `iscore`, `enabled`) VALUES 
+      (1, 'cms', 'Content Management System', 0, 1, 1),
+      (2, 'toolbox', 'Toolbox', 0, 1, 1);
+
+
 12/03/2007:
 
   ======= framework changes =======

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings plugin="toolbox">
+    <category name="general">
+        <setting name="imagesizemax" type="text" size="50" default="600" label="Image max. size (px)" description="" />
+        <setting name="imagesizethumbnail" type="text" size="50" default="100" label="Thumbnail size (px)" description="" />
+        <setting name="jpegquality" type="text" size="50" default="100" label="JPEG quality (%)" description="" />
+        <setting name="conversiontool" type="select" default="4" label="Image conversion tool" description="">
+            <option value="1">ImageMagick</option>
+            <option value="2">NetPBM</option>
+            <option value="3">GD1 library</option>
+            <option value="4">GD2 library</option>
+        </setting>
+    </category>
+    <category name="imagemagick">
+        <setting name="path" type="text" size="50" default="auto" label="Path to ImageMagick" description="" />
+    </category>
+    <category name="netpbm">
+        <setting name="path" type="text" size="50" default="auto" label="Path to NetPBM" description="" />
+    </category>
+    <category name="pdftotext">
+        <setting name="path" type="text" size="50" default="auto" label="Path to PDFtoText" description="" />
+        <setting name="override" type="checkbox" default="0" value="1" label="Use PDFtoText, even if zOOm is unable to verify its existence on this system." />
+    </category>
+    <category name="ffmpeg">
+        <setting name="path" type="text" size="50" default="auto" label="Path to FFmpeg" description="" />
+        <setting name="override" type="checkbox" default="0" value="1" label="Use FFmpeg, even if zOOm is unable to verify its existence on this system." />
+    </category>
+</settings>
