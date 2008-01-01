@@ -9,3 +9,4 @@
     <div id="zmg_view_content"></div>
     <div id="zmg_admin_loader" style="display:none;"></div>
 </div>
+<div id="zmg_admin_messagecenter"></div>

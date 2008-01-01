@@ -15,6 +15,7 @@ ZMG.Tooltip = new Class({
         classBottomRight : 'zmg-tip-br',
         classBottomCenter : 'zmg-tip-bc',
         relElement: null,
+        parentElement: document.body,
         closeButton: false,
         zIndex: 20000,
         initX: 0,
@@ -61,7 +62,7 @@ ZMG.Tooltip = new Class({
                 </div>\
               </div>\
             </div>'].join('');
-        document.body.appendChild(this.domNode);
+        this.options.parentElement.appendChild(this.domNode);
         
         this.domHeader = $(this.id + '_headertext');
         this.domBody   = $(this.id + '_tipbody');
