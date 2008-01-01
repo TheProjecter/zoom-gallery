@@ -29,7 +29,19 @@ class zmgFactory {
         return $instance;
     }
     
+    function &getJSON() {
+        static $instance_json;
+        
+        if (!is_object($instance_json)) {
+            $instance_json = new zmgJSON();
+        }
+
+        return $instance_json;
+    }
+    
     function &getConfig() {
+        static $zoom_config;
+        
         //load the configuration file
         require(ZMG_ABS_PATH . DS.'etc'.DS.'app.config.php');
         
@@ -68,19 +80,27 @@ class Zoom extends zmgError {
      */
     var $user = null;
     /**
+     * Public variable, containing the messaging center of ZMG.
+     * 
+     * @var zmgMessageCenter()
+     */
+    var $messages = null;
+    /**
      * Public variable, containing the plugin system of ZMG.
      * 
      * @var zmgPluginHelper()
      */
     var $plugins = null;
+    
 	/**
      * The class constructor.
      */
 	function Zoom(&$config) {
-        $this->_config = new zmgConfigurationHelper($config);
-        $this->view    = new zmgTemplateHelper($this->getConfig('smarty'),
+        $this->_config  = new zmgConfigurationHelper($config);
+        $this->view     = new zmgTemplateHelper($this->getConfig('smarty'),
           $this->getConfig('app/secret'));
-        $this->plugins = new zmgPluginHelper();
+        $this->messages = new zmgMessageCenter();
+        $this->plugins  = new zmgPluginHelper();
 
         $this->loadEvents(); //TODO: use cached events list
 	}
@@ -273,6 +293,7 @@ class Zoom extends zmgError {
     function fireEvents($event) {
         if (!empty($this->events[$event])) {
             foreach ($this->events[$event] as $cmp) {
+                echo ZMG_ABS_PATH . DS.'var'.DS.'events'.DS.$event.DS.$cmp.DS.$cmp.'.php';
                 require_once(ZMG_ABS_PATH . DS.'var'.DS.'events'.DS.$event.DS.$cmp.DS.$cmp.'.php');
                 if (class_exists($cmp)) { 
                     eval($cmp . '::start(&$this);');

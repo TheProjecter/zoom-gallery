@@ -74,7 +74,7 @@
             <file href="treemenu.json.tpl"/>
         </resource>
         <resource name="template" type="json" view="admin:dispatchresult" xml:base="">
-            <file href="dispatchresult.json.tpl"/>
+            <file href="messagecenter.json.tpl"/>
         </resource>
         <resource name="template" type="json" view="admin:toolbar" xml:base="">
             <file href="toolbarbuttons.json.tpl"/>

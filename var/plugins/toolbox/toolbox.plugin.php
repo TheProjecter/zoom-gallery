@@ -50,6 +50,24 @@ class zmgToolboxPlugin extends zmgError {
             }
         }
     }
+    
+    function throwErrors() {
+        static $zmgToolboxErrors;
+        
+        if (!is_array($zmgToolboxErrors)) {
+            return; //no errors present at all (well done!)
+        }
+        
+        $zoom = & zmgFactory::getZoom();
+        
+        for ($i = 0; $i < count($zmgToolboxErrors); $i++) {
+            $zoom->messages->append($zmgToolboxErrors[$i]['title'],
+              $zmgToolboxErrors[$i]['description']);
+        }
+        //reset the process of collecting of errors
+        $zmgToolboxErrors = null;
+    }
+    
     function registerError($title, $descr) {
         static $zmgToolboxErrors;
         

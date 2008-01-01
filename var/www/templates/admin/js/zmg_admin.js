@@ -10,6 +10,9 @@ ZMG.Admin = {
         ZMG.Admin.cacheElement('zmg_admin_loader');
         ZMG.Admin.cacheElement('zmg_tree_body');
         ZMG.Admin.cacheElement('zmg_view_content');
+        var mc = ZMG.Admin.cacheElement('zmg_admin_messagecenter');
+        document.body.appendChild(mc);
+        
         ZMG.Admin.Events = new ZMG.Events();
         //set correct dimensions of the admin content
         ZMG.Admin.Events.Client.onwindowresize();

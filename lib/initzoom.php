@@ -21,6 +21,7 @@ require_once(ZMG_ABS_PATH . DS.'lib'.DS.'smarty'.DS.'Smarty.class.php');
 
 //initialize the zoom (app) class
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgConfigurationHelper.php');
+require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgMessageCenter.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgPluginHelper.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgTemplateHelper.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'Zoom.php');
@@ -362,11 +363,14 @@ function zmgChmod($path) {
  * @return boolean
  */
 function zmgWriteFile($filename, $content) {
-    if ($fp = fopen($filename, 'w+')) {
-          fputs($fp, $content, strlen($content));
-          fclose($fp);
+    $res = true;
+    if ($fp = @fopen($filename, 'w+')) {
+        fputs($fp, $content, strlen($content));
+        fclose($fp);
+    } else {
+        $res = false;
     }
-    return true;
+    return $res;
 }
 
 function zmgGetBasePath() {

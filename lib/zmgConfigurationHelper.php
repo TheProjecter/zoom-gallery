@@ -91,10 +91,16 @@ class zmgConfigurationHelper extends zmgError {
             }
         }
         
+        $zoom = & zmgFactory::getZoom();
+        
         if ($updated) {
-            $this->save();
-            return true;
+            if ($this->save()) {
+                zmgBacktrace();
+                $zoom->messages->append(T_('Settings'), T_('Your settings have been saved successfully.'));
+                return true;
+            }
         }
+        $zoom->messages->append(T_('Settings'), T_('Your settings could not be saved.'));
         return false;
     }
     
@@ -136,7 +142,7 @@ class zmgConfigurationHelper extends zmgError {
          . $this->_buildPluginsBlock()
          . "?>\n";
         //echo $content; 
-        zmgWriteFile(ZMG_ABS_PATH .DS.'etc'.DS.'app.config.php', $content);
+        return zmgWriteFile(ZMG_ABS_PATH .DS.'etc'.DS.'app.config.php', $content);
     }
     function _buildMetaBlock() {
         return $this->_generateBlock("\$zoom_config", 'meta',
