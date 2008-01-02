@@ -30,12 +30,14 @@ class zmgNetpbmTool {
         $ratio = max($ratio, 1.0);
         $destWidth = (int)($imgobj->_size[0] / $ratio);
         $destHeight = (int)($imgobj->_size[1] / $ratio);
+        
+        $path = zmgNetpbmTool::detectPath();
         if (eregi("\.png", $imgobj->_filename)) {
-            $cmd = $this->_NETPBM_path . "pngtopnm $src_file | " . $this->_NETPBM_path . "pnmscale -xysize $destWidth $destHeight | " . $this->_NETPBM_path . "pnmtopng > $dest_file" ; 
+            $cmd = $path . "pngtopnm $src_file | " . $path . "pnmscale -xysize $destWidth $destHeight | " . $path . "pnmtopng > $dest_file" ; 
         } elseif (eregi("\.(jpg|jpeg)", $imgobj->_filename)) {
-            $cmd = $this->_NETPBM_path . "jpegtopnm $src_file | " . $this->_NETPBM_path . "pnmscale -xysize $destWidth $destHeight | " . $this->_NETPBM_path . "ppmtojpeg -quality=" . $this->_JPEG_quality . " > $dest_file" ;
+            $cmd = $path . "jpegtopnm $src_file | " . $path . "pnmscale -xysize $destWidth $destHeight | " . $path . "ppmtojpeg -quality=" . $this->_JPEG_quality . " > $dest_file" ;
         } elseif (eregi("\.gif", $imgobj->_filename)) {
-            $cmd = $this->_NETPBM_path . "giftopnm $src_file | " . $this->_NETPBM_path . "pnmscale -xysize $destWidth $destHeight | " . $this->_NETPBM_path . "ppmquant 256 | " . $this->_NETPBM_path . "ppmtogif > $dest_file" ; 
+            $cmd = $path . "giftopnm $src_file | " . $path . "pnmscale -xysize $destWidth $destHeight | " . $path . "ppmquant 256 | " . $path . "ppmtogif > $dest_file" ; 
         } else {
             return zmgToolboxPlugin::registerError($src_file, 'NetPBM: Source file is not an image or image type is not supported.');
         }
@@ -57,13 +59,15 @@ class zmgNetpbmTool {
      */
     function rotate($src_file, $dest_file, $degrees, $imgobj) {
         $fileOut = "$src_file.1";
-        $zoom->platform->copy($src_file, $fileOut); 
+        @copy($src_file, $fileOut);
+        
+        $path = zmgNetpbmTool::detectPath();
         if (eregi("\.png", $imgobj->_filename)) {
-            $cmd = $this->_NETPBM_path . "pngtopnm $src_file | " . $this->_NETPBM_path . "pnmrotate $degrees | " . $this->_NETPBM_path . "pnmtopng > $fileOut" ; 
+            $cmd = $path . "pngtopnm $src_file | " . $path . "pnmrotate $degrees | " . $path . "pnmtopng > $fileOut" ; 
         } elseif (eregi("\.(jpg|jpeg)", $imgobj->_filename)) {
-            $cmd = $this->_NETPBM_path . "jpegtopnm $src_file | " . $this->_NETPBM_path . "pnmrotate $degrees | " . $this->_NETPBM_path . "ppmtojpeg -quality=" . $this->_JPEG_quality . " > $fileOut" ;
+            $cmd = $path . "jpegtopnm $src_file | " . $path . "pnmrotate $degrees | " . $path . "ppmtojpeg -quality=" . $this->_JPEG_quality . " > $fileOut" ;
         } elseif (eregi("\.gif", $imgobj->_filename)) {
-            $cmd = $this->_NETPBM_path . "giftopnm $src_file | " . $this->_NETPBM_path . "pnmrotate $degrees | " . $this->_NETPBM_path . "ppmquant 256 | " . $this->_NETPBM_path . "ppmtogif > $fileOut" ; 
+            $cmd = $path . "giftopnm $src_file | " . $path . "pnmrotate $degrees | " . $path . "ppmquant 256 | " . $path . "ppmtogif > $fileOut" ; 
         } else {
             return zmgToolboxPlugin::registerError($src_file, 'NetPBM: Source file is not an image or image type is not supported.');
         }
@@ -72,8 +76,15 @@ class zmgNetpbmTool {
         if ($retval) {
             return zmgToolboxPlugin::registerError($src_file, 'NetPBM: Could not rotate image: ' . $output);
         }
-        $erg = $zoom->platform->rename($fileOut, $dest_file); 
+        $erg = @rename($fileOut, $dest_file); 
         return true;
+    }
+    function detectPath() {
+        $path = "";
+        if (file_exists('/usr/bin/jpegtopnm') && is_executable('/usr/bin/jpegtopnm')) {
+            $path = "/usr/bin/"; //Debian systems
+        }
+        return $path;
     }
     /**
      * Detect if NetPBM is available on the system.
@@ -82,11 +93,14 @@ class zmgNetpbmTool {
      */
     function autoDetect() {
         static $output, $status;
-        @exec('jpegtopnm -version 2>&1',  $output, $status);
+        //get the absolute location first:
+        $path = zmgNetpbmTool::detectPath();
+        //execute test command
+        @exec($path . 'jpegtopnm -version 2>&1',  $output, $status);
         
         $res = false;
         if (!$status) {
-            if (preg_match("/netpbm[ \t]+([0-9\.]+)/i",$output[0],$matches)) {
+            if (preg_match("/netpbm[ \t]+([0-9\.]+)/i", $output[0], $matches)) {
                 zmgToolboxPlugin::registerError('NetPBM', $matches[0] . ' ' . T_('is available.'));
                 $res = true;
             }

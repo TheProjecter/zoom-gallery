@@ -43,9 +43,7 @@ ZMG.Events.Server = new Class({
           || view == "admin:settings:plugins"
           || view == "admin:settings:info") {
             key = this.Server.ongetsettingskey(view);
-            this.Server.onloadsettingstab(key, text);
-            if (view == "admin:settings:plugins")
-                this.Client.onviewselect('admin:settings:plugins:autodetect');
+            this.Server.onloadsettingstab(key, text, view);
         } else if (text) {
             o = Json.evaluate(text);
             isJSON = true;
@@ -259,6 +257,7 @@ ZMG.Events.Server = new Class({
                     klass.Server.onactivateview('zmg_view_settings');
                     if (!entry.loaded && entry.data)
                         klass.Client.onviewselect(entry.data[0], entry.data[1]);
+                    klass.Client.onselectsettingstab(entry.data[0]);
                 }
             });
             for (var i in node.tabs) {
@@ -271,13 +270,33 @@ ZMG.Events.Server = new Class({
         this.onactivateview('zmg_view_settings');
         ZMG.Admin.Events.Client.onviewselect('admin:settings:meta', 'html');
     },
-    onloadsettingstab: function(idx, html) {
+    onloadsettingstab: function(idx, html, view) {
         if (!this.settingsTabs.entries[idx].loaded && html) {
             this.settingsTabs.entries[idx].container.innerHTML = html;
             this.settingsTabs.entries[idx].loaded = true;
             //turn checkboxes and radiobuttons into fancy looking elements
             FancyForm.start($A(this.settingsTabs.entries[idx].container
               .getElementsByTagName('input')));
+            if (view) {
+                if (view == "admin:settings:plugins") {
+                    var form = ZMG.Admin.cacheElement('zmg_settings_form');
+                    var conv_select = form.elements['zmg_plugins_toolbox_general_conversiontool'];
+                    conv_select.onchange = function() {
+                        var tool = "";
+                        if (this.value == "1") {
+                            tool = "imagemagick";
+                        } else if (this.value == "2") {
+                            tool = "netpbm";
+                        } else if (this.value == "3") {
+                            tool = "gd1x";
+                        } else if (this.value == "4") {
+                            tool = "gd2x";
+                        }
+                        ZMG.Admin.Events.Client.onviewselect('admin:settings:plugins:autodetect:'
+                          + tool);
+                    }
+                }
+            }
         }
         this.onactivateview('zmg_view_settings');
         this.settingsTabs.select(idx);
@@ -310,6 +329,7 @@ ZMG.Events.Client = new Class({
         this.lastRequest = null;
         this.menuTree = null;
         this.requestingTabs = false;
+        this.tabsTimeout = null;
         this.toolbar = new ZMG.Toolbar();
 //        this.tooltip = new ZMG.Tooltip(null, {
 //            parentElement: ZMG.Admin.cacheElement('zmg_admin_messagecenter')
@@ -344,7 +364,7 @@ ZMG.Events.Client = new Class({
             parentNode: mc
         }).setContent(title, msg).show();
         
-        window.setTimeout(this.onhidemessages.pass(tooltip, this), 5500);
+        window.setTimeout(this.onhidemessages.pass(tooltip, this), 7500);
         
         this.tooltips.push(tooltip);
     },
@@ -478,6 +498,17 @@ ZMG.Events.Client = new Class({
             this.onshowloader();
             // allowing a small delay for the browser to draw the loader-icon.
             window.setTimeout(f.bind(this), 20);
+        }
+    },
+    onselectsettingstab: function(view) {
+        if (view == "admin:settings:plugins") {
+            if (!this.tabsTimeout) {
+                this.tabsTimeout = window.setTimeout(function() {
+                    ZMG.Admin.Events.Client.onviewselect('admin:settings:plugins:autodetect');
+                    clearTimeout(ZMG.Admin.Events.Client.tabsTimeout);
+                    ZMG.Admin.Events.Client.tabsTimeout = null;
+                }, 1500);
+            }
         }
     },
     onmm_uploadclick: function(e) {

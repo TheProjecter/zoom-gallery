@@ -52,18 +52,29 @@ class zmgToolboxPlugin extends zmgError {
     }
     
     function autoDetect($selection = 'all') {
+        $getall  = false;
         if (!is_array($selection) && $selection == "all") {
+            $getall = true;
             $selection = $GLOBALS['_ZMG_TOOLBOX_TOOLS'];
         }
         $zoom = & zmgFactory::getZoom();
-        //auto-detect currently selected imagetool first
-        $toolkey = intval($zoom->getConfig('plugins/toolbox/general/conversiontool'));
+
+        $toolkey   = intval($zoom->getConfig('plugins/toolbox/general/conversiontool'));
         $imagetool = $GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'][$toolkey - 1];
-        eval('zmg'.ucfirst($imagetool).'Tool::autoDetect();');
+        if ($getall) {
+            //auto-detect currently selected imagetool first
+            eval('zmg'.ucfirst($imagetool).'Tool::autoDetect();');
+        }
         
         //auto-detect other tools as well
         foreach ($selection as $tool) {
             if (!in_array($tool, $GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'])) {
+                eval('zmg'.ucfirst($tool).'Tool::autoDetect();');
+            } else if (!$getall) {
+                if ($tool != $imagetool) {
+                    require_once(ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS.'toolbox'
+                      .DS.'tools'.DS.$tool.'.tool.php');
+                }
                 eval('zmg'.ucfirst($tool).'Tool::autoDetect();');
             }
         }
