@@ -158,14 +158,16 @@ class zmgPluginHelper extends zmgError {
                         $out .= "<tr>\n";
                         switch ($data['type']) {
                             case "checkbox":
+                                $out .= "\t\t<td width=\"250\">" . T_($data['label']) . "</td><td>";
                                 $checked = ($setting_value == $data['value']) ? true : false;
-                                $out .= "\t\t<td>&nbsp;</td><td>" . $this->_buildCheckboxInput($input_name, $data['value'], $checked)
-                                 . T_($data['label']) . "</td>\n";
+                                $out .= $this->_buildCheckboxInput($input_name, $data['value'], $checked)
+                                 . "</td>\n";
                                 break;
                             case "radio":
+                                $out .= "\t\t<td width=\"250\">" . T_($data['label']) . "</td><td>";
                                 $checked = ($setting_value == $data['value']) ? true : false;
-                                $out .= "\t\t<td>&nbsp;</td><td>" . $this->_buildRadioInput($input_name, $data['value'], $checked)
-                                 . T_($data['label']) . "</td>\n";
+                                $out .= $this->_buildRadioInput($input_name, $data['value'], $checked)
+                                 . "</td>\n";
                                 break;
                             case "select":
                                 $options = array();

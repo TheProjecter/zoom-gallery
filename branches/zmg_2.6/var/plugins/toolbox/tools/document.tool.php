@@ -37,7 +37,7 @@ class zmgDocumentTool {
         }
         $desfile = ereg_replace("(.*)\.([^\.]*)$", "\\1", $filename).".txt";
         $target = $mosConfig_absolute_path."/".$zoom->_CONFIG['imagepath'].$zoom->_gallery->getDir()."/".$desfile;
-        $cmd = $this->_PDF_path."pdftotext \"$file\" \"$target\"";
+        $cmd = zmgDocumentTool::detectPath() . "pdftotext \"$file\" \"$target\"";
         $output = $retval = null;
         exec($cmd, $output, $retval);
         if ($retval) {
@@ -69,6 +69,13 @@ class zmgDocumentTool {
         unset($txt);
         return zmgToolboxPlugin::registerError($file, 'Search: Term not found in this document.');
     }
+    function detectPath() {
+        $path = "";
+        if (file_exists('/usr/bin/pdftotext') && is_executable('/usr/bin/pdftotext')) {
+            $path = "/usr/bin/"; //Debian systems
+        }
+        return $path;
+    }
     /**
      * Detect if Xpdf is available on the system.
      *
@@ -76,11 +83,11 @@ class zmgDocumentTool {
      */
     function autoDetect() {
         static $output, $status;
-        @exec('pdftotext',  $output, $status);
+        $bar = @exec(zmgDocumentTool::detectPath() . 'pdftotext -v', $output, $status);
         
         $res = false;
         if (!empty($output[0])) {
-            if (preg_match("/pdftotext/i",$output[0], $matches)) {
+            if (preg_match("/pdftotext/i", $output[0], $matches)) {
                 zmgToolboxPlugin::registerError(T_('Xpdf (or pdftotext)'), T_('is available.'));
                 $res = true;
             }

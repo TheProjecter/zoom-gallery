@@ -29,8 +29,14 @@ class viewpicker {
                 case "admin:settings:store":
                     $zoom->setResult($zoom->updateConfig($_POST));
                     break;
-                case "admin:settings:plugins:autodetect":
-                    zmgToolboxPlugin::autoDetect('all');
+                case stristr($view, "admin:settings:plugins:autodetect"):
+                    $tool = trim($view_tokens[count($view_tokens) - 1]);
+                    if ($tool == "autodetect") {
+                        $tool = "all";
+                    } else {
+                        $tool = array($tool);
+                    }
+                    zmgToolboxPlugin::autoDetect($tool);
                     break;
                 case "admin:mediumedit:store":
                     break;

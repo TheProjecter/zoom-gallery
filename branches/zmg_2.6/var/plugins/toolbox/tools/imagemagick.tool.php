@@ -23,7 +23,7 @@ class zmgImagemagickTool {
      */
     function resize($src_file, $dest_file, $new_size) {
         $retval = $output = null;
-        $cmd = $this->_IM_path."convert -resize $new_size \"$src_file\" \"$dest_file\"";
+        $cmd = zmgImagemagickTool::detectPath()."convert -resize $new_size \"$src_file\" \"$dest_file\"";
         exec($cmd, $output, $retval);
         if($retval) {
             return zmgToolboxPlugin::registerError($src_file, 'ImageMagick: Could not convert image: ' . $output);
@@ -39,7 +39,7 @@ class zmgImagemagickTool {
      * @return boolean
      */
     function rotate($src_file, $dest_file, $degrees) {
-        $cmd = $this->_IM_path."convert -rotate $degrees \"$src_file\" \"$dest_file\"";
+        $cmd = zmgImagemagickTool::detectPath()."convert -rotate $degrees \"$src_file\" \"$dest_file\"";
         $output = $retval = null;
         exec($cmd, $output, $retval);
         if($retval) {
@@ -107,7 +107,7 @@ class zmgImagemagickTool {
                 break;
         }
 
-        $cmd = $this->_IM_path."convert -draw \"image over  $startwidth,$startheight 0,0 '$wm_file'\" \"$src_file\" \"$dest_file\"";
+        $cmd = zmgImagemagickTool::detectPath()."convert -draw \"image over  $startwidth,$startheight 0,0 '$wm_file'\" \"$src_file\" \"$dest_file\"";
         $output = $retval = null;
         exec($cmd, $output, $retval);
         
@@ -117,6 +117,13 @@ class zmgImagemagickTool {
             return true;
         }
     }
+    function detectPath() {
+        $path = "";
+        if (file_exists('/usr/bin/convert') && is_executable('/usr/bin/convert')) {
+            $path = "/usr/bin/"; //Debian systems
+        }
+        return $path;
+    }
     /**
      * Detect if ImageMagick is available on the system.
      *
@@ -124,6 +131,9 @@ class zmgImagemagickTool {
      */
     function autoDetect() {
         static $output, $status;
+        //get the absolute location first:
+        $path = zmgImagemagickTool::detectPath();
+        //execute test command
         @exec('convert -version', $output, $status);
         
         $res = false;

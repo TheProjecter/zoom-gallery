@@ -53,7 +53,7 @@ class zmgVideoTool {
                 return true;
             }
         } else {
-            return zmgToolboxPlugin::registerError($file, 'FFMpeg: Could not create temporary directory.');
+            return zmgToolboxPlugin::registerError($file, 'FFmpeg: Could not create temporary directory.');
         }
     }
     /**
@@ -63,17 +63,17 @@ class zmgVideoTool {
      */
     function autoDetect() {
         static $output, $status;
-        @exec('ffmpeg -h',  $output, $status);
+        exec('ffmpeg', $output, $status);
         
         $res = false;
         if (!empty($output[0])) {
-            if (preg_match("/ffmpeg.*(\.[0-9])/i",$output[0],$matches)) {
-                zmgToolboxPlugin::registerError('FFMpeg', $matches[0] . ' ' . T_('is available.'));
+            if (preg_match("/(ffmpeg).*/i",$output[0],$matches)) {
+                zmgToolboxPlugin::registerError('FFmpeg', 'FFmpeg ' . T_('is available.'));
                 $res = true;
             }
         }
         if (!$res) {
-            zmgToolboxPlugin::registerError('FFMpeg', T_('could not be detected on your system.'));
+            zmgToolboxPlugin::registerError('FFmpeg', T_('could not be detected on your system.'));
         }
         unset($output, $status);
     }
