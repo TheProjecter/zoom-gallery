@@ -293,7 +293,6 @@ class Zoom extends zmgError {
     function fireEvents($event) {
         if (!empty($this->events[$event])) {
             foreach ($this->events[$event] as $cmp) {
-                echo ZMG_ABS_PATH . DS.'var'.DS.'events'.DS.$event.DS.$cmp.DS.$cmp.'.php';
                 require_once(ZMG_ABS_PATH . DS.'var'.DS.'events'.DS.$event.DS.$cmp.DS.$cmp.'.php');
                 if (class_exists($cmp)) { 
                     eval($cmp . '::start(&$this);');

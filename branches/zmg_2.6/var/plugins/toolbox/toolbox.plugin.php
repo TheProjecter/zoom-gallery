@@ -51,33 +51,55 @@ class zmgToolboxPlugin extends zmgError {
         }
     }
     
-    function throwErrors() {
-        static $zmgToolboxErrors;
-        
-        if (!is_array($zmgToolboxErrors)) {
-            return; //no errors present at all (well done!)
+    function autoDetect($selection = 'all') {
+        if (!is_array($selection) && $selection == "all") {
+            $selection = $GLOBALS['_ZMG_TOOLBOX_TOOLS'];
         }
-        
         $zoom = & zmgFactory::getZoom();
+        //auto-detect currently selected imagetool first
+        $toolkey = intval($zoom->getConfig('plugins/toolbox/general/conversiontool'));
+        $imagetool = $GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'][$toolkey - 1];
+        eval('zmg'.ucfirst($imagetool).'Tool::autoDetect();');
         
-        for ($i = 0; $i < count($zmgToolboxErrors); $i++) {
-            $zoom->messages->append($zmgToolboxErrors[$i]['title'],
-              $zmgToolboxErrors[$i]['description']);
+        //auto-detect other tools as well
+        foreach ($selection as $tool) {
+            if (!in_array($tool, $GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'])) {
+                eval('zmg'.ucfirst($tool).'Tool::autoDetect();');
+            }
         }
-        //reset the process of collecting of errors
-        $zmgToolboxErrors = null;
+        
+        zmgToolboxPlugin::throwErrors();
     }
     
-    function registerError($title, $descr) {
+    function &getErrors() {
         static $zmgToolboxErrors;
         
         if (!is_array($zmgToolboxErrors)) {
             $zmgToolboxErrors = array();
         }
         
-        $i = count($zmgToolboxErrors);
-        $zmgToolboxErrors[$i]['title']       = $title;
-        $zmgToolboxErrors[$i]['description'] = $descr;
+        return $zmgToolboxErrors;
+    }
+    
+    function throwErrors() {
+        $errors = & zmgToolboxPlugin::getErrors();
+        
+        $zoom = & zmgFactory::getZoom();
+        
+        for ($i = 0; $i < count($errors); $i++) {
+            $zoom->messages->append($errors[$i]['title'],
+              $errors[$i]['description']);
+        }
+        //reset the process of collecting of errors
+        $errors = null;
+    }
+    
+    function registerError($title, $descr) {
+        $errors = & zmgToolboxPlugin::getErrors();
+        
+        $i = count($errors);
+        $errors[$i]['title']       = $title;
+        $errors[$i]['description'] = $descr;
         
         //return 'FALSE' to the callee, because it's an error after all
         return false;

@@ -28,7 +28,7 @@ class zmgMessageCenter extends zmgError {
         $messages = array();
         
         if ($number === 0) {
-            $messages = & $this->_messages;
+            $messages = $this->_messages;
             $this->clear();
         } else if (intval($number) > 0) {
             $counter = 0;

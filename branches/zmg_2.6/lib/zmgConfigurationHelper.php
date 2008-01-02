@@ -95,7 +95,6 @@ class zmgConfigurationHelper extends zmgError {
         
         if ($updated) {
             if ($this->save()) {
-                zmgBacktrace();
                 $zoom->messages->append(T_('Settings'), T_('Your settings have been saved successfully.'));
                 return true;
             }

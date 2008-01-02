@@ -27,7 +27,7 @@ class zmgVideoTool {
         } else {
             if (!empty($this->_FFMPEG_path) && !$zoom->_CONFIG['override_FFMPEG']) {
                 if (!$zoom->platform->is_dir($this->_FFMPEG_path)) {
-                    return parent::registerError($file, 'FFMpeg: Your FFMpeg path is not correct! Please (re)specify it in the Admin-system under \'Settings\'');
+                    return zmgToolboxPlugin::registerError($file, 'FFMpeg: Your FFMpeg path is not correct! Please (re)specify it in the Admin-system under \'Settings\'');
                 }
             }
         }
@@ -38,7 +38,7 @@ class zmgVideoTool {
             $output = $retval = null;
             exec($cmd, $output, $retval);
             if ($retval || !$zoom->platform->file_exists($gen_path."/file.jpg")) {
-                return parent::registerError($file, 'FFMpeg: Could not create thumbnail: ' . $output);
+                return zmgToolboxPlugin::registerError($file, 'FFMpeg: Could not create thumbnail: ' . $output);
             }
             $the_thumb = $gen_path."/file.jpg";
             $imgobj = new image(0);
@@ -53,8 +53,29 @@ class zmgVideoTool {
                 return true;
             }
         } else {
-            return parent::registerError($file, 'FFMpeg: Could not create temporary directory.');
+            return zmgToolboxPlugin::registerError($file, 'FFMpeg: Could not create temporary directory.');
         }
+    }
+    /**
+     * Detect if FFmpeg is available on the system.
+     *
+     * @return void
+     */
+    function autoDetect() {
+        static $output, $status;
+        @exec('ffmpeg -h',  $output, $status);
+        
+        $res = false;
+        if (!empty($output[0])) {
+            if (preg_match("/ffmpeg.*(\.[0-9])/i",$output[0],$matches)) {
+                zmgToolboxPlugin::registerError('FFMpeg', $matches[0] . ' ' . T_('is available.'));
+                $res = true;
+            }
+        }
+        if (!$res) {
+            zmgToolboxPlugin::registerError('FFMpeg', T_('could not be detected on your system.'));
+        }
+        unset($output, $status);
     }
 }
 ?>

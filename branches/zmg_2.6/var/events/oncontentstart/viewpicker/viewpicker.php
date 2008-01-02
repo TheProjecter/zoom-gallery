@@ -23,10 +23,14 @@ class viewpicker {
         
         //check for dispatches that 'put' data (in contrary to 'get' requests)
         $view_tokens = split(':', $view);
-        if (in_array('store', $view_tokens) || in_array('update', $view_tokens)) {
+        if (in_array('store', $view_tokens) || in_array('update', $view_tokens)
+          || in_array('autodetect', $view_tokens)) {
             switch ($view) {
                 case "admin:settings:store":
                     $zoom->setResult($zoom->updateConfig($_POST));
+                    break;
+                case "admin:settings:plugins:autodetect":
+                    zmgToolboxPlugin::autoDetect('all');
                     break;
                 case "admin:mediumedit:store":
                     break;

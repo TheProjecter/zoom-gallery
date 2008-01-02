@@ -31,7 +31,7 @@ class zmgDocumentTool {
         } else {
             if (!empty($this->_PDF_path) && !$zoom->_CONFIG['override_PDF']) {
                 if (!$zoom->platform->is_dir($this->_PDF_path)) {
-                    return parent::registerError($file, 'Xpdf: Your PDFtoText path is not correct! Please (re)specify it in the Admin-system under \'Settings\'');
+                    return zmgToolboxPlugin::registerError($file, 'Xpdf: Your PDFtoText path is not correct! Please (re)specify it in the Admin-system under \'Settings\'');
                 }
             }
         }
@@ -41,7 +41,7 @@ class zmgDocumentTool {
         $output = $retval = null;
         exec($cmd, $output, $retval);
         if ($retval) {
-            return parent::registerError($file, 'Xpdf: Could not index document: ' . $output);
+            return zmgToolboxPlugin::registerError($file, 'Xpdf: Could not index document: ' . $output);
         }
         return true;
     }
@@ -59,7 +59,7 @@ class zmgDocumentTool {
         }
         $source = $mosConfig_absolute_path."/".$zoom->_CONFIG['imagepath'].$file->getDir()."/".ereg_replace("(.*)\.([^\.]*)$", "\\1", $file->_filename).".txt";
         if (!$zoom->platform->is_file($source)) {
-            return parent::registerError($file, 'Xpdf: File is not indexed yet.');
+            return zmgToolboxPlugin::registerError($file, 'Xpdf: File is not indexed yet.');
         }
         $txt = strtolower(file_get_contents($source));
         if (preg_match("/$searchText/", $txt)) {
@@ -67,7 +67,28 @@ class zmgDocumentTool {
             return true;
         }
         unset($txt);
-        return parent::registerError($file, 'Search: Term not found in this document.');
+        return zmgToolboxPlugin::registerError($file, 'Search: Term not found in this document.');
+    }
+    /**
+     * Detect if Xpdf is available on the system.
+     *
+     * @return void
+     */
+    function autoDetect() {
+        static $output, $status;
+        @exec('pdftotext',  $output, $status);
+        
+        $res = false;
+        if (!empty($output[0])) {
+            if (preg_match("/pdftotext/i",$output[0], $matches)) {
+                zmgToolboxPlugin::registerError(T_('Xpdf (or pdftotext)'), T_('is available.'));
+                $res = true;
+            }
+        }
+        if (!$res) {
+            zmgToolboxPlugin::registerError(T_('Xpdf (or pdftotext)'), T_('could not be detected on your system.'));
+        }
+        unset($output, $status);
     }
 }
 ?>
