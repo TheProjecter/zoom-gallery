@@ -15,7 +15,7 @@ ZMG.Tooltip = new Class({
         classBottomRight : 'zmg-tip-br',
         classBottomCenter : 'zmg-tip-bc',
         relElement: null,
-        parentElement: document.body,
+        parentNode: document.body,
         closeButton: false,
         zIndex: 20000,
         initX: 0,
@@ -27,9 +27,7 @@ ZMG.Tooltip = new Class({
         this.setOptions(options);
         ZMG.Tooltip.COUNTER++;
         this.id = id || "zmg_tooltip" + ZMG.Tooltip.COUNTER;
-        
         this.listening = (this.options.relElement != null);
-        
         this.build();
         this._attachBehaviors();
     },
@@ -62,7 +60,7 @@ ZMG.Tooltip = new Class({
                 </div>\
               </div>\
             </div>'].join('');
-        this.options.parentElement.appendChild(this.domNode);
+        this.options.parentNode.appendChild(this.domNode);
         
         this.domHeader = $(this.id + '_headertext');
         this.domBody   = $(this.id + '_tipbody');
@@ -80,8 +78,6 @@ ZMG.Tooltip = new Class({
     show: function() {
         //TODO: animation
         this.domNode.setStyles({
-            'position'  : 'absolute',
-            'z-index'   : this.options.zIndex + ZMG.Tooltip.COUNTER,
             'visibility': 'visible',
             'display'   : ''
         });

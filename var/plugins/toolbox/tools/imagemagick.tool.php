@@ -26,7 +26,7 @@ class zmgImagemagickTool {
         $cmd = $this->_IM_path."convert -resize $new_size \"$src_file\" \"$dest_file\"";
         exec($cmd, $output, $retval);
         if($retval) {
-            return parent::registerError($src_file, 'ImageMagick: Could not convert image: ' . $output);
+            return zmgToolboxPlugin::registerError($src_file, 'ImageMagick: Could not convert image: ' . $output);
         }
         return true;
     }
@@ -43,7 +43,7 @@ class zmgImagemagickTool {
         $output = $retval = null;
         exec($cmd, $output, $retval);
         if($retval) {
-            return parent::registerError($src_file, 'ImageMagick: Could not rotate image: ' . $output);
+            return zmgToolboxPlugin::registerError($src_file, 'ImageMagick: Could not rotate image: ' . $output);
         }
         return true;
     }
@@ -111,11 +111,32 @@ class zmgImagemagickTool {
         $output = $retval = null;
         exec($cmd, $output, $retval);
         
-        if($retval) {
+        if ($retval) {
             return false;
         } else {
             return true;
         }
+    }
+    /**
+     * Detect if ImageMagick is available on the system.
+     *
+     * @return void
+     */
+    function autoDetect() {
+        static $output, $status;
+        @exec('convert -version', $output, $status);
+        
+        $res = false;
+        if (!$status) {
+            if(preg_match("/imagemagick[ \t]+([0-9\.]+)/i",$output[0],$matches)) {
+                zmgToolboxPlugin::registerError('ImageMagick', $matches[0] . ' ' . T_('is available.'));
+                $res = true;
+            }
+        }
+        if (!$res) {
+            zmgToolboxPlugin::registerError('ImageMagick', T_('could not be detected on your system.'));
+        }
+        unset($output, $status);
     }
 }
 ?>

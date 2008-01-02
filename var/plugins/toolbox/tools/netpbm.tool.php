@@ -23,7 +23,7 @@ class zmgNetpbmTool {
      */
     function resize($src_file, $dest_file, $new_size, &$imgobj) {
         if ($imgobj->_size == null) {
-            return parent::registerError($src_file, 'NetPBM: No correct arguments supplied.');
+            return zmgToolboxPlugin::registerError($src_file, 'NetPBM: No correct arguments supplied.');
         }
         // height/width
         $ratio = max($imgobj->_size[0], $imgobj->_size[1]) / $new_size;
@@ -37,12 +37,12 @@ class zmgNetpbmTool {
         } elseif (eregi("\.gif", $imgobj->_filename)) {
             $cmd = $this->_NETPBM_path . "giftopnm $src_file | " . $this->_NETPBM_path . "pnmscale -xysize $destWidth $destHeight | " . $this->_NETPBM_path . "ppmquant 256 | " . $this->_NETPBM_path . "ppmtogif > $dest_file" ; 
         } else {
-            return parent::registerError($src_file, 'NetPBM: Source file is not an image or image type is not supported.');
+            return zmgToolboxPlugin::registerError($src_file, 'NetPBM: Source file is not an image or image type is not supported.');
         }
         $output = $retval = null;
         exec($cmd, $output, $retval);
         if ($retval) {
-            return parent::registerError($src_file, 'NetPBM: Could not convert image: ' . $output);
+            return zmgToolboxPlugin::registerError($src_file, 'NetPBM: Could not convert image: ' . $output);
         }
         return true;
     }
@@ -65,15 +65,36 @@ class zmgNetpbmTool {
         } elseif (eregi("\.gif", $imgobj->_filename)) {
             $cmd = $this->_NETPBM_path . "giftopnm $src_file | " . $this->_NETPBM_path . "pnmrotate $degrees | " . $this->_NETPBM_path . "ppmquant 256 | " . $this->_NETPBM_path . "ppmtogif > $fileOut" ; 
         } else {
-            return parent::registerError($src_file, 'NetPBM: Source file is not an image or image type is not supported.');
+            return zmgToolboxPlugin::registerError($src_file, 'NetPBM: Source file is not an image or image type is not supported.');
         }
         $output = $retval = null;
         exec($cmd, $output, $retval);
         if ($retval) {
-            return parent::registerError($src_file, 'NetPBM: Could not rotate image: ' . $output);
+            return zmgToolboxPlugin::registerError($src_file, 'NetPBM: Could not rotate image: ' . $output);
         }
         $erg = $zoom->platform->rename($fileOut, $dest_file); 
         return true;
+    }
+    /**
+     * Detect if NetPBM is available on the system.
+     *
+     * @return void
+     */
+    function autoDetect() {
+        static $output, $status;
+        @exec('jpegtopnm -version 2>&1',  $output, $status);
+        
+        $res = false;
+        if (!$status) {
+            if (preg_match("/netpbm[ \t]+([0-9\.]+)/i",$output[0],$matches)) {
+                zmgToolboxPlugin::registerError('NetPBM', $matches[0] . ' ' . T_('is available.'));
+                $res = true;
+            }
+        }
+        if (!$res) {
+            zmgToolboxPlugin::registerError('NetPBM', T_('could not be detected on your system.'));
+        }
+        unset($output, $status);
     }
 }
 ?>

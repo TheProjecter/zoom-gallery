@@ -12,6 +12,8 @@
 defined('_ZMG_EXEC') or die('Restricted access');
 
 class zmgMimeTool {
-
+    function autoDetect() {
+        return;
+    }
 }
 ?>

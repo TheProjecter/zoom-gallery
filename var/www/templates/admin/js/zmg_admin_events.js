@@ -44,6 +44,11 @@ ZMG.Events.Server = new Class({
           || view == "admin:settings:info") {
             key = this.Server.ongetsettingskey(view);
             this.Server.onloadsettingstab(key, text);
+            if (view == "admin:settings:plugins")
+                this.Client.onviewselect('admin:settings:plugins:autodetect');
+        } else if (text) {
+            o = Json.evaluate(text);
+            isJSON = true;
         }
         ZMG.Admin.Events.Client.onhideloader();
         
@@ -51,7 +56,8 @@ ZMG.Events.Server = new Class({
             //check if there are any messages we need to display:
             if (o.messagecenter && o.messagecenter.messages.length) {
                 for (var i = 0; i < o.messagecenter.messages.length; i++)
-                    this.Client.onshowmessage(o.messagecenter.messages[i]);
+                    this.Client.onshowmessage(o.messagecenter.messages[i].title,
+                      o.messagecenter.messages[i].descr);
             }
         }
     },
@@ -70,11 +76,6 @@ ZMG.Events.Server = new Class({
                 this.Client.onshowmessage(o.messagecenter.messages[i].title,
                   o.messagecenter.messages[i].descr);
             }
-//            var pos = this.Client.toolbar.node.getCoordinates();
-//            this.Client.tooltip.setContent(o.messages.title,
-//              o.messages[o.result.toLowerCase()])
-//              .locate(pos.left - 250, pos.top + 12).show();
-//            window.setTimeout('ZMG.Admin.Events.Client.tooltip.hide()', 5500);
         }
         this.Client.onhideloader();
     },
@@ -310,9 +311,10 @@ ZMG.Events.Client = new Class({
         this.menuTree = null;
         this.requestingTabs = false;
         this.toolbar = new ZMG.Toolbar();
-        this.tooltip = new ZMG.Tooltip(null, {
-            parentElement: ZMG.Admin.cacheElement('zmg_admin_messagecenter')
-        });
+//        this.tooltip = new ZMG.Tooltip(null, {
+//            parentElement: ZMG.Admin.cacheElement('zmg_admin_messagecenter')
+//        });
+        this.tooltips = [];
         //LiveGrid content sliders
         this.bodySlide = null;
         this.editSlide = null;
@@ -338,8 +340,8 @@ ZMG.Events.Client = new Class({
         mc.setStyle('top',  posTop  + "px");
         mc.setStyle('left', posLeft + "px");
         
-        var tooltip = new ZMG.Tooltip(null, {
-            parentElement: mc
+        var tooltip = new ZMG.Tooltip(false, {
+            parentNode: mc
         }).setContent(title, msg).show();
         
         window.setTimeout(this.onhidemessages.pass(tooltip, this), 5500);
@@ -347,14 +349,15 @@ ZMG.Events.Client = new Class({
         this.tooltips.push(tooltip);
     },
     onhidemessages: function(tooltip) {
+        tooltip.hide();
+        
         var found = false;
         for (var i = 0; i < this.tooltips.length && !found; i++) {
-            if (this.tooltips == tooltip) {
+            if (this.tooltips[i] == tooltip) {
                 this.tooltips.splice(i, 1);
                 found = true;
             }
         }
-        
         if (!this.tooltips.length)
             ZMG.Admin.cacheElement('zmg_admin_messagecenter').setStyle('display', 'none');
     },
