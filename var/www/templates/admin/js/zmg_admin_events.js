@@ -338,6 +338,8 @@ ZMG.Events.Client = new Class({
         //LiveGrid content sliders
         this.bodySlide = null;
         this.editSlide = null;
+        //LiveGrid content filter
+        this.activeFilter = null;
         
         window.addEvent('resize', this.onwindowresize.bind(this));
         
@@ -513,6 +515,28 @@ ZMG.Events.Client = new Class({
     },
     onmm_uploadclick: function(e) {
         this.onviewselect('admin:mediamanager:upload', 'html');
+    },
+    onmm_gallerychange: function(oSelect) {
+        var value = parseInt(oSelect.value);
+        if (value === 0) value = null;
+        var reload = (this.activeFilter !== value);
+        
+        this.activeFilter = value;
+        
+        //get new number of media:
+        new XHR({
+            async: false,
+            onSuccess: function(text, xml) {
+                var o = Json.evaluate(text);
+                ZMG.CONST.mediumcount = parseInt(o.result);
+            }
+        }).send(ZMG.CONST.req_uri + "&view=admin:update:mediacount:" + value, '');
+        
+        var liveGrid = ZMG.Admin.Events.Server.liveGrid;
+        liveGrid.options.count = ZMG.CONST.mediumcount || 1;
+        liveGrid.options.url = ZMG.CONST.req_uri + "&view=admin:mediamanager:getmedia"
+          + (value ? ":" + value : "");
+        liveGrid.refresh();
     },
     onsettingssaveclick: function(e) {
         var data = FormSerializer.serialize($('zmg_settings_form'));

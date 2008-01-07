@@ -38,6 +38,10 @@ class viewpicker {
                     }
                     zmgToolboxPlugin::autoDetect($tool);
                     break;
+                case stristr($view, "admin:update:mediacount"):
+                    $filter = intval(array_pop($view_tokens));
+                    $zoom->setResult($zoom->getMediumCount($filter));
+                    break;
                 case "admin:mediumedit:store":
                     break;
                 case "admin:mediaupload:store":

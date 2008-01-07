@@ -1,3 +1,9 @@
+<center>
+    <div class="zmg_greyblock">
+        {t}Filter{/t}: {$zoom->zmgCallAbstract('zmgHTML', 'galleriesSelect', 'ZMG.Admin.Events.Client.onmm_gallerychange(this);')}
+    </div>
+</center>
+<br/>
 <div id="zmg_mm_lgrid" class="lgrid">
     <div class="lgrid-toolbar">
     <table id="zmg_lgrid_pagination" class="lgrid-pagination">
@@ -27,7 +33,7 @@
         <div class="lgrid-body"></div>
         <div class="lgrid-panel-edit">
             <center>
-                <div class="zmg_thumbnail_container">
+                <div class="zmg_greyblock">
                     <img id="zmg_edit_medium_thumbnail" src="" alt="{t}Thumbnail{/t}" title="{t}Thumbnail{/t}" border="0"/>
                 </div>
             </center>

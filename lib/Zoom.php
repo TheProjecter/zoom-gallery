@@ -67,6 +67,12 @@ class Zoom extends zmgError {
      */
     var $_result = null;
     /**
+     * Internal variable, a holder for an array of galleries
+     *
+     * @var array
+     */
+    var $_gallerylist = null;
+    /**
      * Public variable, containing the zmgTemplateViewHelper/Smarty
      * templating engine class.
      *
@@ -150,9 +156,17 @@ class Zoom extends zmgError {
     function updateConfig($vars, $isPlugin = false) {
         return $this->_config->update($vars, $isPlugin);
     }
-    function getAbstractValue($class, $func) {
-        if (class_exists($class) && method_exists($class, $func)) {
-            return eval($class . '::' . $func . '()');
+    /**
+     * Call an abstract/ static function that resides within a static class.
+     * Note: particularly useful within templates.
+     * @param string Name of the static class
+     * @param string Name of the function to call
+     * @param mixed The arguments that should be passed to the function call
+     * @return mixed
+     */
+    function zmgCallAbstract($klass, $func, $args) {
+        if (is_callable(array($klass, $func))) {
+            return call_user_func(array($klass, $func), $args);
         }
         return null;
     }
@@ -171,9 +185,13 @@ class Zoom extends zmgError {
         }
         return 0;
     }
-    function getMediumCount() {
+    function getMediumCount($gid = 0) {
         $db = & zmgDatabase::getDBO();
-        $db->setQuery('SELECT COUNT(mid) AS total FROM #__zmg_media');
+        $query = "SELECT COUNT(mid) AS total FROM #__zmg_media";
+        if ($gid > 0) {
+            $query .= " WHERE gid = $gid";
+        }
+        $db->setQuery($query);
         if ($db->query()) {
             return intval($db->loadResult());
         }
@@ -194,7 +212,41 @@ class Zoom extends zmgError {
         }
         return $ret;
     }
-    function getMedia($gid = 0, $offset = 0, $length = 0) {
+    /**
+     * Create a list of all galleries.
+     * @param int $parent
+     * @param string $ident
+     * @param string $ident2
+     * @return void
+     */
+    function &getGalleryList($parent = 0, $indent_l1 = '->', $indent_l2 = '->') {
+        if (!is_array($this->_gallerylist)) {
+            $db   = & zmgDatabase::getDBO();
+            $db->setQuery("SELECT gid FROM #__zmg_galleries WHERE sub_gid=$parent ORDER BY pos, "
+             . $this->getGalleriesOrdering());
+            $rows = $db->loadRowList();
+            if ($rows) {
+                foreach ($rows as $row) {
+                    $gallery = new zmgGallery(&$db);
+                    $gallery->load($row[0]);
+                    $ret[]   = $gallery;
+                    $this->_gallerylist[] = array(
+                      'object' => $gallery,
+                      'path_name' => $indent_l1 . $gallery->name,
+                      'path_virtual' => $indent_l2 . $gallery->name);
+                    $this->getGalleryList($gallery->gid, $indent_l1 . '->',
+                      $indent_l2 . $gallery->name . '->');
+                }
+            }
+        }
+        return $this->_gallerylist;
+    }
+    function getMedia($gid = 0, $offset = 0, $length = 0, $filter = 0) {
+        $filter = intval($filter);
+        if ($filter > 0) {
+            $gid = $filter;
+        }
+        
         $ret  = array();
 
         $db   = & zmgDatabase::getDBO();
@@ -301,7 +353,10 @@ class Zoom extends zmgError {
         }
     }
     function setResult($result = true) {
-        $this->_result = ($result) ? _ZMG_RPC_RESULT_OK : _ZMG_RPC_RESULT_KO;
+        if (is_bool($result)) {
+            $result = ($result) ? _ZMG_RPC_RESULT_OK : _ZMG_RPC_RESULT_KO;
+        }
+        $this->_result = $result;
     }
     function getResult() {
         if ($this->_result == null) {
