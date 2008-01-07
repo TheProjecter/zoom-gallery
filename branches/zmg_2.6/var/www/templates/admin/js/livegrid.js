@@ -58,8 +58,9 @@ var LiveGrid = new Class({
 
 	refresh: function() {
 		if (this.rows){
-			this.rows.length = 0;
-			this.getRows().destroy();
+			this.rows = null;
+			this.getRows().empty();
+			this.body.innerHTML = "";
 		}
 		this.prepare();
 		this.reset();
@@ -80,6 +81,8 @@ var LiveGrid = new Class({
 	reset: function() {
 		this.first = 0;
 		this.populated = 0;
+		this.xhr = null;
+		//this.resetCalcs();
 		this.checkScroll();
 	},
 
@@ -132,6 +135,7 @@ var LiveGrid = new Class({
 		var length = rows.length;
 		this.setRowState(offset, length, true);
 		if (!this.xhr) {
+			console.log('request:', this.options.url);
 			this.xhr = new AjaxQueue(this.options.url, {
 				ajaxOptions: this.options.ajaxOptions,
 				onSuccess: (this.options.responseHandler || this.responseHandler).bind(this),

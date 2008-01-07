@@ -3,7 +3,7 @@
     'gallerymanager': {
         'text': {/literal}{t escape='json'}Gallery Manager{/t}{literal},
         'id'  : 'admin:gallerymanager',
-        'icon': ZMG.CONST.res_path + '/images/sample_icons.gif#2',
+        'icon': ZMG.CONST.res_path + '/images/admin_treeitems.gif#1',
         'openicon': '',
         'open': false,
         'load': ZMG.CONST.req_uri + '&view=admin:gallerymanager:getgalleries&sub=0&pos=0'
@@ -11,7 +11,7 @@
     'mediamanager': {
         'text': {/literal}{t escape='json'}Media Manager{/t}{literal},
         'id'  : 'admin:mediamanager',
-        'icon': '',
+        'icon': ZMG.CONST.res_path + '/images/admin_treeitems.gif#4',
         'openicon': '',
         'open': false,
         'load': '',
@@ -19,7 +19,7 @@
             'upload' : {
                 'text': {/literal}{t escape='json'}Upload new media{/t}{literal},
                 'id'  : 'admin:mediamanager:upload',
-                'icon': '',
+                'icon': ZMG.CONST.res_path + '/images/admin_treeitems.gif#5',
                 'openicon': '',
                 'load': '',
                  'extra': {
@@ -42,14 +42,14 @@
     'settings': {
         'text': {/literal}{t escape='json'}Settings{/t}{literal},
         'id'  : 'admin:settings:overview',
-        'icon': '',
+        'icon': ZMG.CONST.res_path + '/images/admin_treeitems.gif#6',
         'openicon': '',
         'open': false,
         'children': {
             'meta' : {
                 'text': {/literal}{t escape='json'}Metadata{/t}{literal},
 		        'id'  : 'admin:settings:meta',
-		        'icon': '',
+		        'icon': ZMG.CONST.res_path + '/images/admin_treeitems.gif#7',
 		        'openicon': '',
 		        'open': false,
 		        'load': '',
@@ -60,7 +60,7 @@
             'locale' : {
                 'text': {/literal}{t escape='json'}Localization{/t}{literal},
                 'id'  : 'admin:settings:locale',
-                'icon': '',
+                'icon': ZMG.CONST.res_path + '/images/admin_treeitems.gif#8',
                 'openicon': '',
                 'open': false,
                 'load': '',
@@ -71,7 +71,7 @@
             'filesystem' : {
                 'text': {/literal}{t escape='json'}Storage{/t}{literal},
                 'id'  : 'admin:settings:filesystem',
-                'icon': '',
+                'icon': ZMG.CONST.res_path + '/images/admin_treeitems.gif#9',
                 'openicon': '',
                 'open': false,
                 'load': '',
@@ -82,7 +82,7 @@
             'layout' : {
                 'text': {/literal}{t escape='json'}Layout{/t}{literal},
                 'id'  : 'admin:settings:layout',
-                'icon': '',
+                'icon': ZMG.CONST.res_path + '/images/admin_treeitems.gif#10',
                 'openicon': '',
                 'open': false,
                 'load': '',
@@ -93,7 +93,7 @@
             'app' : {
                 'text': {/literal}{t escape='json'}Application{/t}{literal},
                 'id'  : 'admin:settings:app',
-                'icon': '',
+                'icon': ZMG.CONST.res_path + '/images/admin_treeitems.gif#11',
                 'openicon': '',
                 'open': false,
                 'load': '',
@@ -104,7 +104,7 @@
             'plugins' : {
                 'text': {/literal}{t escape='json'}Plugins{/t}{literal},
                 'id'  : 'admin:settings:plugins',
-                'icon': '',
+                'icon': ZMG.CONST.res_path + '/images/admin_treeitems.gif#12',
                 'openicon': '',
                 'open': false,
                 'load': '',
@@ -115,7 +115,7 @@
             'info' : {
                 'text': {/literal}{t escape='json'}Info{/t}{literal},
                 'id'  : 'admin:settings:info',
-                'icon': '',
+                'icon': ZMG.CONST.res_path + '/images/admin_treeitems.gif#13',
                 'openicon': '',
                 'open': false,
                 'load': '',

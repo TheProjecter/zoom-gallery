@@ -13,7 +13,7 @@
         <view name="admin:dispatchresult" inherits="admin:dispatchresult:*"/>
         <view name="admin:gallerymanager"/>
         <view name="admin:gallerymanager:getgalleries"/>
-        <view name="admin:mediamanager:getmedia"/>
+        <view name="admin:mediamanager:getmedia" inherits="admin:mediamanager:getmedia:*"/>
         <view name="admin:mediamanager:get" inherits="admin:mediamanager:get:*"/>
         <view name="admin:mediamanager:upload"/>
         <view name="admin:thumbcoder"/>

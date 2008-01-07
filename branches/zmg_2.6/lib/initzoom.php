@@ -38,6 +38,7 @@ $zoom->hasAccess() or die('Restricted access');
 $zoom->view->setViewType(zmgEnv::getViewType());
 
 //load core classes
+require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgHTML.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgJson.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'core'.DS.'zmgComment.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'core'.DS.'zmgEditMonitor.php');
