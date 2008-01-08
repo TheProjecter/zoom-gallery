@@ -23,6 +23,7 @@ require_once(ZMG_ABS_PATH . DS.'lib'.DS.'smarty'.DS.'Smarty.class.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgConfigurationHelper.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgMessageCenter.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgPluginHelper.php');
+require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgSessionHelper.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgTemplateHelper.php');
 require_once(ZMG_ABS_PATH . DS.'lib'.DS.'Zoom.php');
 $zoom = & zmgFactory::getZoom();
@@ -58,13 +59,6 @@ $domain = $zoom->getConfig('locale/domain');
 T_bindtextdomain($domain, ZMG_ABS_PATH . '/locale');
 T_bind_textdomain_codeset($domain, $zoom->getConfig('locale/encoding'));
 T_textdomain($domain);
-
-//start the session
-session_name('ZMG_' . md5(ZMG_ABS_PATH));
-session_start();
-
-//restore session data
-$zoom->restoreSession();
 
 $zoom->fireEvents('oncontentstart');
 
