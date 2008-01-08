@@ -97,6 +97,12 @@ class Zoom extends zmgError {
      * @var zmgPluginHelper()
      */
     var $plugins = null;
+    /**
+     * Public variable, containing the ZMG session variables.
+     * 
+     * @var zmgSessionHelper()
+     */
+    var $session = null;
     
 	/**
      * The class constructor.
@@ -107,6 +113,7 @@ class Zoom extends zmgError {
           $this->getConfig('app/secret'));
         $this->messages = new zmgMessageCenter();
         $this->plugins  = new zmgPluginHelper();
+        $this->session  = new zmgSessionHelper();
 
         $this->loadEvents(); //TODO: use cached events list
 	}
@@ -118,24 +125,6 @@ class Zoom extends zmgError {
     function notAuth() {
         //TODO: implement!
         die('Restricted access');
-    }
-    function restoreSession() {
-        $username = zmgGetParam($_SESSION, 'zmg.session.username', '');
-        if (!empty($username)) {
-            $this->user = new zmgUser(&$this->db);
-            $this->user->id       = zmgGetParam($_SESSION, 'zmg.session.id', '');
-            $this->user->username = $username;
-            $this->user->usertype = zmgGetParam($_SESSION, 'zmg.session.usertype', '');
-            $this->user->gid      = zmgGetParam($_SESSION, 'zmg.session.gid', '');
-            $this->user->params   = zmgGetParam($_SESSION, 'zmg.session.params', '');
-        }
-    }
-    function storeSession() {
-        $_SESSION['zmg.session.id']       = $this->user->id;
-        $_SESSION['zmg.session.username'] = $this->user->username;
-        $_SESSION['zmg.session.usertype'] = $this->user->usertype;
-        $_SESSION['zmg.session.gid']      = $this->user->gid;
-        $_SESSION['zmg.session.params']   = $this->user->params; 
     }
     /**
      * Retrieve a specific configuration setting.
@@ -164,7 +153,7 @@ class Zoom extends zmgError {
      * @param mixed The arguments that should be passed to the function call
      * @return mixed
      */
-    function zmgCallAbstract($klass, $func, $args) {
+    function callAbstract($klass, $func, $args) {
         if (is_callable(array($klass, $func))) {
             return call_user_func(array($klass, $func), $args);
         }

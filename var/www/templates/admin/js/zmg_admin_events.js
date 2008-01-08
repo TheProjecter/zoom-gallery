@@ -92,6 +92,10 @@ ZMG.Events.Server = new Class({
             ZMG.Admin.cacheElement('zmg_view_content').adopt(oMM);
             oMM.innerHTML = html;
             FancyForm.start($A(oMM.getElementsByTagName('input')));
+            ZMG.Admin.Events.Client.filterSelects.include(oSelect);
+            var oSelect = oMM.getElementsByTagName('select')[0];
+            if (oSelect)
+                ZMG.Admin.Events.Client.filterSelects.include(oSelect);
             
             var el    = $('zmg_mm_lgrid');
             var nav   = el.getElement('.lgrid-nav');
@@ -177,6 +181,7 @@ ZMG.Events.Server = new Class({
             
             pager.addEvent('change', ZMG.Admin.Events.Client.onlivegridpager.bind(this.liveGrid, [pager]));
         }
+        ZMG.Admin.Events.Client.onmm_setfilterselects();
         this.onactivateview('zmg_view_mm');
     },
     onmediamanagerupload: function(html) {
@@ -184,10 +189,13 @@ ZMG.Events.Server = new Class({
             var oUpload = new Element('div', { id: 'zmg_view_mm_upload' });
             ZMG.Admin.cacheElement('zmg_view_content').adopt(oUpload);
             oUpload.innerHTML = html;
+            var oSelect = oUpload.getElementsByTagName('select')[0];
+            if (oSelect)
+                ZMG.Admin.Events.Client.filterSelects.include(oSelect);
             
             var oForm = oUpload.getElementsByTagName('form')[0];
             if (oForm)
-                oForm.action = ZMG.CONST.req_uri + "&view=admin:mediamanager:upload:store";
+                oForm.action = ZMG.CONST.req_uri + "&view=admin:mediaupload:store";
             
             this.Uploader = new FancyUpload($('zmg_fancyupload_filedata'), {
                 swf: ZMG.CONST.base_path + '/var/www/templates/admin/other/uploader.swf',
@@ -199,12 +207,13 @@ ZMG.Events.Server = new Class({
                 types: {'All Files (*.*)': '*.*'},
                 onAllComplete: function(){
                     //MediaManager.refreshFrame();
-                    alert('done!');
+                    alert('done!' + arguments.length);
                 }
             });
             
             $('zmg_fancyupload_clear').onclick = this.Uploader.clearList.bind(this.Uploader, [false]); 
         }
+        ZMG.Admin.Events.Client.onmm_setfilterselects();
         this.onactivateview('zmg_view_mm_upload');
     },
     onloadmediumdata: function(node) {
@@ -339,7 +348,8 @@ ZMG.Events.Client = new Class({
         this.bodySlide = null;
         this.editSlide = null;
         //LiveGrid content filter
-        this.activeFilter = null;
+        this.activeFilter  = null;
+        this.filterSelects = [];
         
         window.addEvent('resize', this.onwindowresize.bind(this));
         
@@ -513,10 +523,19 @@ ZMG.Events.Client = new Class({
             }
         }
     },
+    onmm_setfilterselects: function() {
+        if (arguments[0]) this.filterSelects.include(arguments[0]);
+        for (var i = 0; i < this.filterSelects.length; i++) {
+            if (this.filterSelects[i])
+                this.filterSelects[i].value = this.activeFilter;
+        }
+    },
     onmm_uploadclick: function(e) {
         this.onviewselect('admin:mediamanager:upload', 'html');
     },
     onmm_gallerychange: function(oSelect) {
+        this.filterSelects.include(oSelect);
+        
         var value = parseInt(oSelect.value);
         if (value === 0) value = null;
         var reload = (this.activeFilter !== value);

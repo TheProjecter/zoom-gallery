@@ -45,7 +45,7 @@ class viewpicker {
                 case "admin:mediumedit:store":
                     break;
                 case "admin:mediaupload:store":
-                    
+                    //SWFUpload needs HTTP headers to signal the user...
                     break;
                 default:
                     break;

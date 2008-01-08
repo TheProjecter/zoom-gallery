@@ -1,6 +1,6 @@
 <center>
     <div class="zmg_greyblock">
-        {t}Filter{/t}: {$zoom->zmgCallAbstract('zmgHTML', 'galleriesSelect', 'ZMG.Admin.Events.Client.onmm_gallerychange(this);')}
+        {t}Filter{/t}: {$zoom->callAbstract('zmgHTML', 'galleriesSelect', 'ZMG.Admin.Events.Client.onmm_gallerychange(this);')}
     </div>
 </center>
 <br/>
