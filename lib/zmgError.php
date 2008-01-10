@@ -4,7 +4,7 @@
  * 
  * @package zmg
  * @version $Revision$
- * @author Mike de Boer <mdeboer AT ebuddy.com>
+ * @author Mike de Boer <mike AT zoomfactory.org>
  * @copyright Copyright &copy; 2007, Mike de Boer. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GPL
  * 

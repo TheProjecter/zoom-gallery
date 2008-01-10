@@ -4,7 +4,7 @@
  * 
  * @package zmg
  * @version $Revision$
- * @author Mike de Boer <mdeboer AT ebuddy.com>
+ * @author Mike de Boer <mike AT zoomfactory.org>
  * @copyright Copyright &copy; 2007, Mike de Boer. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GPL
  */
@@ -108,6 +108,12 @@ class Zoom extends zmgError {
      * The class constructor.
      */
 	function Zoom(&$config) {
+        zmgimport('com.zoomfactory.lib.zmgConfigurationHelper');
+        zmgimport('com.zoomfactory.lib.zmgTemplateHelper');
+        zmgimport('com.zoomfactory.lib.zmgMessageCenter');
+        zmgimport('com.zoomfactory.lib.zmgPluginHelper');
+        zmgimport('com.zoomfactory.lib.zmgSessionHelper');
+        
         $this->_config  = new zmgConfigurationHelper($config);
         $this->view     = new zmgTemplateHelper($this->getConfig('smarty'),
           $this->getConfig('app/secret'));
@@ -334,7 +340,7 @@ class Zoom extends zmgError {
     function fireEvents($event) {
         if (!empty($this->events[$event])) {
             foreach ($this->events[$event] as $cmp) {
-                require_once(ZMG_ABS_PATH . DS.'var'.DS.'events'.DS.$event.DS.$cmp.DS.$cmp.'.php');
+                zmgimport('com.zoomfactory.var.events.'.$event.'.'.$cmp.'.'.$cmp);
                 if (class_exists($cmp)) { 
                     eval($cmp . '::start(&$this);');
                 }

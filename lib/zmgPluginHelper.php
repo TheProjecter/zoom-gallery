@@ -4,7 +4,7 @@
  * 
  * @package zmg
  * @version $Revision$
- * @author Mike de Boer <mdeboer AT ebuddy.com>
+ * @author Mike de Boer <mike AT zoomfactory.org>
  * @copyright Copyright &copy; 2007, Mike de Boer. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GPL
  */
@@ -38,6 +38,18 @@ class zmgPluginHelper extends zmgError {
                 //TODO: implement support for other plugin types
             }
         }
+    }
+    
+    function isLoaded($name) {
+        if (empty($name)) {
+            return false;
+        }
+        foreach ($this->_plugins as &$plugin) {
+            if ($plugin['name'] == $name) {
+                return true;
+            }
+        }
+        return false;
     }
     
     function _embedSettings(&$plugin, $xml_path) {
