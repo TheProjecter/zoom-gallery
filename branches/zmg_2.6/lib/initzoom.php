@@ -4,7 +4,7 @@
  * 
  * @package zmg
  * @version $Revision$
- * @author Mike de Boer <mdeboer AT ebuddy.com>
+ * @author Mike de Boer <mike AT zoomfactory.org>
  * @copyright Copyright &copy; 2007, Mike de Boer. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GPL
  */
@@ -13,23 +13,71 @@ defined('_ZMG_EXEC') or die('Restricted access');
 
 if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
 
+ /**
+ * Loads a class from specified directories.
+ *
+ * @param string $name  The class name to look for ( dot notation ).
+ * @param string $base  Search this directory for the class.
+ * @param string $key   String used as a prefix to denote the full path of the file ( dot notation ).
+ * @return boolean True if the requested class has been successfully included
+ */
+function zmgimport($keyPath, $base = ZMG_ABS_PATH, $key = 'com.zoomfactory.') {
+    static $paths;
+    if (!isset($paths)) {
+        $paths = array();
+    }
+
+    if (empty($key) || !strstr($keyPath, $key)) {
+        return false;
+    }
+    $filePath = str_replace($key, '', $keyPath);
+    $trs     = 1;
+    if (!isset($paths[$keyPath])) {
+        $parts = explode('.', $filePath);
+        if (!$base) {
+            $base = dirname( __FILE__ );
+        }
+        if (array_pop($parts) == '*') {
+            $path = $base . DS . implode(DS, $parts);
+            if (!is_dir( $path )) {
+                return false;
+            }
+            $dir = dir($path);
+            while ($file = $dir->read()) {
+                if (preg_match('#(.*?)\.php$#', $file, $m)) {
+                    $nPath   = str_replace('*', $m[1], $filePath);
+                    $keyPath = $key . $nPath;
+                    // we need to check each file again incase one has a jimport
+                    if (!isset($paths[$keyPath])) {
+                        $rs = include($path . DS . $file);
+                        $paths[$keyPath] = $rs;
+                        $trs =& $rs;
+                    }
+                }
+            }
+            $dir->close();
+        } else {
+            $path = str_replace( '.', DS, $filePath );
+            $trs  = include($base . DS . $path . '.php');
+        }
+        $paths[$keyPath] = $trs;
+    }
+    return $trs;
+}
+
 //load the error handling base class
-require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgError.php');
+zmgimport('com.zoomfactory.lib.zmgError');
 
 //initialize Smarty template engine
-require_once(ZMG_ABS_PATH . DS.'lib'.DS.'smarty'.DS.'Smarty.class.php');
+zmgimport('com.zoomfactory.lib.smarty.Smarty');
 
 //initialize the zoom (app) class
-require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgConfigurationHelper.php');
-require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgMessageCenter.php');
-require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgPluginHelper.php');
-require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgSessionHelper.php');
-require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgTemplateHelper.php');
-require_once(ZMG_ABS_PATH . DS.'lib'.DS.'Zoom.php');
+zmgimport('com.zoomfactory.lib.Zoom');
+//require_once(ZMG_ABS_PATH . DS.'lib'.DS.'Zoom.php');
 $zoom = & zmgFactory::getZoom();
 
 if (!class_exists('InputFilter')) {
-    require_once(ZMG_ABS_PATH . DS.'lib'.DS.'phpinputfilter'.DS.'inputfilter.php');
+    zmgimport('com.zoomfactory.lib.phpinputfilter.inputfilter');
 }
 
 $zoom->fireEvents('onstartup');
@@ -39,19 +87,16 @@ $zoom->hasAccess() or die('Restricted access');
 $zoom->view->setViewType(zmgEnv::getViewType());
 
 //load core classes
-require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgHTML.php');
-require_once(ZMG_ABS_PATH . DS.'lib'.DS.'zmgJson.php');
-require_once(ZMG_ABS_PATH . DS.'lib'.DS.'core'.DS.'zmgComment.php');
-require_once(ZMG_ABS_PATH . DS.'lib'.DS.'core'.DS.'zmgEditMonitor.php');
-require_once(ZMG_ABS_PATH . DS.'lib'.DS.'core'.DS.'zmgGallery.php');
-require_once(ZMG_ABS_PATH . DS.'lib'.DS.'core'.DS.'zmgMedium.php');
+zmgimport('com.zoomfactory.lib.zmgHTML');
+zmgimport('com.zoomfactory.lib.zmgJson');
+zmgimport('com.zoomfactory.lib.core.*');
 
 //set error handling options
 zmgError::setErrorHandling($zoom->getConfig('app/errors/defaultmode'),
   $zoom->getConfig('app/errors/defaultoption'));
 
 //load php-gettext (used in zoom in 'fallback mode')
-require_once(ZMG_ABS_PATH . DS.'lib'.DS.'phpgettext'.DS.'gettext.inc');
+zmgimport('com.zoomfactory.lib.phpgettext.gettext_inc');
 // gettext setup
 T_setlocale(LC_MESSAGES, $zoom->getConfig('locale/default'));
 // Set the text domain as 'messages'
@@ -233,34 +278,18 @@ function zmgRedirect( $url, $msg='' ) {
 /**
  * Function to strip additional / or \ in a path name
  * @param string The path
- * @param boolean Add trailing slash
  */
-function zmgPathName($p_path, $p_addtrailingslash = true) {
-    $retval = "";
+function zmgPathName($path, $ds = DS) {
+    $path = trim($path);
 
-    $isWin = (substr(PHP_OS, 0, 3) == 'WIN');
-
-    if ($isWin) {
-        $retval = str_replace( '/', '\\', $p_path );
-        if ($p_addtrailingslash) {
-            if (substr( $retval, -1 ) != '\\') {
-                $retval .= '\\';
-            }
-        }
-        // Remove double \\
-        $retval = str_replace( '\\\\', '\\', $retval );
+    if (empty($path)) {
+        $path = ZMG_ABS_PATH;
     } else {
-        $retval = str_replace( '\\', '/', $p_path );
-        if ($p_addtrailingslash) {
-            if (substr( $retval, -1 ) != '/') {
-                $retval .= '/';
-            }
-        }
-        // Remove double //
-        $retval = str_replace('//','/',$retval);
+        // Remove double slashes and backslahses and convert all slashes and backslashes to DS
+        $path = preg_replace('#[/\\\\]+#', $ds, $path);
     }
 
-    return $retval;
+    return $path;
 }
 
 /**
@@ -300,9 +329,9 @@ function zmgSQLEscape($string) {
  * @param dirmode Integer value to chmod directories. NULL = dont chmod directories.
  * @return TRUE=all succeeded FALSE=one or more chmods failed
  */
-function zmgChmodRecursive($path, $filemode=NULL, $dirmode=NULL)
+function zmgChmodRecursive($path, $filemode = "0644", $dirmode = "0777")
 {
-    $ret = TRUE;
+    $ret = true;
     if (is_dir($path)) {
         $dh = opendir($path);
         while ($file = readdir($dh)) {
@@ -310,21 +339,21 @@ function zmgChmodRecursive($path, $filemode=NULL, $dirmode=NULL)
                 $fullpath = $path.'/'.$file;
                 if (is_dir($fullpath)) {
                     if (!zmgChmodRecursive($fullpath, $filemode, $dirmode))
-                        $ret = FALSE;
+                        $ret = false;
                 } else {
                     if (isset($filemode))
-                        if (!@chmod($fullpath, $filemode))
-                            $ret = FALSE;
+                        if (!@chmod($fullpath, octdec($filemode)))
+                            $ret = false;
                 } // if
             } // if
         } // while
         closedir($dh);
         if (isset($dirmode))
-            if (!@chmod($path, $dirmode))
-                $ret = FALSE;
+            if (!@chmod($path, octdec($dirmode)))
+                $ret = false;
     } else {
         if (isset($filemode))
-            $ret = @chmod($path, $filemode);
+            $ret = @chmod($path, octdec($filemode));
     } // if
     return $ret;
 }
@@ -332,23 +361,15 @@ function zmgChmodRecursive($path, $filemode=NULL, $dirmode=NULL)
 /**
  * Chmods files and directories recursively to Zoom global permissions. Available from 1.0.0 up.
  * @param path The starting file or directory (no trailing slash)
- * @param filemode Integer value to chmod files. NULL = dont chmod files.
- * @param dirmode Integer value to chmod directories. NULL = dont chmod directories.
  * @return TRUE=all succeeded FALSE=one or more chmods failed
  */
 function zmgChmod($path) {
     global $zoom;
     $fileperms = $zoom->getConfig('filesystem/fileperms');
-    $filemode  = NULL;
-    if ($fileperms != '')
-        $filemode = octdec($fileperms);
     $dirperms  = $zoom->getConfig('filesystem/dirperms');
-    $dirmode   = NULL;
-    if ($dirperms != '')
-        $dirmode = octdec($dirperms);
     if (isset($filemode) || isset($dirmode))
-        return zmgChmodRecursive($path, $filemode, $dirmode);
-    return TRUE;
+        return zmgChmodRecursive($path, $fileperms, $dirperms);
+    return true;
 }
 
 /**

@@ -3,7 +3,7 @@
  * zOOm Media Gallery! - a multi-gallery component
  * 
  * @package zmg
- * @author Mike de Boer <mdeboer AT ebuddy.com>
+ * @author Mike de Boer <mike AT zoomfactory.org>
  * @copyright Copyright &copy; 2007, Mike de Boer. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GPL
  */
@@ -30,8 +30,8 @@ $zoom_config['db']['tables']['getid3cache'] = "getid3_cache";
 $zoom_config['db']['tables']['priviliges'] = "priviliges";
 $zoom_config['filesystem'] = array();
 $zoom_config['filesystem']['mediapath'] = "images/zoom/";
-$zoom_config['filesystem']['dirperms'] = "";
-$zoom_config['filesystem']['fileperms'] = "";
+$zoom_config['filesystem']['dirperms'] = "0755";
+$zoom_config['filesystem']['fileperms'] = "0644";
 $zoom_config['filesystem']['upload'] = array();
 $zoom_config['filesystem']['upload']['maxfilesize'] = 2048;
 $zoom_config['filesystem']['upload']['tempdescr'] = "Temporary description, please change...";
