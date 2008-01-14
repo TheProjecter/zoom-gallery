@@ -12,6 +12,15 @@
 defined('_ZMG_EXEC') or die('Restricted access');
 
 class zmgCmsPlugin extends zmgError {
+    function bindEvents() {
+        //only the embed function needs to be bound to the 'onstartup' event.
+        return array(
+            "onstartup" => array(
+                "embed" => array()
+            )
+        );
+    }
+    
     function embed() {
         $os = zmgCmsPlugin::_guessCMS();
         $os_dir = ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS.'cms'.DS.$os;
