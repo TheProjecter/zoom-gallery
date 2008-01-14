@@ -32,9 +32,17 @@ $GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'] = array(
 );
 
 class zmgToolboxPlugin extends zmgError {
+    function bindEvents() {
+        return array(
+            "onstartup" => array(
+                "embed" => array()
+            )
+            //more Events to come...
+        );
+    }
+    
     function embed() {
         $zoom = & zmgFactory::getZoom();
-        
         $imagetools_loaded = false;
         foreach ($GLOBALS['_ZMG_TOOLBOX_TOOLS'] as $tool) {
             if (in_array($tool, $GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'])) {

@@ -17,7 +17,9 @@ define("ZMG_ADMIN", 1);
 //load all required libraries
 require(ZMG_ABS_PATH . '/lib/initzoom.php');
 
-$zoom->view->run(&$zoom);
+$zoom->view->set();
+
+$zoom->view->run();
 
 $zoom->fireEvents('onfinish');
 ?>

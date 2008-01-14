@@ -73,10 +73,10 @@ class Zoom extends zmgError {
      */
     var $_gallerylist = null;
     /**
-     * Public variable, containing the zmgTemplateViewHelper/Smarty
-     * templating engine class.
+     * Public variable, containing the zmgViewHelper - helping ZMG with controlling
+     * the views on the different models that the Core exposes.
      *
-     * @var zmgTemplateHelper
+     * @var zmgViewHelper
      */
     var $view = null;
     /**
@@ -108,14 +108,14 @@ class Zoom extends zmgError {
      * The class constructor.
      */
 	function Zoom(&$config) {
-        zmgimport('com.zoomfactory.lib.zmgConfigurationHelper');
-        zmgimport('com.zoomfactory.lib.zmgTemplateHelper');
-        zmgimport('com.zoomfactory.lib.zmgMessageCenter');
-        zmgimport('com.zoomfactory.lib.zmgPluginHelper');
-        zmgimport('com.zoomfactory.lib.zmgSessionHelper');
+        zmgimport('com.zoomfactory.lib.helpers.zmgConfigurationHelper');
+        zmgimport('com.zoomfactory.lib.helpers.zmgMessageCenter');
+        zmgimport('com.zoomfactory.lib.helpers.zmgPluginHelper');
+        zmgimport('com.zoomfactory.lib.helpers.zmgSessionHelper');
+        zmgimport('com.zoomfactory.lib.helpers.zmgViewHelper');
         
         $this->_config  = new zmgConfigurationHelper($config);
-        $this->view     = new zmgTemplateHelper($this->getConfig('smarty'),
+        $this->view     = new zmgViewHelper($this->getConfig('smarty'),
           $this->getConfig('app/secret'));
         $this->messages = new zmgMessageCenter();
         $this->plugins  = new zmgPluginHelper();
@@ -154,16 +154,10 @@ class Zoom extends zmgError {
     /**
      * Call an abstract/ static function that resides within a static class.
      * Note: particularly useful within templates.
-     * @param string Name of the static class
-     * @param string Name of the function to call
-     * @param mixed The arguments that should be passed to the function call
-     * @return mixed
+     * @see zmgCallAbstract
      */
     function callAbstract($klass, $func, $args) {
-        if (is_callable(array($klass, $func))) {
-            return call_user_func(array($klass, $func), $args);
-        }
-        return null;
+        return zmgCallAbstract($klass, $func, $args);
     }
     function jsonHelper($input, $type = 'encode') {
         $json = new zmgJSON();
@@ -336,15 +330,20 @@ class Zoom extends zmgError {
     /**
      * Launch all components that are bound to a specific custom event handler.
      * @param string The name of the event that is fired
+     * @param bool The event may or may not bubble down
      */
-    function fireEvents($event) {
-        if (!empty($this->events[$event])) {
+    function fireEvents($event, $nobubble = false) {
+        /*if (!empty($this->events[$event])) {
             foreach ($this->events[$event] as $cmp) {
                 zmgimport('com.zoomfactory.var.events.'.$event.'.'.$cmp.'.'.$cmp);
                 if (class_exists($cmp)) { 
                     eval($cmp . '::start(&$this);');
                 }
             }
+        }*/
+        //bubble through to plugins:
+        if (!(bool)$nobubble) {
+            $this->plugins->bubbleEvent($event);
         }
     }
     function setResult($result = true) {

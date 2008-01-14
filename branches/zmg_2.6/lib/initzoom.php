@@ -13,7 +13,7 @@ defined('_ZMG_EXEC') or die('Restricted access');
 
 if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
 
- /**
+/**
  * Loads a class from specified directories.
  *
  * @param string $name  The class name to look for ( dot notation ).
@@ -108,6 +108,21 @@ T_textdomain($domain);
 $zoom->fireEvents('oncontentstart');
 
 $zoom->fireEvents('oncontent');
+
+/**
+ * Call an abstract/ static function that resides within a static class.
+ * Note: particularly useful within templates.
+ * @param string Name of the static class
+ * @param string Name of the function to call
+ * @param mixed The arguments that should be passed to the function call
+ * @return mixed
+ */
+function zmgCallAbstract($klass, $func, $args = null) {
+    if (is_callable(array($klass, $func))) {
+        return call_user_func(array($klass, $func), $args);
+    }
+    return null;
+}
 
 /**
  * Utility function to return a value from a named array or a specified default

@@ -18,17 +18,11 @@ defined('_ZMG_EXEC') or die('Restricted access');
 class zmgTemplateHelper extends Smarty {
     var $_manifest = null;
     
+    var $_type = null;
+    
     var $_active_template = null;
     
     var $_template_name = null;
-    
-    var $_active_view = null;
-    
-    var $_active_subview = null;
-    
-    var $_view_tokens = null;
-    
-    var $_viewtype = null;
     
     var $_secret = null;
     
@@ -50,54 +44,17 @@ class zmgTemplateHelper extends Smarty {
         } else {
             $this->_active_template = $config['active_template'];
         }
+        $this->_type      = "html"; //default type
         $this->_secret    = $secret;
         $this->_constants = array();
         
         $this->_loadManifest();
     }
     
-    function setViewType($view = 'html') {
-        $this->_viewtype = $view;
-    }
-
-    function set($view) {
-        if (empty($view))
-            return $this->throwError('No view specified.');
-        $this->_active_view = trim($view);
-        $this->_view_tokens = split(':', $view);
-    }
-    
-    function get() {
-        return $this->_active_view;
-    }
-    
-    function getSubView() {
-        if (!$this->_active_subview) {
-            $view_tokens = split(':', $this->_active_view);
-            $this->_active_subview = $view_tokens[count($view_tokens) - 1];
-        }
-        return $this->_active_subview;
-    }
-    
-    function getViewTokens() {
-        if (is_array($this->_view_tokens)) {
-            return $this->_view_tokens;
-        }
-        return array();
-    }
-
-    function run(&$zoom) {
-        if (empty($this->_active_view))
-            return $this->throwError('No active view specified. Unable to run application.');
-            
-        if (zmgEnv::isRPC() && $this->_active_view == "ping") {
-            Zoom::sendHeaders($this->_viewtype);
-            echo "                                         ";
-            return;
-        }
-        
+    function run($view, $subview, $viewtype) {
         //mootools & Ajax preparing stuff
-        if (!zmgEnv::isRPC() && $this->_viewtype == "html") {
+        $this->_type = $viewtype;
+        if (!zmgEnv::isRPC() && $this->_type == "html") {
             if (ZMG_ADMIN) {
                 $this->_buildAdminToolbar();
             }
@@ -107,20 +64,21 @@ class zmgTemplateHelper extends Smarty {
 
         //put the HTML headers in the head section of the parent (hosting) document
         $headers = $this->getHTMLHeaders(zmgEnv::getSiteURL()
-          . '/components/com_zoom/var/www/templates');
+          . '/components/com_zoom/var/www/templates', $this->_type);
         foreach ($headers as $header) {
             zmgEnv::appendPageHeader($header);
         }
         
+        $zoom = & zmgFactory::getZoom();
+        
         //get template file that belongs to the active view:
-        $res = & $this->_getResource('template', $this->_active_view,
-          $this->_viewtype);
+        $res = & $this->_getResource('template', $view, $this->_type);
         if ($res) {
             $tpl_file = trim($res->firstChild->getAttribute('href'));
 
             $this->assign('zoom', $zoom);
             
-            $this->assign('subview', $this->getSubView());
+            $this->assign('subview', $subview);
             
             $this->assign('site_url', zmgEnv::getSiteURL());
             
@@ -370,7 +328,7 @@ class zmgTemplateHelper extends Smarty {
     function getHTMLHeaders($path_prefix = "") {
         $ret = array();
         
-        if ($this->_viewtype != "html")
+        if ($this->_type != "html")
             return $ret;
         
         $headers = & $this->_getResource('html_head');
@@ -434,10 +392,10 @@ class zmgTemplateHelper extends Smarty {
     }
     
     function throwError($message) {
-        if (!zmgEnv::isRPC()) {
+        if (true) {//!zmgEnv::isRPC()) {
             return zmgError::throwError($message);
         } else {
-            return Zoom::sendHeaders($this->_viewtype, true, $message);
+            return Zoom::sendHeaders($this->_type, true, $message);
         }
     }
 }

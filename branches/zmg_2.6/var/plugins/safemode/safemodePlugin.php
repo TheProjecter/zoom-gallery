@@ -12,6 +12,10 @@
 defined('_ZMG_EXEC') or die('Restricted access');
 
 class zmgSafemodePlugin extends zmgError {
+    function bindEvents() {
+        return null;
+    }
+    
     function embed() {
         
     }
