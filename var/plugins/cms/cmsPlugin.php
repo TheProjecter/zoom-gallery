@@ -25,9 +25,10 @@ class zmgCmsPlugin extends zmgError {
         $os = zmgCmsPlugin::_guessCMS();
         $os_dir = ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS.'cms'.DS.$os;
         if (is_dir($os_dir)) {
-            require_once($os_dir.DS.'acl.embed.php');
-            require_once($os_dir.DS.'database.embed.php');
-            require_once($os_dir.DS.'env.embed.php');
+            $os_path = 'com.zoomfactory.var.plugins.cms.' . $os;
+            zmgimport($os_path . '.aclEmbed');
+            zmgimport($os_path . '.databaseEmbed');
+            zmgimport($os_path . '.envEmbed');
             return true;
         }
         zmgError::throwError('zmgCmsPlugin: no CMS found.');
