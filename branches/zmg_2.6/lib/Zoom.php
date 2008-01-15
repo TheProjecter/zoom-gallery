@@ -108,11 +108,11 @@ class Zoom extends zmgError {
      * The class constructor.
      */
 	function Zoom(&$config) {
-        zmgimport('com.zoomfactory.lib.helpers.zmgConfigurationHelper');
-        zmgimport('com.zoomfactory.lib.helpers.zmgMessageCenter');
-        zmgimport('com.zoomfactory.lib.helpers.zmgPluginHelper');
-        zmgimport('com.zoomfactory.lib.helpers.zmgSessionHelper');
-        zmgimport('com.zoomfactory.lib.helpers.zmgViewHelper');
+        zmgimport('org.zoomfactory.lib.helpers.zmgConfigurationHelper');
+        zmgimport('org.zoomfactory.lib.helpers.zmgMessageCenter');
+        zmgimport('org.zoomfactory.lib.helpers.zmgPluginHelper');
+        zmgimport('org.zoomfactory.lib.helpers.zmgSessionHelper');
+        zmgimport('org.zoomfactory.lib.helpers.zmgViewHelper');
         
         $this->_config  = new zmgConfigurationHelper($config);
         $this->view     = new zmgViewHelper($this->getConfig('smarty'),
@@ -335,7 +335,7 @@ class Zoom extends zmgError {
     function fireEvents($event, $nobubble = false) {
         /*if (!empty($this->events[$event])) {
             foreach ($this->events[$event] as $cmp) {
-                zmgimport('com.zoomfactory.var.events.'.$event.'.'.$cmp.'.'.$cmp);
+                zmgimport('org.zoomfactory.var.events.'.$event.'.'.$cmp.'.'.$cmp);
                 if (class_exists($cmp)) { 
                     eval($cmp . '::start(&$this);');
                 }

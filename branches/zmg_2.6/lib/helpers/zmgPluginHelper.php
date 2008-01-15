@@ -23,6 +23,47 @@ class zmgPluginHelper extends zmgError {
         $this->_loadPlugins();
     }
     
+    function _loadPlugins() {
+        $plugin_cats = zmgReadDirectory(ZMG_ABS_PATH . DS.'var'.DS.'plugins', '[^index\.html]');
+        $this->_plugins = array();
+        foreach ($plugin_cats as $plugin) {
+            if ($plugin != "shared") {
+                $content = zmgReadDirectory(ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS . $plugin, '[^index\.html]');
+                if (is_array($content) && count($content) > 0) {
+                    $plugin_class = "zmg" . ucfirst($plugin) . "Plugin";
+                    
+                    zmgimport('org.zoomfactory.var.plugins.'.$plugin.'.'.$plugin.'Plugin');
+                    
+                    $events = zmgCallAbstract($plugin_class, 'bindEvents');
+                    if (is_array($events)) {
+                        // update the PluginHelper's event registry
+                        $this->_bindEvents($plugin_class, $events);
+                    }
+                    
+                    $this->_plugins[] = array(
+                        'name'      => $plugin,
+                        'classname' => $plugin_class,
+                        'settings'  => null,
+                        'events'    => $events
+                    );
+                }
+            }
+        }
+    }
+    
+    function _bindEvents($klass, $events = null) {
+        if ($events === null || !is_array($events)) {
+            zmgError::throwError('Incorrect usage of bindEvents()');
+        }
+        
+        foreach ($events as $event => $functions) {
+            if (!is_array($this->_events[$event])) {
+                $this->_events[$event] = array();
+            }
+            $this->_events[$event][$klass] = $functions;
+        }
+    }
+    
     function bubbleEvent($event) {
         if (is_array($this->_events[$event])) {
             foreach ($this->_events[$event] as $klass => $functions) {
@@ -41,38 +82,28 @@ class zmgPluginHelper extends zmgError {
         if (empty($name)) {
             return false;
         }
+        $plugin = $this->get($name);
+        return ($plugin !== false);
+    }
+    
+    function &get($name) {
         foreach ($this->_plugins as &$plugin) {
             if ($plugin['name'] == $name) {
-                return true;
+                return $plugin;
             }
         }
         return false;
     }
     
-    function embed() {
-        return;
-        $zoom = & zmgFactory::getZoom();
-        foreach ($this->_plugins as &$plugin) {
-            $plugin_path = ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS.$plugin['name'];
-            if (file_exists($plugin_path . DS.$plugin['name'].'.plugin.php')) {
-                require_once($plugin_path . DS.$plugin['name'].'.plugin.php');
-                $class = 'zmg' . ucfirst($plugin['name']) . 'Plugin';
-                if (class_exists($class)) {
-                    eval($class . '::embed();');
-                    if (file_exists($plugin_path .DS.'settings.xml')) {
-                        $this->_embedSettings(&$plugin, $plugin_path . DS.'settings.xml');
-                    }
-                } else {
-                    zmgError::throwError('zmgPluginHelper: class does not exist!');
-                }
-            } else {
-                //TODO: implement support for other plugin types
-            }
-        }
-    }
-    
-    function _embedSettings(&$plugin, $xml_path) {
+    function embedSettings(&$plugin, $xml_path) {
         //echo "DEBUG: ".$xml_path;
+        if (!empty($plugin)) {
+            if (is_string($plugin)) {
+                $plugin = & $this->get($plugin);
+            }
+        } else {
+            return $this->throwError('embedSettings::Invalid plugin.');
+        }
         
         if (!file_exists($xml_path))
             return $this->throwError('Settings file not found ('.$xml_path.').');
@@ -256,46 +287,5 @@ class zmgPluginHelper extends zmgError {
           . $value . '"' . ($disabled ? ' disabled="disabled"' : '')
           . ($readonly ? ' readonly="readonly"' : '') . '/>';
     }
-    
-    function _loadPlugins() {
-        $plugin_cats = zmgReadDirectory(ZMG_ABS_PATH . DS.'var'.DS.'plugins', '[^index\.html]');
-        $this->_plugins = array();
-        foreach ($plugin_cats as $plugin) {
-            if ($plugin != "shared") {
-                $content = zmgReadDirectory(ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS . $plugin, '[^index\.html]');
-                if (is_array($content) && count($content) > 0) {
-                    $plugin_class = "zmg" . ucfirst($plugin) . "Plugin";
-                    
-                    zmgimport('com.zoomfactory.var.plugins.'.$plugin.'.'.$plugin.'Plugin');
-                    
-                    $events = zmgCallAbstract($plugin_class, 'bindEvents');
-                    if (is_array($events)) {
-                        // update the PluginHelper's event registry
-                        $this->_bindEvents($plugin_class, $events);
-                    }
-                    
-                    $this->_plugins[] = array(
-                        'name'      => $plugin,
-                        'classname' => $plugin_class,
-                        'settings'  => null,
-                        'events'    => $events
-                    );
-                }
-            }
-        }
-    }
-    
-    function _bindEvents($klass, $events = null) {
-        if ($events === null || !is_array($events)) {
-            zmgError::throwError('Incorrect usage of bindEvents()');
-        }
-        
-        foreach ($events as $event => $functions) {
-            if (!is_array($this->_events[$event])) {
-                $this->_events[$event] = array();
-            }
-            $this->_events[$event][$klass] = $functions;
-        }
-     }
 }
 ?>

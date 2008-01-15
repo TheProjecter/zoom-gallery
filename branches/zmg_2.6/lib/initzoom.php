@@ -21,7 +21,7 @@ if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
  * @param string $key   String used as a prefix to denote the full path of the file ( dot notation ).
  * @return boolean True if the requested class has been successfully included
  */
-function zmgimport($keyPath, $base = ZMG_ABS_PATH, $key = 'com.zoomfactory.') {
+function zmgimport($keyPath, $base = ZMG_ABS_PATH, $key = 'org.zoomfactory.') {
     static $paths;
     if (!isset($paths)) {
         $paths = array();
@@ -66,18 +66,18 @@ function zmgimport($keyPath, $base = ZMG_ABS_PATH, $key = 'com.zoomfactory.') {
 }
 
 //load the error handling base class
-zmgimport('com.zoomfactory.lib.zmgError');
+zmgimport('org.zoomfactory.lib.zmgError');
 
 //initialize Smarty template engine
-zmgimport('com.zoomfactory.lib.smarty.Smarty');
+zmgimport('org.zoomfactory.lib.smarty.Smarty');
 
 //initialize the zoom (app) class
-zmgimport('com.zoomfactory.lib.Zoom');
+zmgimport('org.zoomfactory.lib.Zoom');
 //require_once(ZMG_ABS_PATH . DS.'lib'.DS.'Zoom.php');
 $zoom = & zmgFactory::getZoom();
 
 if (!class_exists('InputFilter')) {
-    zmgimport('com.zoomfactory.lib.phpinputfilter.inputfilter');
+    zmgimport('org.zoomfactory.lib.phpinputfilter.inputfilter');
 }
 
 $zoom->fireEvents('onstartup');
@@ -87,16 +87,16 @@ $zoom->hasAccess() or die('Restricted access');
 $zoom->view->setViewType(zmgEnv::getViewType());
 
 //load core classes
-zmgimport('com.zoomfactory.lib.zmgHTML');
-zmgimport('com.zoomfactory.lib.zmgJson');
-zmgimport('com.zoomfactory.lib.core.*');
+zmgimport('org.zoomfactory.lib.zmgHTML');
+zmgimport('org.zoomfactory.lib.zmgJson');
+zmgimport('org.zoomfactory.lib.core.*');
 
 //set error handling options
 zmgError::setErrorHandling($zoom->getConfig('app/errors/defaultmode'),
   $zoom->getConfig('app/errors/defaultoption'));
 
 //load php-gettext (used in zoom in 'fallback mode')
-zmgimport('com.zoomfactory.lib.phpgettext.gettext_inc');
+zmgimport('org.zoomfactory.lib.phpgettext.gettext_inc');
 // gettext setup
 T_setlocale(LC_MESSAGES, $zoom->getConfig('locale/default'));
 // Set the text domain as 'messages'
@@ -418,16 +418,29 @@ function zmgGetBasePath() {
 
 /**
  * Format a backtrace error
+ * @param int An output mask
  */
-function zmgBackTrace() {
+define("ZMG_OUT_DIRECT", 0x0001);
+define("ZMG_OUT_STRING", 0x0002);
+function zmgBackTrace($ret_mask = 0) {
+    if ($ret_mask === 0) {
+        $ret_mask = ZMG_OUT_DIRECT;
+    }
+    $out = '';
     if (function_exists( 'debug_backtrace' )) {
-        echo '<div align="left">';
+        $out .= '<div align="left">';
         foreach( debug_backtrace() as $back) {
             if (@$back['file']) {
-                echo '<br />' . str_replace( ABS_PATH, '', $back['file'] ) . ':' . $back['line'];
+                $out .= '<br />' . str_replace( ABS_PATH, '', $back['file'] ) . ':' . $back['line'];
             }
         }
-        echo '</div>';
+        $out .= '</div>';
     }
+    if ($ret_mask & ZMG_OUT_DIRECT) {
+        echo $out;
+    } else if ($ret_mask & ZMG_OUT_STRING) {
+        return $out;
+    }
+    return;
 }
 ?>

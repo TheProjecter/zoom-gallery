@@ -37,7 +37,7 @@ class zmgViewHelper {
      * The class constructor.
      */
     function zmgViewHelper(&$smarty_cfg, $secret) {
-        zmgimport('com.zoomfactory.lib.helpers.zmgTemplateHelper');
+        zmgimport('org.zoomfactory.lib.helpers.zmgTemplateHelper');
         $this->_template = new zmgTemplateHelper(&$smarty_cfg, $secret);
     }
     
@@ -47,10 +47,14 @@ class zmgViewHelper {
 
     function set() {
         $view = trim(zmgGetParam($_REQUEST, 'view', ZMG_ADMIN ? 'admin:home' : 'gallery'));
-        if (empty($view))
-            return $this->throwError('No view specified.');
+        if (empty($view)) {
+            $view = ZMG_ADMIN ? "admin:dispatchresult" : "dispatchresult";
+            $this->throwError('No view specified.');
+        }
         $this->_active_view = $view;
         $this->_view_tokens = split(':', $view);
+        
+        $zoom = & zmgFactory::getZoom();
         
         //check for dispatches that 'put' data (in contrary to 'get' requests)
         if (in_array('store', $this->_view_tokens) || in_array('update', $this->_view_tokens)
@@ -216,7 +220,6 @@ class zmgViewHelper {
         }
         
         if (ZMG_ADMIN) {
-            $zoom = & zmgFactory::getZoom();
             $this->_template->appendConstant('mediumcount', $zoom->getMediumCount());
         }
     }

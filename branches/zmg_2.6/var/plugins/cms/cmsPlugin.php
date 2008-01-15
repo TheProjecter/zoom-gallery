@@ -25,7 +25,7 @@ class zmgCmsPlugin extends zmgError {
         $os = zmgCmsPlugin::_guessCMS();
         $os_dir = ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS.'cms'.DS.$os;
         if (is_dir($os_dir)) {
-            $os_path = 'com.zoomfactory.var.plugins.cms.' . $os;
+            $os_path = 'org.zoomfactory.var.plugins.cms.' . $os;
             zmgimport($os_path . '.aclEmbed');
             zmgimport($os_path . '.databaseEmbed');
             zmgimport($os_path . '.envEmbed');
