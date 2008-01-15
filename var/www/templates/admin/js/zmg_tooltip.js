@@ -67,7 +67,8 @@ ZMG.Tooltip = new Class({
     },
     
     setContent: function(header, text) {
-        if (!header || !text) return;
+        if (!header) return;
+        if (!text) text = "";
         
         this.domHeader.innerHTML = header;
         this.domBody.innerHTML   = text;

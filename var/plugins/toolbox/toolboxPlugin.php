@@ -49,13 +49,18 @@ class zmgToolboxPlugin extends zmgError {
                 if (!$imagetools_loaded) {
                     $imagetools_loaded = true;
                     $imagetool = intval($zoom->getConfig('plugins/toolbox/general/conversiontool'));
-                    zmgimport('com.zoomfactory.var.plugins.toolbox.tools.'
+                    zmgimport('org.zoomfactory.var.plugins.toolbox.tools.'
                      . $GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'][$imagetool - 1] . 'Tool');
                 }
             } else {
-                zmgimport('com.zoomfactory.var.plugins.toolbox.tools.'
+                zmgimport('org.zoomfactory.var.plugins.toolbox.tools.'
                  . $tool . 'Tool');
             }
+        }
+        $settings_file = ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS.'toolbox'.DS.'settings.xml';
+        if (file_exists($settings_file)) {
+            $plugin = & $zoom->plugins->get('toolbox');
+            $zoom->plugins->embedSettings(&$plugin, $settings_file);
         }
     }
     

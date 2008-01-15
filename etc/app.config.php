@@ -86,8 +86,8 @@ $zoom_config['app']['features']['imagezoom'] = 1;
 $zoom_config['app']['features']['slideshow'] = 1;
 $zoom_config['app']['features']['lightbox'] = 1;
 $zoom_config['app']['errors'] = array();
-$zoom_config['app']['errors']['defaultmode'] = 4;
-$zoom_config['app']['errors']['defaultoption'] = 1024;
+$zoom_config['app']['errors']['defaultmode'] = 16;
+$zoom_config['app']['errors']['defaultoption'] = 'zmgErrorCallback';
 
 $zoom_config['events'] = array();
 

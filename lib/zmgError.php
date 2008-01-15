@@ -27,8 +27,8 @@ define('ZMG_ERROR_CALLBACK',  16);
 define('ZMG_ERROR_EXCEPTION', 32);
 
 
-$GLOBALS['_ZMG_default_error_mode']    = ZMG_ERROR_TRIGGER;
-$GLOBALS['_ZMG_default_error_options'] = E_USER_NOTICE;
+$GLOBALS['_ZMG_default_error_mode']    = ZMG_ERROR_CALLBACK;
+$GLOBALS['_ZMG_default_error_options'] = 'zmgErrorCallback';
 
 @ini_set('track_errors', true);
 
@@ -178,7 +178,7 @@ class zmgError {
         $error['message']   = $message;
         $error['code']      = $code;
         $error['mode']      = $mode;
-        $error['backtrace'] = zmgBackTrace();
+        $error['backtrace'] = zmgBackTrace(ZMG_OUT_STRING);
         if ($mode & ZMG_ERROR_CALLBACK) {
             $error['level'] = E_USER_NOTICE;
             $error['callback'] = $options;
@@ -235,5 +235,18 @@ class zmgError {
     function getType() {
         return "zmgError";
     }
+}
+/**
+ * Custom callback for ZMG error handling (taking RPC calls into account)
+ *
+ * @access public
+ */
+function zmgErrorCallback($error) {
+    if (zmgEnv::isRPC()) {
+        $zoom = & zmgFactory::getZoom();
+        $zoom->messages->append($error['message'], $error['backtrace']);
+        return;
+    }
+    trigger_error($error['message'], $error['level']);
 }
 ?>
