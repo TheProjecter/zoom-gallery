@@ -12,6 +12,7 @@
         <view name="admin:treemenu"/>
         <view name="admin:dispatchresult" inherits="admin:dispatchresult:*"/>
         <view name="admin:gallerymanager"/>
+        <view name="admin:gallerymanager:get" inherits="admin:gallerymanager:get:*"/>
         <view name="admin:gallerymanager:getgalleries"/>
         <view name="admin:mediamanager:getmedia" inherits="admin:mediamanager:getmedia:*"/>
         <view name="admin:mediamanager:get" inherits="admin:mediamanager:get:*"/>
@@ -81,6 +82,12 @@
         </resource>
         <resource name="template" type="json" view="allsettings" xml:base="">
             <file href="settings.json.tpl"/>
+        </resource>
+        <resource name="template" type="html" view="admin:gallerymanager" xml:base="">
+            <file href="gallerymanager.html.tpl"/>
+        </resource>
+        <resource name="template" type="json" view="admin:gallerymanager:get" xml:base="">
+            <file href="gallerymanager_getgallerydata.json.tpl"/>
         </resource>
         <resource name="template" type="json" view="allgallerymanager" xml:base="">
             <file href="gallerymanager.json.tpl"/>

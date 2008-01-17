@@ -729,3 +729,26 @@ tab-strip .tab-selected .tab-right span.tab-text
     width: 16px;
     text-decoration: none;
 }
+
+.zmg_accordion_panel
+{
+    border: 1px solid #ccc;
+    margin-bottom: 3px;
+}
+
+.zmg_accordion_start {}
+
+.zmg_accordion_toggler
+{
+    background: #eee;
+    border-bottom: 1px solid #ccc;
+    margin: 0;
+    padding: 2px 5px;
+    color: #666;
+    font-size: 13px;
+}
+
+.zmg_accordion_element
+{
+    padding: 0 4px 0px 8px; 
+}

@@ -6,7 +6,10 @@
         'icon': ZMG.CONST.res_path + '/images/admin_treeitems.gif#1',
         'openicon': '',
         'open': false,
-        'load': ZMG.CONST.req_uri + '&view=admin:gallerymanager:getgalleries&sub=0&pos=0'
+        'load': ZMG.CONST.req_uri + '&view=admin:gallerymanager:getgalleries&sub=0&pos=0',
+        'extra': {
+            'forcetype': 'html'
+        }
     },
     'mediamanager': {
         'text': {/literal}{t escape='json'}Media Manager{/t}{literal},

@@ -19,6 +19,10 @@ ZMG.Events.Server = new Class({
         ZMG.Admin.Events.Client.lastRequest = null;
         if (view == "admin:gallerymanager") {
             this.Server.ongallerymanager(text);
+        } else if (view.indexOf('admin:gallerymanager:get:') > -1) {
+            o = Json.evaluate(text);
+            this.Server.onloadgallerydata(o);
+            isJSON = true;
         } else if (view == "admin:mediamanager") {
             this.Server.onmediamanager(text);
         } else if (view.indexOf('admin:mediamanager:get:') > -1) {
@@ -44,9 +48,10 @@ ZMG.Events.Server = new Class({
           || view == "admin:settings:info") {
             key = this.Server.ongetsettingskey(view);
             this.Server.onloadsettingstab(key, text, view);
-        } else if (text) {
+        } else if (view =! "ping" && text) {
             o = Json.evaluate(text);
             isJSON = true;
+            console.log('setting JSON prop');
         }
         ZMG.Admin.Events.Client.onhideloader();
         
@@ -83,8 +88,43 @@ ZMG.Events.Server = new Class({
             ZMG.Admin.cacheElement('zmg_view_content').adopt(oGM);
             
             oGM.innerHTML = html;
+            
+            FancyForm.start($A(oGM.getElementsByTagName('input')));
+            new SimpleTabs($('zmg_edit_gallery_tabs'), {
+                entrySelector: 'li a',
+                onShow: function(toggle, container, idx) {
+                    toggle.addClass('tab-selected');
+                    container.effect('opacity').start(0, 1); // 1) first start the effect
+                    container.setStyle('display', ''); // 2) then show the element, to prevent flickering
+                },
+                getContent: function(el) {
+                    var content, rel = el.innerHTML.toString().toLowerCase();
+                    oGM.getElements('div.tab-container')
+                     .each(function(el) {
+                        if (el.getAttribute('rel') == rel) content = el;
+                    });
+                    return content;
+                }
+            });
         }
         this.onactivateview('zmg_view_gm');
+    },
+    onloadgallerydata: function(node) {
+        if (node.result == ZMG.CONST.result_ok) {
+            var data = node.data.gallery;
+            var form = ZMG.Admin.cacheElement('zmg_form_edit_gallery');
+            form.reset();
+            //ZMG.Admin.cacheElement('zmg_edit_medium_thumbnail').src = data.url;
+            ZMG.Admin.cacheElement('zmg_edit_gallery_name').value = data.name;
+            ZMG.Admin.cacheElement('zmg_edit_gallery_keywords').value = data.keywords;
+            //ZMG.Admin.cacheElement('zmg_edit_gallery_gimg');
+            //ZMG.Admin.cacheElement('zmg_edit_gallery_pimg');
+            var oPublish = ZMG.Admin.cacheElement('zmg_edit_gallery_published');
+            oPublish.checked = (data.published);
+            FancyForm[(oPublish.checked ? 'select' : 'deselect')](oPublish.parentNode);
+            
+            ZMG.Admin.cacheElement('zmg_edit_gallery_descr').value = data.descr;
+        }
     },
     onmediamanager: function(html) {
         if (!ZMG.Admin.cacheElement('zmg_view_mm')) {
@@ -227,7 +267,10 @@ ZMG.Events.Server = new Class({
             ZMG.Admin.cacheElement('zmg_edit_keywords').value = data.keywords;
             //ZMG.Admin.cacheElement('zmg_edit_gimg');
             //ZMG.Admin.cacheElement('zmg_edit_pimg');
-            ZMG.Admin.cacheElement('zmg_edit_published').checked = (data.published);
+            var oPublish = ZMG.Admin.cacheElement('zmg_edit_published');
+            oPublish.checked = (data.published);
+            FancyForm[(oPublish.checked ? 'select' : 'deselect')](oPublish.parentNode);
+            
             ZMG.Admin.cacheElement('zmg_edit_descr').value = data.descr;
         }
     },
@@ -304,6 +347,19 @@ ZMG.Events.Server = new Class({
                         ZMG.Admin.Events.Client.onviewselect('admin:settings:plugins:autodetect:'
                           + tool);
                     }
+                    
+                    //first, setup the accordion tab control:
+                    window.setTimeout(function() {
+                        new Accordion('h3.zmg_accordion_start', 'div.zmg_accordion_start', {
+                            opacity: false,
+                            onActive: function(toggler, element){
+                                toggler.setStyle('color', '#0b55c4');
+                            },
+                            onBackground: function(toggler, element){
+                                toggler.setStyle('color', '#666');
+                            }
+                        }, $('zmg_plugins_accordion'));
+                    }, 20); //timeout needed, to make this work in edge cases too :-S
                 }
             }
         }

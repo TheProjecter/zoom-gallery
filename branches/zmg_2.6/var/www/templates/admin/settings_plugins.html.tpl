@@ -6,7 +6,9 @@
 </tr>
 <tr>
   <td>
-    {$zoom->plugins->embedHTML()}
+    <div id="zmg_plugins_accordion">
+        {$zoom->plugins->embedHTML()}
+    </div>
   </td>
 </tr>
 </table>

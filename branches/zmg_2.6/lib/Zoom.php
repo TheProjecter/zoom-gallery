@@ -271,6 +271,17 @@ class Zoom extends zmgError {
         }
         return $ret;
     }
+    function getGallery($gid, $ret_type = 'object') {
+        $gid = intval($gid);
+        $gallery = new zmgGallery(zmgDatabase::getDBO());
+        $gallery->load($gid);
+        if ($ret_type == "json") {
+            return $gallery->toJSON();
+        } else if ($ret_type == "xml") {
+            return $gallery->toXML();
+        }
+        return $gallery;
+    }
     function getMedium($mid, $ret_type = 'object') {
         $mid = intval($mid);
         $medium = new zmgMedium(zmgDatabase::getDBO());
