@@ -112,5 +112,23 @@ class zmgGallery extends zmgTable {
     function zmgGallery(&$db) {
         $this->zmgTable('#__zmg_galleries', 'gid', $db);
     }
+    
+    function toJSON() {
+        $json = new zmgJSON();
+        return ("'gallery': {
+            'gid'      : $this->gid,
+            'name'     : ".$json->encode($this->name).",
+            'descr'    : ".$json->encode($this->descr).",
+            'keywords' : ".$json->encode($this->keywords).",
+            'sub_gid'  : $this->sub_gid,
+            'pos'      : $this->pos,
+            'hide_msg' : $this->hide_msg,
+            'shared'   : $this->shared,
+            'published': $this->published,
+            'uid'      : $this->uid,
+            'ordering' : $this->ordering,
+            'members'  : ".$json->encode($this->members)."
+        }");
+    }
 }
 ?>

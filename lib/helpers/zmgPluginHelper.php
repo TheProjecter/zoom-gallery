@@ -198,15 +198,17 @@ class zmgPluginHelper extends zmgError {
     function embedHTML() {
         $zoom = & zmgFactory::getZoom();
         
-        $out  = "<div class=\"zmg_halfsize\">\n";
+        $out  = "<div id=\"zmg_plugins_accordion\" class=\"zmg_halfsize\">\n";
         
         foreach ($this->_plugins as $plugin) {
             $name      = ucfirst($plugin['name']);
             $settings  = $plugin['settings'];
             if (is_array($settings)) {
-                $out .= "<fieldset><legend>" . T_($name) . "</legend>\n";
+                $out .= "<div class=\"zmg_accordion_panel\">\n" 
+                 . "<h3 class=\"zmg_accordion_toggler zmg_accordion_start\">" . T_($name) . "</h3>\n"
+                 . "<div class=\"zmg_accordion_element zmg_accordion_start\">\n";
                 foreach ($settings as $cat => $sub_settings) {
-                    $out .= "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" class=\"adminform\">\n"
+                    $out .= "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">\n"
                      . "<tr>\n"
                      . "\t<td colspan\"2\">\n"
                      . "\t\t<h3>" . T_(ucfirst($cat)) . "</h3>\n"
@@ -251,7 +253,7 @@ class zmgPluginHelper extends zmgError {
                     
                     $out .= "</table>\n"; 
                 }
-                $out .= "</fieldset>\n";
+                $out .= "</div>\n</div>\n";
             } else {
                 //$out .= T_('No settings found for this plugin.');
             }

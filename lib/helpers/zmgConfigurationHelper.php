@@ -141,7 +141,8 @@ class zmgConfigurationHelper extends zmgError {
          . $this->_buildPluginsBlock()
          . "?>\n";
         //echo $content; 
-        return zmgWriteFile(ZMG_ABS_PATH .DS.'etc'.DS.'app.config.php', $content);
+        zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
+        return zmgFileHelper::write(ZMG_ABS_PATH .DS.'etc'.DS.'app.config.php', $content);
     }
     function _buildMetaBlock() {
         return $this->_generateBlock("\$zoom_config", 'meta',
