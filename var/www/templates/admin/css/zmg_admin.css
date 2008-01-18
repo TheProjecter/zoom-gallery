@@ -72,6 +72,16 @@
     z-index: 20000;
 }
 
+.zmg_tb_disabled a
+{
+    color: #ccc !important;
+}
+
+.zmg_tb_disabled .zmg_tb_icon
+{
+    background-position: 0px -32px;
+}
+
 .zmg_tb_icon_mm_upload
 {
     background-image: url(../images/toolbar/icon-32-upload.png)
@@ -83,9 +93,20 @@
 }
 
 .zmg_tb_icon_mediumsave,
+.zmg_tb_icon_gallerysave,
 .zmg_tb_icon_settingssave
 {
     background-image: url(../images/toolbar/icon-32-save.png)
+}
+
+.zmg_tb_icon_gallerynew
+{
+    background-image: url(../images/toolbar/icon-32-new.png)
+}
+
+.zmg_tb_icon_gallerydelete
+{
+    background-image: url(../images/toolbar/icon-32-trash.png)
 }
 
 .zmg_panel

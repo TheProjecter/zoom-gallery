@@ -48,10 +48,9 @@ ZMG.Events.Server = new Class({
           || view == "admin:settings:info") {
             key = this.Server.ongetsettingskey(view);
             this.Server.onloadsettingstab(key, text, view);
-        } else if (view =! "ping" && text) {
+        } else if (view != "ping" && text) {
             o = Json.evaluate(text);
             isJSON = true;
-            console.log('setting JSON prop');
         }
         ZMG.Admin.Events.Client.onhideloader();
         
@@ -529,14 +528,29 @@ ZMG.Events.Client = new Class({
         
         this.menuTree.root.load(ZMG.CONST.req_uri + '&view=admin:treemenu');
     },
+    onupdatetoolbar: function(view) {
+        view = view || ZMG.Admin.Events.Server.activeView;
+        if (!view) return;
+        
+        if (view == "admin:gallerymanager") {
+            this.toolbar.disable('zmg_view_gm', ['gallerysave', 'gallerydelete']);
+        } else if (view.indexOf('admin:gallerymanager:get:') > -1) {
+            this.toolbar.enable('zmg_view_gm', ['gallerysave', 'gallerydelete']);
+        }
+    },
     onviewselect: function(view, forcetype) {
         if (!ZMG.Admin.Events.Server.settingsTabs && !this.requestingTabs) {
             this.requestingTabs = true;
             this.onviewselect('admin:settings:overview');
         }
+        view = view || ZMG.CONST.active_view;
+        if (!view) return;
+        
+        //toolbar control:
+        this.onupdatetoolbar(view);
         
         vars = {
-            'view': (view || ZMG.CONST.active_view) 
+            'view': view 
         }
         if (forcetype)
             vars.forcetype = forcetype;
@@ -640,6 +654,15 @@ ZMG.Events.Client = new Class({
         };
         this.onshowloader();
         window.setTimeout(f.bind(this), 20); // allowing a small delay for the browser to draw the loader-icon.
+    },
+    ongallerynewclick: function(e) {
+        
+    },
+    ongallerysaveclick: function(e) {
+        alert('clickie!');
+    },
+    ongallerydeleteclick: function(e) {
+        alert('clickie!');
     },
     onping: function() {
         ZMG.Admin.Events.Client.onviewselect('ping');
