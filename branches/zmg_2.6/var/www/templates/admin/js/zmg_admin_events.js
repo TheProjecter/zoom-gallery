@@ -110,9 +110,11 @@ ZMG.Events.Server = new Class({
     },
     onloadgallerydata: function(node) {
         if (node.result == ZMG.CONST.result_ok) {
+            this.onactivateview('zmg_view_gm');
+            
             var data = node.data.gallery;
-            var form = ZMG.Admin.cacheElement('zmg_form_edit_gallery');
-            form.reset();
+            var oForm = ZMG.Admin.cacheElement('zmg_form_edit_gallery');
+            oForm.reset();
             //ZMG.Admin.cacheElement('zmg_edit_medium_thumbnail').src = data.url;
             ZMG.Admin.cacheElement('zmg_edit_gallery_name').value = data.name;
             ZMG.Admin.cacheElement('zmg_edit_gallery_keywords').value = data.keywords;
@@ -258,8 +260,8 @@ ZMG.Events.Server = new Class({
     onloadmediumdata: function(node) {
         if (node.result == ZMG.CONST.result_ok) {
             var data = node.data.medium;
-            var form = ZMG.Admin.cacheElement('zmg_form_edit_medium');
-            form.reset();
+            var oForm = ZMG.Admin.cacheElement('zmg_form_edit_medium');
+            oForm.reset();
             ZMG.Admin.cacheElement('zmg_edit_medium_thumbnail').src = data.url;
             ZMG.Admin.cacheElement('zmg_edit_filename').innerHTML = data.filename;
             ZMG.Admin.cacheElement('zmg_edit_name').value = data.name;
@@ -330,8 +332,8 @@ ZMG.Events.Server = new Class({
               .getElementsByTagName('input')));
             if (view) {
                 if (view == "admin:settings:plugins") {
-                    var form = ZMG.Admin.cacheElement('zmg_settings_form');
-                    var conv_select = form.elements['zmg_plugins_toolbox_general_conversiontool'];
+                    var oForm = ZMG.Admin.cacheElement('zmg_settings_form');
+                    var conv_select = oForm.elements['zmg_plugins_toolbox_general_conversiontool'];
                     conv_select.onchange = function() {
                         var tool = "";
                         if (this.value == "1") {
