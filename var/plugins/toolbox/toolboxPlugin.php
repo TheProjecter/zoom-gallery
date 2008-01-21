@@ -85,8 +85,7 @@ class zmgToolboxPlugin extends zmgError {
                 eval('zmg'.ucfirst($tool).'Tool::autoDetect();');
             } else if (!$getall) {
                 if ($tool != $imagetool) {
-                    require_once(ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS.'toolbox'
-                      .DS.'tools'.DS.$tool.'.tool.php');
+                    zmgimport('org.zoomfactory.var.plugins.toolbox.tools.'.$tool.'Tool');
                 }
                 eval('zmg'.ucfirst($tool).'Tool::autoDetect();');
             }
