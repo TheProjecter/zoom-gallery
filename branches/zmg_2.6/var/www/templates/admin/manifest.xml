@@ -17,6 +17,7 @@
         <view name="admin:mediamanager:getmedia" inherits="admin:mediamanager:getmedia:*"/>
         <view name="admin:mediamanager:get" inherits="admin:mediamanager:get:*"/>
         <view name="admin:mediamanager:upload"/>
+        <view name="admin:mediamanager:juploadconfig"/>
         <view name="admin:thumbcoder"/>
         <view name="admin:settings:overview"/>
         <view name="admin:settings:meta"/>
@@ -103,6 +104,9 @@
         </resource>
         <resource name="template" type="html" view="admin:mediamanager:upload" xml:base="">
             <file href="mediamanager_upload.html.tpl"/>
+        </resource>
+        <resource name="template" type="plain" view="admin:mediamanager:juploadconfig" xml:base="">
+            <file href="mediamanager_juploadconfig.plain.tpl"/>
         </resource>
         <resource name="template" type="html" view="admin:settings:meta" xml:base="">
             <file href="settings_meta.html.tpl"/>

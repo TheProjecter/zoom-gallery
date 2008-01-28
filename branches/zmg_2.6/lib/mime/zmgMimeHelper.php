@@ -1,6 +1,6 @@
 <?php
 /**
- * @version $Revision: 1.4 $ $Date: 2006/11/26 04:18:22 $
+ * @version $Rev$
  * @package zOOmGallery
  * @subpackage MIME
  * @author Bharat Mediratta <bharat@menalto.com>

@@ -82,6 +82,10 @@ class zmgTemplateHelper extends Smarty {
             
             $this->assign('site_url', zmgEnv::getSiteURL());
             
+            $this->assign('ajax_url', zmgEnv::getAjaxURL());
+            
+            $this->assign('rpc_url', zmgEnv::getRpcURL());
+            
             $this->assign('mediapath', $zoom->getConfig('filesystem/mediapath'));
             
             $this->assign('result_ok', 'OK');

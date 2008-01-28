@@ -16,15 +16,13 @@
 // | Authors: Ian Eure <ieure@php.net>                                    |
 // +----------------------------------------------------------------------+
 //
-// $Id:mime.class.php 139 2007-03-12 09:21:44Z mikedeboer $
+// $Rev$
 defined('_ZMG_EXEC') or die('Restricted access');
-
-require_once(ZMG_ABS_PATH .DS.'lib'.DS.'mime'.DS.'mime_helper.class.php');
 
 /**
  * Class for working with MIME types
  *
- * @version @version@
+ * @version $Rev$
  * @package zOOmGallery
  * @subpackage MIME
  * @author Ian Eure <ieure@php.net>
@@ -96,9 +94,9 @@ class MIME_Type {
         $this->media = $this->getMedia($type);
         $this->subType = $this->getSubType($type);
         if (MIME_Type::hasParameters($type)) {
-            require_once(ZMG_ABS_PATH .DS.'lib'.DS.'mime'.DS.'mime_parameter.php');
+            zmgimport('org.zoomfactory.lib.mime.zmgMimeParameter');
             foreach (MIME_Type::getParameters($type) as $param) {
-                $param = &new MIME_Type_Parameter($param);
+                $param =  &new MIME_Type_Parameter($param);
                 $this->parameters[$param->name] = $param;
             }
         }
@@ -282,7 +280,8 @@ class MIME_Type {
      * @return void
      */
     function addParameter($name, $value, $comment = false) {
-        $tmp = &new MIME_Type_Parameter;
+        zmgimport('org.zoomfactory.lib.mime.zmgMimeParameter');
+        $tmp = & new MIME_Type_Parameter;
         $tmp->name = $name;
         $tmp->value = $value;
         $tmp->comment = $comment;
@@ -332,7 +331,8 @@ class MIME_Type {
         if ($type === false) {
             return $type;
         }
-        //return PEAR::raiseError("Sorry, can't autodetect; you need the mime_magic extension or System_Command and 'file' installed to use this function.");
+
+        zmgimport('org.zoomfactory.lib.mime.zmgMimeHelper.php');
         
         if ($type == "application/octet-stream" || $type == "application/unknown") {
             if (!empty($custom_mime)) {
@@ -353,8 +353,7 @@ class MIME_Type {
 
         // Don't return an empty string
         if (!$type || !strlen($type)) {
-            //return PEAR::raiseError("Sorry, couldn't determine file type.");
-            return false;
+            return zmgError::throwError("Sorry, couldn't determine file type.");
         }
 
         // Strip parameters if present & requested
@@ -378,13 +377,11 @@ class MIME_Type {
     function _fileAutoDetect($file) {
         // Sanity checks
         if (!file_exists($file)) {
-            //return PEAR::raiseError("File \"$file\" doesn't exist");
-            return false;
+            return zmgError::throwError("MIME_Type: File \"$file\" doesn't exist");
         }
         
         if (!is_readable($file)) {
-            //return PEAR::raiseError("File \"$file\" is not readable");
-            return false;
+            return zmgError::throwError("MIME_Type: File \"$file\" is not readable");
         }
 		$output = '';
 		$status = null;
@@ -397,3 +394,4 @@ class MIME_Type {
 		}
     }
 }
+?>

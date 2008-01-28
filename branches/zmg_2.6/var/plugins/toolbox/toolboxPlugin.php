@@ -20,6 +20,7 @@ $GLOBALS['_ZMG_TOOLBOX_TOOLS'] = array(
     'mime',
     'music',
     'netpbm',
+    'upload',
     'video',
     'watermark'
 );
@@ -36,6 +37,9 @@ class zmgToolboxPlugin extends zmgError {
         return array(
             "onstartup" => array(
                 "embed" => array()
+            ),
+            "onupload"   => array(
+                "upload" => array('method')
             )
             //more Events to come...
         );
@@ -64,6 +68,10 @@ class zmgToolboxPlugin extends zmgError {
         }
     }
     
+    function upload($args) {
+        return zmgUploadTool::upload($args);
+    }
+    
     function autoDetect($selection = 'all') {
         $getall  = false;
         if (!is_array($selection) && $selection == "all") {
@@ -76,7 +84,7 @@ class zmgToolboxPlugin extends zmgError {
         $imagetool = $GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'][$toolkey - 1];
         if ($getall) {
             //auto-detect currently selected imagetool first
-            eval('zmg'.ucfirst($imagetool).'Tool::autoDetect();');
+            zmgCallAbstract('zmg'.ucfirst($imagetool).'Tool', 'autoDetect');
         }
         
         //auto-detect other tools as well
@@ -87,7 +95,7 @@ class zmgToolboxPlugin extends zmgError {
                 if ($tool != $imagetool) {
                     zmgimport('org.zoomfactory.var.plugins.toolbox.tools.'.$tool.'Tool');
                 }
-                eval('zmg'.ucfirst($tool).'Tool::autoDetect();');
+                zmgCallAbstract('zmg'.ucfirst($tool).'Tool', 'autoDetect');
             }
         }
         

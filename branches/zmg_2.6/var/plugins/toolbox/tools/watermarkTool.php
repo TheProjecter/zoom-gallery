@@ -62,8 +62,5 @@ class zmgWatermarkTool {
         }
         //TODO: implement call to image library too watermark() function
     }
-    function autoDetect() {
-        return;
-    }
 }
 ?>

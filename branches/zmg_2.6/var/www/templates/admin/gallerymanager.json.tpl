@@ -11,7 +11,7 @@
 		        'open': false,
 		        'load': ZMG.CONST.req_uri + '&view=admin:gallerymanager:getgalleries&sub={$gallery->gid}&pos={$zoom->getParamInt('pos')+1}',
             {literal}
-            }
+            },
             {/literal}
         {foreachelse}
         

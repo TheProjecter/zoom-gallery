@@ -97,7 +97,7 @@ ZMG.Events.Server = new Class({
                     container.setStyle('display', ''); // 2) then show the element, to prevent flickering
                 },
                 getContent: function(el) {
-                    var content, rel = el.innerHTML.toString().toLowerCase();
+                    var content, rel = el.getAttribute('rel');
                     oGM.getElements('div.tab-container')
                      .each(function(el) {
                         if (el.getAttribute('rel') == rel) content = el;
@@ -115,16 +115,19 @@ ZMG.Events.Server = new Class({
             var data = node.data.gallery;
             var oForm = ZMG.Admin.cacheElement('zmg_form_edit_gallery');
             oForm.reset();
+            
+            oForm.elements['zmg_edit_gallery_gid'].value = data.gid;
             //ZMG.Admin.cacheElement('zmg_edit_medium_thumbnail').src = data.url;
-            ZMG.Admin.cacheElement('zmg_edit_gallery_name').value = data.name;
-            ZMG.Admin.cacheElement('zmg_edit_gallery_keywords').value = data.keywords;
+            oForm.elements['zmg_edit_gallery_name'].value = data.name;
+            oForm.elements['zmg_edit_gallery_dir'].value = data.dir;
+            oForm.elements['zmg_edit_gallery_keywords'].value = data.keywords;
             //ZMG.Admin.cacheElement('zmg_edit_gallery_gimg');
             //ZMG.Admin.cacheElement('zmg_edit_gallery_pimg');
             var oPublish = ZMG.Admin.cacheElement('zmg_edit_gallery_published');
             oPublish.checked = (data.published);
             FancyForm[(oPublish.checked ? 'select' : 'deselect')](oPublish.parentNode);
             
-            ZMG.Admin.cacheElement('zmg_edit_gallery_descr').value = data.descr;
+            oForm.elements['zmg_edit_gallery_descr'].value = data.descr;
         }
     },
     onmediamanager: function(html) {
@@ -230,13 +233,34 @@ ZMG.Events.Server = new Class({
             var oUpload = new Element('div', { id: 'zmg_view_mm_upload' });
             ZMG.Admin.cacheElement('zmg_view_content').adopt(oUpload);
             oUpload.innerHTML = html;
+            
+            //fancify the checkboxes and radiobuttons
+            FancyForm.start($A(oUpload.getElementsByTagName('input')));
+            //setup the tabs
+            new SimpleTabs($('zmg_upload_tabs'), {
+                entrySelector: 'li a',
+                onShow: function(toggle, container, idx) {
+                    toggle.addClass('tab-selected');
+                    container.effect('opacity').start(0, 1); // 1) first start the effect
+                    container.setStyle('display', ''); // 2) then show the element, to prevent flickering
+                },
+                getContent: function(el) {
+                    var content, rel = el.getAttribute('rel');
+                    oUpload.getElements('div.tab-container')
+                     .each(function(el) {
+                        if (el.getAttribute('rel') == rel) content = el;
+                    });
+                    return content;
+                }
+            });
+            
             var oSelect = oUpload.getElementsByTagName('select')[0];
             if (oSelect)
                 ZMG.Admin.Events.Client.filterSelects.include(oSelect);
             
             var oForm = oUpload.getElementsByTagName('form')[0];
-            if (oForm)
-                oForm.action = ZMG.CONST.req_uri + "&view=admin:mediaupload:store";
+            oForm.action = ZMG.CONST.req_uri + "&view=admin:mediaupload:store";
+            console.log(oForm.action);
             
             this.Uploader = new FancyUpload($('zmg_fancyupload_filedata'), {
                 swf: ZMG.CONST.base_path + '/var/www/templates/admin/other/uploader.swf',
@@ -661,7 +685,16 @@ ZMG.Events.Client = new Class({
         
     },
     ongallerysaveclick: function(e) {
-        alert('clickie!');
+        var data = FormSerializer.serialize($('zmg_form_edit_gallery'));
+        var url  = ZMG.CONST.req_uri + "&view=admin:galleryedit:store";
+        var f = function() {
+            new XHR({
+                onSuccess: ZMG.Admin.Events.Server.ondispatchresult.bind(ZMG.Admin.Events),
+                onFailure: ZMG.Admin.Events.Server.onerror.bind(ZMG.Admin.Events)
+            }).send(url, data || '');
+        };
+        this.onshowloader();
+        window.setTimeout(f.bind(this), 20); // allowing a small delay for the browser to draw the loader-icon.
     },
     ongallerydeleteclick: function(e) {
         alert('clickie!');

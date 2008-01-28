@@ -9,8 +9,8 @@
 <div id="zmg_edit_gallery_tabs" class="tab-all-container">
     <div class="tab-strip-wrapper">
         <ul class="tab-strip">
-            <li><a>{t}Properties{/t}</a></li>
-            <li><a>{t}Permissions{/t}</a></li>
+            <li><a rel="properties">{t}Properties{/t}</a></li>
+            <li><a rel="permissions">{t}Permissions{/t}</a></li>
         </ul>
     </div>
     <div class="tab-wrapper"></div>
@@ -70,7 +70,6 @@
     </table>
 </div>
 <div class="tab-container" rel="permissions">
-    <!-- new tab should start here... 'Members' -->
     <table border="0" width="300">
     <tr>
         <td>
@@ -81,5 +80,5 @@
 </div>
 <!-- 'Actions' tab will move to the toolbar -->
 
-<input type="hidden" name="gid" value="" />
+<input type="hidden" name="zmg_edit_gallery_gid" value="" />
 </form>
