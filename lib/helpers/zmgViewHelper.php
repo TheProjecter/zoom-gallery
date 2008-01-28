@@ -76,10 +76,50 @@ class zmgViewHelper {
                     $filter = intval(array_pop($this->_view_tokens));
                     $zoom->setResult($zoom->getMediumCount($filter));
                     break;
+                case "admin:galleryedit:store":
+                    $gid     = intval(zmgGetParam($_REQUEST, 'zmg_edit_gallery_gid', 0));
+                    
+                    $gallery = new zmgGallery(zmgDatabase::getDBO());
+                    
+                    $data    = array(
+                      'name'      => zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_edit_gallery_name', $gallery->name)),
+                      'descr'     => zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_edit_gallery_descr', $gallery->descr)),
+                      'keywords'  => zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_edit_gallery_keywords', $gallery->keywords)),
+                      'hide_msg'  => intval(zmgGetParam($_REQUEST, 'zmg_edit_gallery_hidenm', $gallery->hide_msg)),
+                      'shared'    => intval(zmgGetParam($_REQUEST, 'zmg_edit_gallery_shared', $gallery->shared)),
+                      'published' => intval(zmgGetParam($_REQUEST, 'zmg_edit_gallery_published', $gallery->published))
+                    );
+                    
+                    $res = true;
+
+                    if ($gid > 0) {
+                        if (!($res = $gallery->load($gid))) {
+                            $zoom->messages->append(T_('Gallery could not be saved') . ': ' . $gallery->getError());
+                        }
+                    }
+                    
+                    if ($res && $gid > 0) {
+                        if (!$gallery->bind($data)) {
+                            $zoom->messages->append(T_('Gallery could not be saved') . ': ' . $gallery->getError());
+                        } else {
+                            if (!$gallery->store()) {
+                                $zoom->messages->append(T_('Gallery could not be saved') . ': ' . $gallery->getError());
+                            } else {
+                                $zoom->messages->append(T_('Gallery saved successfully!'));
+                            }
+                        }
+                    } else {
+                        $zoom->messages->append(T_('Gallery could not be saved') . ': ' . $gid);
+                    }
+                    break;
                 case "admin:mediumedit:store":
                     break;
-                case "admin:mediaupload:store":
+                case stristr($view, "admin:mediaupload:store"):
                     //SWFUpload needs HTTP headers to signal the user...
+                    echo "blabla test!";
+                    $method = stristr($view, "jupload") ? "jupload" : "swfupload";
+                    $zoom->fireEvents('onupload');
+                    //exit;
                     break;
                 default:
                     break;

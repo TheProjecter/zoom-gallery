@@ -37,6 +37,9 @@ class zmgEnv extends zmgError {
     function getViewType() {
         $forcetype = trim(zmgGetParam($_GET, 'forcetype', ''));
         if (zmgEnv::isRPC() && $forcetype != "html") {
+            if (!empty($forcetype)) {
+                return $forcetype;
+            }
             return "json";
         }
         return "html";
@@ -55,6 +58,10 @@ class zmgEnv extends zmgError {
             return "/administrator/index2.php?option=com_zoom&no_html=1";
         }
         return "/index.php?option=com_zoom&no_html=1";
+    }
+    
+    function getRpcURL() {
+        return zmgEnv::getSiteURL() . zmgEnv::getAjaxURL();
     }
     
     function sefRouteURL($value) {

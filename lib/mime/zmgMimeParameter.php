@@ -16,13 +16,13 @@
 // | Authors: Ian Eure <ieure@php.net>                                    |
 // +----------------------------------------------------------------------+
 //
-// $Id:mime_parameter.php 106 2007-02-10 22:30:30Z kevinuru $
+// $Rev$
 defined('_ZMG_EXEC') or die('Restricted access');
 
 /**
  * Class for working with MIME type parameters
  *
- * @version @version@
+ * @version $Rev$
  * @package zOOmGallery
  * @subpackage MIME
  * @author Ian Eure <ieure@php.net>

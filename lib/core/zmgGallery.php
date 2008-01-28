@@ -119,6 +119,7 @@ class zmgGallery extends zmgTable {
             'gid'      : $this->gid,
             'name'     : ".$json->encode($this->name).",
             'descr'    : ".$json->encode($this->descr).",
+            'dir'      : ".$json->encode($this->dir).",
             'keywords' : ".$json->encode($this->keywords).",
             'sub_gid'  : $this->sub_gid,
             'pos'      : $this->pos,

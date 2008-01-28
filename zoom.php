@@ -17,7 +17,7 @@ define("ZMG_ADMIN", 0);
 require(ZMG_ABS_PATH . '/lib/initzoom.php');
 
 $zoom = & zmgFactory::getZoom($zoom_config);
-
+echo "DEBUG";
 $zoom->view->set();
 
 $zoom->view->run();

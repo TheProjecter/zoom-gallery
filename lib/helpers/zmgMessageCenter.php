@@ -20,7 +20,7 @@ class zmgMessageCenter extends zmgError {
         
     }
     
-    function append($title, $description) {
+    function append($title, $description = '') {
         $this->_messages[] = array($title, $description);
     }
     
