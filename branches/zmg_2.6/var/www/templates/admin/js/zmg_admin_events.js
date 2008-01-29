@@ -69,10 +69,13 @@ ZMG.Events.Server = new Class({
             
             if (o.action == "settings_store") {
                 
-            } else if (o.action == "medium_store") {
+            } else if (o.action == "mediumedit_store") {
                 
-            } else if (o.action == "gallery_store") {
-                
+            } else if (o.action == "galleryedit_store") {
+                //update the tree structure
+                var node = this.Client.menuTree.get('admin:gallerymanager'); 
+                node.open = false;
+                node.load(node.data.load);
             }
             for (var i = 0; i < o.messagecenter.messages.length; i++) {
                 this.Client.onshowmessage(o.messagecenter.messages[i].title,

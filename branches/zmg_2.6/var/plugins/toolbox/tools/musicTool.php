@@ -28,5 +28,8 @@ class zmgMusicTool {
         getid3_lib::CopyTagsToComments($fileInfo);
         return $fileInfo;
     }
+    function autoDetect() {
+        return;
+    }
 }
 ?>
