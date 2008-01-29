@@ -23,5 +23,8 @@ class zmgUploadTool {
             header('HTTP/1.0 415 Unsupported Media Type');
         }
     }
+    function autoDetect() {
+        return;
+    }
 }
 ?>
