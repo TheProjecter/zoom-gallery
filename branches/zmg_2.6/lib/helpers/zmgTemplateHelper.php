@@ -81,6 +81,8 @@ class zmgTemplateHelper extends Smarty {
             $api->setParam('subview', $subview);
             
             $this->assign('zmgAPI', $api); //the API is accessible for all Smarty templates
+            
+            $this->assign('mediapath', $api->getParam('mediapath'));
 
             $this->display($tpl_file);
         } else {
