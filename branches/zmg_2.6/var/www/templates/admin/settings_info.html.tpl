@@ -1,6 +1,6 @@
 <table cellspacing="0" cellpadding="0" border="0">
 <tr>
-  <td style="padding-right: 10px;" valign="top"><img src="{$site_url}/components/com_zoom/var/www/templates/admin/images/zoom_logo.gif" border="0" alt="" /><br />ver. {$zoom->getConfig('app/version')}</td>
+  <td style="padding-right: 10px;" valign="top"><img src="{$zmgAPI->getParam('site_url')}/components/com_zoom/var/www/templates/admin/images/zoom_logo.gif" border="0" alt="" /><br />ver. {$zmgAPI->getConfig('app/version')}</td>
   <td valign="top" style="padding-right: 10px;">
     <p><strong>Created by:</strong><br />
       Mike de Boer <br />

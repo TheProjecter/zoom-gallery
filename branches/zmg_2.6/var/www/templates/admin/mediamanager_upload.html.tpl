@@ -18,7 +18,7 @@
 	    <div class="zmg_halfsize">
 	        <fieldset>
 	            <legend>{t}Select a gallery{/t}</legend>
-		        {$zoom->callAbstract('zmgHTML', 'galleriesSelect', 'ZMG.Admin.Events.Client.onmm_gallerychange(this);')}
+		        {$zmgAPI->callAbstract('zmgHTML', 'galleriesSelect', 'ZMG.Admin.Events.Client.onmm_gallerychange(this);')}
 	        </fieldset>
 	    </div>
 	    <div class="zmg_halfsize">
@@ -33,9 +33,9 @@
 	    <div class="zmg_halfsize">
 	        <fieldset>
 	            <legend>{t}Enter Name & Description{/t}</legend>
-	            <input type="text" name="zmg_upload_name" value="{$zoom->getConfig('filesystem/upload/tempname')}" size="50" />
+	            <input type="text" name="zmg_upload_name" value="{$zmgAPI->getConfig('filesystem/upload/tempname')}" size="50" />
 	            <br /><br />
-	            <textarea name="zmg_upload_descr" rows="5" cols="42">{$zoom->getConfig('filesystem/upload/tempdescr')}</textarea>
+	            <textarea name="zmg_upload_descr" rows="5" cols="42">{$zmgAPI->getConfig('filesystem/upload/tempdescr')}</textarea>
 	        </fieldset>
 	    </div>
 	
@@ -54,15 +54,15 @@
       name="JUpload"
       code="com.smartwerkz.jupload.classic.JUpload"
       codebase="."
-      archive="{$site_url}/components/com_zoom/var/www/templates/admin/other/jupload/JUpload.jar,
-               {$site_url}/components/com_zoom/var/www/templates/admin/other/jupload/commons-codec-1.3.jar,
-               {$site_url}/components/com_zoom/var/www/templates/admin/other/jupload/commons-httpclient-3.0-rc4.jar,
-               {$site_url}/components/com_zoom/var/www/templates/admin/other/jupload/commons-logging.jar,
-               {$site_url}/components/com_zoom/var/www/templates/admin/other/jupload/skinlf/skinlf-6.2.jar"
+      archive="{$zmgAPI->getParam('site_url')}/components/com_zoom/var/www/templates/admin/other/jupload/JUpload.jar,
+               {$zmgAPI->getParam('site_url')}/components/com_zoom/var/www/templates/admin/other/jupload/commons-codec-1.3.jar,
+               {$zmgAPI->getParam('site_url')}/components/com_zoom/var/www/templates/admin/other/jupload/commons-httpclient-3.0-rc4.jar,
+               {$zmgAPI->getParam('site_url')}/components/com_zoom/var/www/templates/admin/other/jupload/commons-logging.jar,
+               {$zmgAPI->getParam('site_url')}/components/com_zoom/var/www/templates/admin/other/jupload/skinlf/skinlf-6.2.jar"
       width="640"
       height="480"
       mayscript="mayscript"
       alt="JUpload by www.jupload.biz">
-      <param name="Config" value="{$rpc_url}&amp;view=admin:mediamanager:juploadconfig&amp;forcetype=plain">
+      <param name="Config" value="{$zmgAPI->getParam('rpc_url')}&amp;view=admin:mediamanager:juploadconfig&amp;forcetype=plain">
     </applet>
 </div>

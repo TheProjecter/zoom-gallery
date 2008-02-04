@@ -41,7 +41,7 @@ Gui.LF.OverrideColorsBorders=false
 Gui.LF.OverrideFont=true
 Gui.LF.SelectedBackground=
 Gui.LF.SelectedForeground=
-Gui.LF.SkinPackUrl={$site_url}/components/com_zoom/var/www/templates/admin/other/jupload/skinlf/mmMagra.zip
+Gui.LF.SkinPackUrl={$zmgAPI->getParam('site_url')}/components/com_zoom/var/www/templates/admin/other/jupload/skinlf/mmMagra.zip
 Gui.ServerResponse.AutoShow=true
 Gui.ServerResponse.Enable=true
 Gui.ServerResponse.Height=100
@@ -83,7 +83,7 @@ Upload.Http.Method=post
 Upload.Http.Query=
 Upload.MaxFileSize=-1
 Upload.MaxTotalFileCount=-1
-Upload.MaxTotalFileSize={$zoom->getConfig('filesystem/upload/maxfilesize')*1024}
+Upload.MaxTotalFileSize={$zmgAPI->getConfig('filesystem/upload/maxfilesize')*1024}
 
 Upload.Thumbnails.Enable=false
 Upload.Thumbnails.Format=jpg
@@ -94,6 +94,6 @@ Upload.Thumbnails.Http.Query=
 Upload.Thumbnails.Http.TagName=thumbnail
 Upload.Thumbnails.Size=100x100
 Upload.Thumbnails.TargetURL=scripts/php/jupload-post.php
-Upload.URL.Action={$rpc_url}&view=admin:mediaupload:store:jupload
+Upload.URL.Action={$zmgAPI->getParam('rpc_url')}&view=admin:mediaupload:store:jupload
 
 WaitForPlugins=

@@ -10,7 +10,7 @@
     <label for="zmg_locale_default">{t}Default language{/t}</label>
   </td>
   <td>
-    <input type="text" name="zmg_locale_default" id="zmg_locale_default" value="{$zoom->getConfig('locale/default')}" size="70"/>
+    <input type="text" name="zmg_locale_default" id="zmg_locale_default" value="{$zmgAPI->getConfig('locale/default')}" size="70"/>
   </td>
 </tr>
 <tr>
@@ -18,7 +18,7 @@
     <label for="zmg_locale_encoding">{t}Message encoding{/t}</label>
   </td>
   <td>
-    <input type="text" name="zmg_locale_encoding" id="zmg_locale_encoding" value="{$zoom->getConfig('locale/encoding')}" size="70"/>
+    <input type="text" name="zmg_locale_encoding" id="zmg_locale_encoding" value="{$zmgAPI->getConfig('locale/encoding')}" size="70"/>
   </td>
 </tr>
 </table>

@@ -151,14 +151,6 @@ class Zoom extends zmgError {
     function updateConfig($vars, $isPlugin = false) {
         return $this->_config->update($vars, $isPlugin);
     }
-    /**
-     * Call an abstract/ static function that resides within a static class.
-     * Note: particularly useful within templates.
-     * @see zmgCallAbstract
-     */
-    function callAbstract($klass, $func, $args) {
-        return zmgCallAbstract($klass, $func, $args);
-    }
     function jsonHelper($input, $type = 'encode') {
         $json = new zmgJSON();
         if ($type == "decode") {
@@ -292,13 +284,6 @@ class Zoom extends zmgError {
             return $medium->toXML();
         }
         return $medium;
-    }
-    function getParamInt($name, $default = 0) {
-        return intval(zmgGetParam($_REQUEST, $name, $default));
-    }
-    function concat() {
-        $args = func_get_args();
-        return join($args, '');
     }
     /**
      * Return the method of ordering for galleries.
