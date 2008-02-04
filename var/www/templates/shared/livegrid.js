@@ -19,7 +19,7 @@ var LiveGrid = new Class({
 		count: false,
 		scroller: false,
 		body: false,
-		columns: false,
+		columns: 1, //number of columns per row
 		url: null,
 		rowClass: 'row',
 		responseHandler: null,
@@ -28,6 +28,8 @@ var LiveGrid = new Class({
 		onRequest: Class.empty,
 		onComplete: Class.empty,
 		onPopulate: Class.empty,
+		onRowMousDown: Class.empty,
+		onRowMouseUp: Class.empty,
 		onRowClick: Class.empty,
 		scrollOptions: {},
 		requestVars: {
@@ -88,7 +90,7 @@ var LiveGrid = new Class({
 
 	resetCalcs: function() {
 		this.rowHeight = this.rows[0].offsetHeight;
-		this.columns = (this.count * this.rowHeight) / this.scroller.scrollHeight;
+		this.columns = ((this.count * this.rowHeight) / this.scroller.scrollHeight) * this.options.columns;
 		this.perPage = Math.ceil(this.scroller.offsetHeight / this.rowHeight * this.columns);
 		this.pageChecks = {up: - this.perPage, down: 2 * this.perPage};
 	},
@@ -182,7 +184,9 @@ var LiveGrid = new Class({
 
 	populateRow: function(row, html) {
 		row.setHTML(html);
+		row.addEvent('mousedown', this.options.onRowMouseDown.bindWithEvent(this));
 		row.addEvent('click', this.options.onRowClick.bindWithEvent(this));
+		row.addEvent('mouseup', this.options.onRowMouseUp.bindWithEvent(this));
 		return row;
 	},
 

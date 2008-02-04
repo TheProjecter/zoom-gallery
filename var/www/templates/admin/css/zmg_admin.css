@@ -552,6 +552,14 @@ tab-strip .tab-selected .tab-right span.tab-text
     overflow: hidden;
     cursor: pointer;
 }
+
+.lgrid-body div.lgrid-body-itemsel,
+.lgrid-body-itemsel
+{
+    background-color: #6d84a2;
+    background-image: url(../images/listArrowSel.png);
+}
+
 .view-floated .lgrid-body div dt
 {
     clear: left;

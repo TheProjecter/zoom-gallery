@@ -53,8 +53,6 @@ class zmgMedium extends zmgTable {
         if (!$this->gid) {
             zmgError::throwError('zmgMedium: medium data not loaded yet');
         }
-        
-        
     }
     
     function getRelPath($mediapath = '') {

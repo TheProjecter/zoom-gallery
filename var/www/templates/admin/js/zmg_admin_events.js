@@ -96,7 +96,7 @@ ZMG.Events.Server = new Class({
                 entrySelector: 'li a',
                 onShow: function(toggle, container, idx) {
                     toggle.addClass('tab-selected');
-                    container.effect('opacity').start(0, 1); // 1) first start the effect
+                    //container.effect('opacity').start(0, 1); // 1) first start the effect
                     container.setStyle('display', ''); // 2) then show the element, to prevent flickering
                 },
                 getContent: function(el) {
@@ -139,7 +139,6 @@ ZMG.Events.Server = new Class({
             ZMG.Admin.cacheElement('zmg_view_content').adopt(oMM);
             oMM.innerHTML = html;
             FancyForm.start($A(oMM.getElementsByTagName('input')));
-            ZMG.Admin.Events.Client.filterSelects.include(oSelect);
             var oSelect = oMM.getElementsByTagName('select')[0];
             if (oSelect)
                 ZMG.Admin.Events.Client.filterSelects.include(oSelect);
@@ -158,11 +157,29 @@ ZMG.Events.Server = new Class({
                 onComplete: function(xhr) {
                     nav.getFirst().setHTML(xhr.running ? (xhr.running + ' request(s) ... ') : '');
                 },
+                onRowMouseDown: function(e) {
+                    e = new Event(e);
+                    var el = e.target;
+                    while (el.tagName.toLowerCase() != "div")
+                        el = el.parentNode;
+                    el.addClass('lgrid-body-itemsel');
+                },
+                onRowMouseUp: function(e) {
+                    e = new Event(e);
+                    var el = e.target;
+                    while (el.tagName.toLowerCase() != "div")
+                        el = el.parentNode;
+                    el.removeClass('lgrid-body-itemsel');
+                },
                 onRowClick: function(e) {
                     e = new Event(e);
                     var el = e.target;
                     while (el.tagName.toLowerCase() != "div")
                         el = el.parentNode;
+                    
+                    var imgs   = el.getElementsByTagName('img');
+                    if (!imgs.length) return; //prolly clicked a 'No media' row
+                    
                     var img_id = el.getElementsByTagName('img')[0].id.split('_')[0];
                     ZMG.Admin.Events.Client.onlivegridbodyslide(this);
                     
@@ -227,6 +244,11 @@ ZMG.Events.Server = new Class({
             paging[3].addEvent('click', this.liveGrid.scrollComplete.bind(this.liveGrid, [1]));
             
             pager.addEvent('change', ZMG.Admin.Events.Client.onlivegridpager.bind(this.liveGrid, [pager]));
+        } else if (this.liveGrid) {
+            var lGrid = this.liveGrid;
+            setTimeout(function(){
+                lGrid.refresh();
+            }, 100); //fix for 'NaN' bug in the liveGrid, when the control is hidden or overlapped by another layer
         }
         ZMG.Admin.Events.Client.onmm_setfilterselects();
         this.onactivateview('zmg_view_mm');
@@ -244,7 +266,7 @@ ZMG.Events.Server = new Class({
                 entrySelector: 'li a',
                 onShow: function(toggle, container, idx) {
                     toggle.addClass('tab-selected');
-                    container.effect('opacity').start(0, 1); // 1) first start the effect
+                    //container.effect('opacity').start(0, 1); // 1) first start the effect
                     container.setStyle('display', ''); // 2) then show the element, to prevent flickering
                 },
                 getContent: function(el) {
@@ -263,7 +285,6 @@ ZMG.Events.Server = new Class({
             
             var oForm = oUpload.getElementsByTagName('form')[0];
             oForm.action = ZMG.CONST.req_uri + "&view=admin:mediaupload:store";
-            console.log(oForm.action);
             
             this.Uploader = new FancyUpload($('zmg_fancyupload_filedata'), {
                 swf: ZMG.CONST.base_path + '/var/www/templates/admin/other/uploader.swf',
@@ -329,7 +350,6 @@ ZMG.Events.Server = new Class({
                 },
                 onShow: function(toggle, container, idx) {
                     toggle.addClass('tab-selected');
-                    container.effect('opacity').start(0, 1); // 1) first start the effect
                     container.setStyle('display', ''); // 2) then show the element, to prevent flickering
                     
                     var klass = ZMG.Admin.Events;
@@ -494,18 +514,20 @@ ZMG.Events.Client = new Class({
     },
     onlivegridbodyslide: function(livegrid) {
         if (!this.bodySlide) {
-            this.bodySlide = new Fx.Slide(livegrid.body, {mode: 'horizontal'});
+            this.bodySlide = new Fx.Slide(livegrid.body, {mode: 'horizontal', duration: 220, fps: 25});
             this.editSlide = new Fx.Slide(livegrid.options.editpanel,
-              {mode: 'horizontal'});
+              {mode: 'horizontal', duration: 220, fps: 25});
         }
         this.bodySlide.slideOut();
         this.editSlide.slideOut();
         ZMG.Admin.cacheElement('zmg_lgrid_pagination').setStyle('visibility', 'hidden');
+        livegrid.scroller.setStyle('overflow-y', 'hidden');
         livegrid.scrollComplete(-1);
         this.toolbar.show('mediumedit');
     },
     onlivegrideditslide: function() {
         if (this.bodySlide) {
+            ZMG.Admin.Events.Server.liveGrid.scroller.setStyle('overflow-y', 'visible');
             this.bodySlide.slideIn();
             this.editSlide.slideIn();
             ZMG.Admin.cacheElement('zmg_lgrid_pagination').setStyle('visibility', 'visible');
@@ -642,62 +664,29 @@ ZMG.Events.Client = new Class({
         this.activeFilter = value;
         
         //get new number of media:
-        new XHR({
-            async: false,
-            onSuccess: function(text, xml) {
-                var o = Json.evaluate(text);
-                ZMG.CONST.mediumcount = parseInt(o.result);
-            }
-        }).send(ZMG.CONST.req_uri + "&view=admin:update:mediacount:" + value, '');
+        ZMG.Dispatches.mediaCount(value);
         
         var liveGrid = ZMG.Admin.Events.Server.liveGrid;
         liveGrid.options.count = ZMG.CONST.mediumcount || 1;
-        liveGrid.options.url = ZMG.CONST.req_uri + "&view=admin:mediamanager:getmedia"
+        liveGrid.options.url   = ZMG.CONST.req_uri + "&view=admin:mediamanager:getmedia"
           + (value ? ":" + value : "");
         liveGrid.refresh();
     },
     onsettingssaveclick: function(e) {
-        var data = FormSerializer.serialize($('zmg_settings_form'));
-        var url  = ZMG.CONST.req_uri + "&view=admin:settings:store";
-        var f = function() {
-            new XHR({
-                onSuccess: ZMG.Admin.Events.Server.ondispatchresult.bind(ZMG.Admin.Events),
-                onFailure: ZMG.Admin.Events.Server.onerror.bind(ZMG.Admin.Events)
-            }).send(url, data || '');
-        };
-        this.onshowloader();
-        window.setTimeout(f.bind(this), 20); // allowing a small delay for the browser to draw the loader-icon.
+        ZMG.Dispatches.saveSettings(FormSerializer.serialize($('zmg_settings_form')));
     },
     onmediumbackclick: function(e) {
         this.toolbar.clear();
         this.onlivegrideditslide();
     },
     onmediumsaveclick: function(e) {
-        var data = FormSerializer.serialize($('zmg_form_edit_medium'));
-        var url  = ZMG.CONST.req_uri + "&view=admin:mediumedit:store";
-        var f = function() {
-            new XHR({
-                onSuccess: ZMG.Admin.Events.Server.ondispatchresult.bind(ZMG.Admin.Events),
-                onFailure: ZMG.Admin.Events.Server.onerror.bind(ZMG.Admin.Events)
-            }).send(url, data || '');
-        };
-        this.onshowloader();
-        window.setTimeout(f.bind(this), 20); // allowing a small delay for the browser to draw the loader-icon.
+        ZMG.Dispatches.saveMedium(FormSerializer.serialize($('zmg_form_edit_medium')));
     },
     ongallerynewclick: function(e) {
         
     },
     ongallerysaveclick: function(e) {
-        var data = FormSerializer.serialize($('zmg_form_edit_gallery'));
-        var url  = ZMG.CONST.req_uri + "&view=admin:galleryedit:store";
-        var f = function() {
-            new XHR({
-                onSuccess: ZMG.Admin.Events.Server.ondispatchresult.bind(ZMG.Admin.Events),
-                onFailure: ZMG.Admin.Events.Server.onerror.bind(ZMG.Admin.Events)
-            }).send(url, data || '');
-        };
-        this.onshowloader();
-        window.setTimeout(f.bind(this), 20); // allowing a small delay for the browser to draw the loader-icon.
+        ZMG.Dispatches.saveGallery(FormSerializer.serialize($('zmg_form_edit_gallery')));
     },
     ongallerydeleteclick: function(e) {
         alert('clickie!');
@@ -714,13 +703,12 @@ ZMG.Events.Client = new Class({
     onwindowresize: function() {
         var width = ZMG.Admin.cacheElement('zmg_admin_cont').offsetWidth;
         ZMG.Admin.cacheElement('zmg_view_content').style.width = (width - 258) + "px";
-        if (ZMG.Admin.Events.Server.liveGrid) {
+        var lGrid = ZMG.Admin.Events.Server.liveGrid;
+        if (lGrid) {
             var gridWidth = (width - 278);
-            ZMG.Admin.Events.Server.liveGrid.gridWidth = gridWidth; 
-            ZMG.Admin.Events.Server.liveGrid.body.style.width =
-              ZMG.Admin.Events.Server.liveGrid.options.editpanel.style.width =
-              (gridWidth - 4) + "px";
-            ZMG.Admin.Events.Server.liveGrid.options.editpanel.style.left = (gridWidth + 4) + "px"; 
+            lGrid.gridWidth = gridWidth; 
+            lGrid.body.style.width = lGrid.options.editpanel.style.width = (gridWidth - 4) + "px";
+            lGrid.options.editpanel.style.left = (gridWidth + 4) + "px"; 
         }
     },
     onerror: function() {

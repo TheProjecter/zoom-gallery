@@ -76,21 +76,11 @@ class zmgTemplateHelper extends Smarty {
         if ($res) {
             $tpl_file = trim($res->firstChild->getAttribute('href'));
 
-            $this->assign('zoom', $zoom);
+            zmgimport('org.zoomfactory.lib.helpers.zmgAPIHelper');
+            $api = new zmgAPIHelper($zoom);
+            $api->setParam('subview', $subview);
             
-            $this->assign('subview', $subview);
-            
-            $this->assign('site_url', zmgEnv::getSiteURL());
-            
-            $this->assign('ajax_url', zmgEnv::getAjaxURL());
-            
-            $this->assign('rpc_url', zmgEnv::getRpcURL());
-            
-            $this->assign('mediapath', $zoom->getConfig('filesystem/mediapath'));
-            
-            $this->assign('result_ok', 'OK');
-            
-            $this->assign('result_ko', 'KO');
+            $this->assign('zmgAPI', $api); //the API is accessible for all Smarty templates
 
             $this->display($tpl_file);
         } else {

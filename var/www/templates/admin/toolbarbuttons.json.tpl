@@ -2,7 +2,7 @@
 {
     'toolbar': [
         {/literal}
-        {if $subview eq 'mediumedit'}
+        {if $zmgAPI->getParam('subview') eq 'mediumedit'}
             {literal}
             'mediumedit',
             {
@@ -16,7 +16,7 @@
                 'disabled': false
             }
             {/literal}
-        {elseif $subview eq 'zmg_view_mm'}
+        {elseif $zmgAPI->getParam('subview') eq 'zmg_view_mm'}
             {literal}
             'zmg_view_mm',
             {
@@ -25,7 +25,7 @@
                 'disabled': false
             }
             {/literal}
-        {elseif $subview eq 'zmg_view_gm'}
+        {elseif $zmgAPI->getParam('subview') eq 'zmg_view_gm'}
             {literal}
             'zmg_view_gm',
             {
@@ -44,7 +44,7 @@
                 'disabled': true
             }
             {/literal}
-        {elseif $subview eq 'zmg_view_settings'}
+        {elseif $zmgAPI->getParam('subview') eq 'zmg_view_settings'}
             {literal}
             'zmg_view_settings',
             {

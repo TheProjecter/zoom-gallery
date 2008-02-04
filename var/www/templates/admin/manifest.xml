@@ -40,6 +40,9 @@
             <file href="zmg_admin.js"/>
         </resource>
         <resource name="javascript" xml:base="js/">
+            <file href="zmg_admin_dispatches.js"/>
+        </resource>
+        <resource name="javascript" xml:base="js/">
             <file href="zmg_admin_events.js"/>
         </resource>
         <resource name="javascript" xml:base="js/">
@@ -51,11 +54,11 @@
         <resource name="javascript" xml:base="../shared/">
             <file href="ajaxqueue.js"/>
         </resource>
-        <resource name="javascript" xml:base="js/">
-            <file href="fancyupload.js"/>
+        <resource name="javascript" xml:base="../shared/">
+            <file href="livegrid.js"/>
         </resource>
         <resource name="javascript" xml:base="js/">
-            <file href="livegrid.js"/>
+            <file href="fancyupload.js"/>
         </resource>
         <resource name="javascript" xml:base="js/">
             <file href="moocheck.js"/>

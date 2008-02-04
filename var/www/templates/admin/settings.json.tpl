@@ -1,7 +1,7 @@
 {literal}
 {
     {/literal}
-    {if $subview eq 'overview'}
+    {if $zmgAPI->getParam('subview') eq 'overview'}
         {literal}
         'tabs': {
             'meta': {

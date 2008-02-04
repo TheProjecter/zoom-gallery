@@ -1,8 +1,8 @@
 {literal}
 {
-    'result': '{/literal}{$result_ok}{literal}',
+    'result': '{/literal}{$zmgAPI->getParam('result_ok')}{literal}',
     'data': {
-        {/literal}{$zoom->getMedium($subview, 'json')}{literal}
+        {/literal}{$zmgAPI->getMedium($zmgAPI->getParam('subview'), 'json')}{literal}
     }
 }
 {/literal}

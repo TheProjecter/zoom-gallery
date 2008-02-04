@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest version="0.2" xml:base="intheshade/">
+    <template name="In The Shade">
+        <author>Mike de Boer</author>
+        <country>NL</country>
+        <creationdate>11/26/2007</creationdate>
+        <description>Default theme of zOOm Media Gallery</description>
+        <ranking>100.0</ranking>
+    </template>
+    <views>
+        <view name="gallery:overview" />
+        <view name="gallery:get" inherits="gallery:get:*" />
+        <view name="gallery:search" />
+        <view name="gallery:special" />
+        <view name="gallery:lightbox" />
+        <view name="gallery:thumbnails" inherits="gallery:thumbnails:*" />
+        <view name="gallery:thumbnails:medium" />
+        <view name="gallery:thumbnails:medium:edit" />
+        <view name="gallery:thumbnails:medium:delete" />
+        <view name="gallery:thumbnails:medium:lightbox" />
+        <view name="messagecenter" inherits="messagecenter:*" />
+        <view name="useradmin" />
+        <view name="singlepage" inherits="gallery:*,useradmin" />
+    </views>
+    <resources xml:base="intheshade/">
+        <resource name="stylesheet" xml:base="css/">
+            <file href="zmg_intheshade.css" />
+        </resource>
+        <resource name="stylesheet" xml:base="css/">
+            <file href="shadowbox.css" />
+        </resource>
+        <resource name="javascript" xml:base="js/">
+            <file href="zmg_intheshade.js" />
+        </resource>
+        <resource name="javascript" xml:base="js/">
+            <file href="zmg_dispatches.js" />
+        </resource>
+        <resource name="javascript" xml:base="js/">
+            <file href="zmg_serverevents.js" />
+        </resource>
+        <resource name="javascript" xml:base="js/">
+            <file href="shadowbox-mootools.js" />
+        </resource>
+        <resource name="javascript" xml:base="js/">
+            <file href="shadowbox.js" />
+        </resource>
+        <resource name="template" type="html" view="singlepage" xml:base="">
+            <file href="intheshade.html.tpl" />
+        </resource>
+        <resource name="template" type="json" view="messagecenter" xml:base="">
+            <file href="messagecenter.json.tpl"/>
+        </resource>
+        <resource name="template" type="json" view="gallery:get" xml:base="">
+            <file href="gallery_get.json.tpl" />
+        </resource>
+        <resource name="template" type="json" view="gallery:thumbnails" xml:base="">
+            <file href="thumbnails.json.tpl" />
+        </resource>
+        <resource name="preview" xml:base="images/">
+            <file href="intheshade_preview.png" />
+        </resource>
+    </resources>
+</manifest>

@@ -10,7 +10,7 @@
     <label for="zmg_meta_title">{t}Title{/t}</label>
   </td>
   <td>
-    <input type="text" name="zmg_meta_title" id="zmg_meta_title" value="{$zoom->getConfig('meta/title')}" size="70"/>
+    <input type="text" name="zmg_meta_title" id="zmg_meta_title" value="{$zmgAPI->getConfig('meta/title')}" size="70"/>
   </td>
 </tr>
 <tr>
@@ -18,7 +18,7 @@
     <label for="zmg_meta_description">{t}Description{/t}</label>
   </td>
   <td>
-    <input type="text" name="zmg_meta_description" id="zmg_meta_description" value="{$zoom->getConfig('meta/description')}" size="70"/>
+    <input type="text" name="zmg_meta_description" id="zmg_meta_description" value="{$zmgAPI->getConfig('meta/description')}" size="70"/>
   </td>
 </tr>
 <tr>
@@ -26,7 +26,7 @@
     <label for="zmg_meta_keywords">{t}Keywords{/t}</label>
   </td>
   <td>
-    <input type="text" name="zmg_meta_keywords" id="zmg_meta_keywords" value="{$zoom->getConfig('meta/keywords')}" size="70"/>
+    <input type="text" name="zmg_meta_keywords" id="zmg_meta_keywords" value="{$zmgAPI->getConfig('meta/keywords')}" size="70"/>
   </td>
 </tr>
 </table>

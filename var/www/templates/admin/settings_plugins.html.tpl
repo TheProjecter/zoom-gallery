@@ -7,7 +7,7 @@
 <tr>
   <td>
     <div id="zmg_plugins_accordion">
-        {$zoom->plugins->embedHTML()}
+        {$zmgAPI->getPluginsHTML()}
     </div>
   </td>
 </tr>
