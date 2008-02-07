@@ -25,6 +25,20 @@
                 'disabled': false
             }
             {/literal}
+        {elseif $zmgAPI->getParam('subview') eq 'zmg_view_mm_upload'}
+            {literal}
+            'zmg_view_mm_upload',
+            {
+                'id': 'mm_upload_start',
+                'title': {/literal}{t escape='json'}Start Upload{/t}{literal},
+                'disabled': false
+            },
+            {
+                'id': 'mm_upload_clear',
+                'title': {/literal}{t escape='json'}Clear Completed{/t}{literal},
+                'disabled': false
+            }
+            {/literal}
         {elseif $zmgAPI->getParam('subview') eq 'zmg_view_gm'}
             {literal}
             'zmg_view_gm',

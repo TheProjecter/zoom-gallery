@@ -13,7 +13,12 @@ defined('_ZMG_EXEC') or die('Restricted access');
  *
  * @static
  */
-class MIME_Helper {
+class zmgMimeHelper {
+    function getMime($file, $custom_type, $ext) {
+        zmgimport('org.zoomfactory.lib.mime.zmgMime');
+        
+        return zmgMime::autoDetect($file, $custom_type, $ext);
+    }
     /**
      * Return a singleton copy of a map of file extensions to mime types
      *
@@ -258,7 +263,7 @@ class MIME_Helper {
      * @static
      */
     function convertExtensionToMime($extension) {
-        $extensionMap =& MIME_Helper::_getExtensionMap();
+        $extensionMap = & zmgMimeHelper::_getExtensionMap();
         
         $extension = strtolower($extension);
         if (empty($extensionMap['forward'][$extension])) {
@@ -276,7 +281,7 @@ class MIME_Helper {
      * @static
      */
     function convertMimeToExtension($mimeType) {
-        $extensionMap =& MIME_Helper::_getExtensionMap();
+        $extensionMap = & zmgMimeHelper::_getExtensionMap();
         
         $mimeType = strtolower($mimeType);
         foreach ($extensionMap['forward'] as $ext => $mime) {
@@ -296,8 +301,272 @@ class MIME_Helper {
      * @static
      */
     function getMimeTypeMap() {
-        $extensionMap =& MIME_Helper::_getExtensionMap();
+        $extensionMap = & zmgMimeHelper::_getExtensionMap();
         return $extensionMap['reverseToArray'];
+    }
+    
+    /**
+     * Check if the processed file can be accepted by zOOm.
+     * 
+     * @return boolean
+     * @param string $tag
+     * @param int $isMime
+     */
+    function acceptableFormat($tag, $isMime = true) {
+        if ($isMime) {
+            $tag = zmgMimeHelper::convertMimeToExtension($tag);
+        }
+        return (zmgMimeHelper::isImage($tag) || zmgMimeHelper::isMovie($tag) || zmgMimeHelper::isDocument($tag) || zmgMimeHelper::isAudio($tag));
+    }
+    
+    /**
+     * Generate a regular expression from the file formats zOOm can accept for use with the function eregi().
+     * 
+     * @return string
+     */
+    function acceptableFormatRegexp() {
+        return "(" . join("|", zmgMimeHelper::_acceptableFormatList()) . ")";
+    }
+    
+    /**
+     * Generate a comma-seperated list of acceptable file-formats for display purposes only.
+     * 
+     * @return string
+     */
+    function acceptableFormatCommaSep() {
+        return join(", ", zmgMimeHelper::_acceptableFormatList());
+    }
+    
+    /**
+     * Returns list of acceptable movie extensions.
+     * 
+     * @return array
+     */
+    function _acceptableMovieList() {
+        return array('avi', 'mpg', 'mpeg', 'swf', 'flv', 'wmv', 'mov', 'rm', 'swf');
+    }
+    
+    /**
+     * Returns list of acceptable image extensions.
+     * 
+     * @return array
+     */
+    function _acceptableImageList() {
+        return array('jpg', 'jpeg', 'gif', 'png');
+    }
+    
+    /**
+     * Returns list of acceptable document extensions.
+     * 
+     * @return array
+     */
+    function _acceptableDocumentList() {
+        return array('doc', 'ppt', 'pdf', 'rtf');
+    }
+    
+    /**
+     * Returns list of acceptable audio extensions.
+     * 
+     * @return array
+     */
+    function _acceptableAudioList() {
+        return array('mp3','ogg','wma');
+    }
+    
+    /**
+     * Returns list of audio extensions that can be played by the zOOm Player.
+     * 
+     * @return array
+     */
+    function _playableAudioList() {
+        return array('mp3','wma');
+    }
+    
+    /**
+     * Returns list of movie extensions that can be thumbnailed by FFMPEG (with absolute compatibility in mind).
+     * 
+     * @return array
+     */
+    function thumbnailableMovieList() {
+        // this list doesn't have to be this big, BUT these are the formats supported by FFmpeg...
+        return array('avi', 'ac3', 'asf', 'asx', 'dv', 'm4v', 'mpg', 'mpeg', 'swf', 'flv', 'mjpeg', 'mov', 'mp4', 'm4a', 'rm', 'rpm', 'wc3', 'wmv', 'swf');
+    }
+    
+    /**
+     * Returns list of acceptable extensions that can be thumbnailed by the graphics library and/ or ffmpeg.
+     * 
+     * @return array
+     */
+    function thumbnailableList() {
+        return array_merge(zmgMimeHelper::_acceptableImageList(), zmgMimeHelper::thumbnailableMovieList());
+    }
+    
+    /**
+     * Returns list of document extensions that can be indexed by zOOm.
+     * 
+     * @return array
+     */
+    function _indexableList() {
+        return array('pdf');
+    }
+    
+    /**
+     * Returns list of all acceptable extensions.
+     * 
+     * @return array
+     */
+    function _acceptableFormatList() {
+        return array_merge(zmgMimeHelper::_acceptableImageList(), zmgMimeHelper::_acceptableMovieList(), zmgMimeHelper::_acceptableDocumentList(), zmgMimeHelper::_acceptableAudioList());
+    }
+    
+    /**
+     * Check if a file is an image.
+     * 
+     * @return boolean
+     * @param string $tag
+     * @param int $isMime
+     */
+    function isImage($tag, $isMime = true) {
+        if ($isMime) {
+            $tag = zmgMimeHelper::convertMimeToExtension($tag);
+        }
+        return in_array($tag, zmgMimeHelper::_acceptableImageList());
+    }
+    
+    /**
+     * Check if a file is a movie.
+     * @return boolean
+     * @param string $tag
+     * @param int $isMime
+     */
+    function isMovie($tag, $isMime = true) {
+        if ($isMime) {
+            $tag = zmgMimeHelper::convertMimeToExtension($tag);
+        }
+        return in_array($tag, zmgMimeHelper::_acceptableMovieList());
+    }
+    
+    /**
+     * Check if a file is an audio file.
+     * @return boolean
+     * @param string $tag
+     * @param int $isMime
+     */
+    function isAudio($tag, $isMime = true) {
+        if ($isMime) {
+            $tag = zmgMimeHelper::convertMimeToExtension($tag);
+        }
+        return in_array($tag, zmgMimeHelper::_acceptableAudioList());
+    }
+    
+    /**
+     * Check if a file can be played by the zOOm Player.
+     * 
+     * @return boolean
+     * @param string $tag
+     * @param int $isMime
+     */
+    function isPlayable($tag, $isMime = true) {
+        if ($isMime) {
+            $tag = zmgMimeHelper::convertMimeToExtension($tag);
+        }
+        return in_array($tag, zmgMimeHelper::_playableAudioList());
+    }
+    
+    /**
+     * Check if a file is a Real Media file.
+     * 
+     * @return boolean
+     * @param string $tag
+     * @param int $isMime
+     */
+    function isRealmedia($tag, $isMime = true) {
+        if ($isMime) {
+            $tag = zmgMimeHelper::convertMimeToExtension($tag);
+        }
+        if($tag == 'rm') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Check if a file is an Apple Quicktime file.
+     * 
+     * @return boolean
+     * @param string $tag
+     * @param int $isMime
+     */
+    function isQuicktime($tag, $isMime = true) {
+        if ($isMime) {
+            $tag = zmgMimeHelper::convertMimeToExtension($tag);
+        }
+        if($tag == 'mov') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Check if a file is a Flash video file.
+     * 
+     * @return boolean
+     * @param string $tag
+     * @param int $isMime
+     */
+    function isFlashvideo($tag, $isMime = true) {
+        if ($isMime) {
+            $tag = zmgMimeHelper::convertMimeToExtension($tag);
+        }
+        if($tag == 'flv') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Check if a file is a document.
+     * 
+     * @return boolean
+     * @param string $tag
+     * @param int $isMime
+     */
+    function isDocument($tag, $isMime = true) {
+        if ($isMime) {
+            $tag = zmgMimeHelper::convertMimeToExtension($tag);
+        }
+        return in_array($tag, zmgMimeHelper::_acceptableDocumentList());
+    }
+    
+    /**
+     * Check if a file can be resized by the zOOm toolbox.
+     * 
+     * @return boolean
+     * @param string $tag
+     * @param int $isMime
+     */
+    function isThumbnailable($tag, $isMime = true) {
+        if ($isMime) {
+            $tag = zmgMimeHelper::convertMimeToExtension($tag);
+        }
+        return in_array($tag, zmgMimeHelper::thumbnailableList());
+    }
+    
+    /**
+     * Check if a file is indexable by the zOOm toolbox.
+     * 
+     * @return boolean
+     * @param string $tag
+     * @param int $isMime
+     */
+    function isIndexable($tag, $isMime = true) {
+        if ($isMime) {
+            $tag = zmgMimeHelper::convertMimeToExtension($tag);
+        }
+        return in_array($tag, zmgMimeHelper::_indexableList());
     }
 
     /**

@@ -27,7 +27,7 @@ defined('_ZMG_EXEC') or die('Restricted access');
  * @subpackage MIME
  * @author Ian Eure <ieure@php.net>
  */
-class MIME_Type_Parameter {
+class zmgMime_Parameter {
     /**
      * Parameter name
      *
@@ -56,7 +56,7 @@ class MIME_Type_Parameter {
      * @param  string $param MIME parameter to parse, if set.
      * @return void
      */
-    function MIME_Type_Parameter($param = false)
+    function zmgMime_Parameter($param = false)
     {
         if ($param) {
             $this->parse($param);
@@ -105,7 +105,7 @@ class MIME_Type_Parameter {
     {
         $tmp = explode('=', $param);
         $value = $tmp[1];
-        if (MIME_Type_Parameter::hasComment($param)) {
+        if (zmgMime_Parameter::hasComment($param)) {
             $cs = strpos($value, '(');
             $value = substr($value, 0, $cs);
         }

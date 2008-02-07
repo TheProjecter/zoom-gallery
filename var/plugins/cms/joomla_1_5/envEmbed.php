@@ -22,9 +22,19 @@ class zmgEnv extends zmgError {
         return $config->getValue('lifetime');
     }
     
-    function getSessionID() {
+    function getSessionToken() {
         $session = & JFactory::getSession();
         return $session->getToken();
+    }
+    
+    function getSessionID() {
+        $session = & JFactory::getSession();
+        return $session->getId();
+    }
+    
+    function getSessionName() {
+        $session = & JFactory::getSession();
+        return $session->getName();
     }
     
     function getSiteURL() {

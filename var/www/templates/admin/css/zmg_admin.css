@@ -87,6 +87,11 @@
     background-image: url(../images/toolbar/icon-32-upload.png)
 }
 
+.zmg_tb_icon_mm_upload_clear
+{
+    background-image: url(../images/toolbar/icon-32-cancel.png)
+}
+
 .zmg_tb_icon_mediumback
 {
     background-image: url(../images/toolbar/icon-32-back.png)
@@ -99,7 +104,8 @@
     background-image: url(../images/toolbar/icon-32-save.png)
 }
 
-.zmg_tb_icon_gallerynew
+.zmg_tb_icon_gallerynew,
+.zmg_tb_icon_mm_upload_start
 {
     background-image: url(../images/toolbar/icon-32-new.png)
 }

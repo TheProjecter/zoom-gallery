@@ -33,7 +33,7 @@ class zmgEditMonitor extends zmgError {
         $db = & zmgDatabase::getDBO();
 
         $today = time() + intval(zmgEnv::getSessionLifetime());
-        $sid = md5(zmgEnv::getSessionID());
+        $sid = md5(zmgEnv::getSessionToken());
 
         if (!zmgEditMonitor::isEdited($id, $which, $filename)) {
             switch ($which){
@@ -102,7 +102,7 @@ class zmgEditMonitor extends zmgError {
     function purgeComments($mid, $limit_session = true) {
         $db = & zmgDatabase::getDBO();
 
-        $sid = md5(zmgEnv::getSessionID());
+        $sid = md5(zmgEnv::getSessionToken());
         
         $db->setQuery("DELETE FROM #__zoom_editmon WHERE "
          . ($limit_session ? "user_session = '$sid' AND " : "") . "object_id = $mid");
@@ -122,7 +122,7 @@ class zmgEditMonitor extends zmgError {
         $db = & zmgDatabase::getDBO();
 
         $today = time() + intval(zmgEnv::getSessionLifetime());
-        $sid = md5(zmgEnv::getSessionID());
+        $sid = md5(zmgEnv::getSessionToken());
         
         switch ($which) {
             case 'comment':

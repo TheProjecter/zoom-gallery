@@ -20,13 +20,21 @@ class zmgEnv extends zmgError {
         
     }
     
-    function getSessionID() {
+    function getSessionToken() {
         // Session Cookie `name`
         $sessionCookieName = mosMainFrame::sessionCookieName();
         // Get Session Cookie `value`
         $sessioncookie = zmgGetParam($_COOKIE, $sessionCookieName, null);
         // Session ID / `value`
         return mosMainFrame::sessionCookieValue($sessioncookie);
+    }
+    
+    function getSessionID() {
+        return session_id();
+    }
+    
+    function getSessionName() {
+        return session_name();
     }
     
     function getSiteURL() {

@@ -158,6 +158,66 @@ class Zoom extends zmgError {
         }
         return $json->encode($input);
     }
+    
+    /**
+     * Generate a random directory-name for a new gallery.
+     * 
+     * @return string
+     * @access public
+     */
+    function newDir() {
+        $newdir = "";
+        srand((double) microtime() * 1000000);
+        for ($acc = 1; $acc <= 6; $acc++){
+            $newdir .= chr(rand (0,25) + 65);
+        }
+        return $newdir;
+    }
+    
+    /**
+     * Check if a filename OR gallery-directory already exists and if it does;
+     * do something about it!
+     * 
+     * @return void
+     * @param string $checkThis
+     * @param string $checkWhat
+     * @access public
+     */
+    function checkDuplicate($checkThis, $checkWhat = 'filename') {
+        $db = & zmgDatabase::getDBO();
+        // There are two things this function can check for:
+        // - duplicate filenames
+        // - duplicate directories (of galleries)
+        if ($checkWhat === "directory") {
+            $db->setQuery("SELECT gid FROM #__zmg_galleries WHERE dir = '$checkThis'");
+            if($this->_result = $db->query()){
+                if (mysql_num_rows($this->_result) > 0) {
+                    return $this->checkDuplicate($this->newDir(), 'directory');
+                } else {
+                    return $checkThis;
+                }
+            } else {
+                return $checkThis;
+            }
+        } else {
+            $db->setQuery("SELECT imgid FROM #__zoomfiles WHERE imgfilename = '$checkThis' AND catid = '".$this->_gallery->_id."'");
+            if ($this->_result = $db->query()) {
+                if (mysql_num_rows($this->_result) > 0) {
+                    // filename exists already for this gallery, so change the filename and test again...
+                    // the filename will be changed accordingly:
+                    // if a filename exists, add the suffix _{number} incrementally,
+                    // thus 'afile_1.jpg' will become 'afile_2.jpg' and so on...
+                    return $this->checkDuplicate(preg_replace( "/^(.+?)(_?)(\d*)(\.[^.]+)?$/e", "'\$1_'.(\$3+1).'\$4'",
+                      $checkThis));
+                } else {
+                    return $checkThis;
+                }
+            } else {
+                 return $checkThis;
+            }
+        }
+    }
+    
     function getGalleryCount() {
         $db = & zmgDatabase::getDBO();
         $db->setQuery('SELECT COUNT(gid) AS total FROM #__zmg_galleries');

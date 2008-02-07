@@ -119,7 +119,9 @@ class zmgTemplateHelper extends Smarty {
          . "\tZMG.CONST.res_path    = ZMG.CONST.site_uri + '/components/com_zoom/var/www/templates/"
          . $this->_active_template."';\n"
          . "\tZMG.CONST.base_path   = '".zmgGetBasePath()."';\n"
-         . "\tZMG.CONST.refreshtime = ".$refreshTime.";\n");
+         . "\tZMG.CONST.refreshtime = ".$refreshTime.";\n"
+         . "\tZMG.CONST.sessionid   = '".zmgEnv::getSessionID()."';\n"
+         . "\tZMG.CONST.sessionname = '".zmgEnv::getSessionName()."';\n");
         
         if (count($this->_constants)) {
             foreach ($this->_constants as $name => $value) {
