@@ -283,13 +283,15 @@ ZMG.Events.Server = new Class({
             if (oSelect)
                 ZMG.Admin.Events.Client.filterSelects.include(oSelect);
             
-            var oForm = oUpload.getElementsByTagName('form')[0];
-            oForm.action = ZMG.CONST.req_uri + "&view=admin:mediaupload:store";
+            var oForm = $('zmg_fancyupload');
+            oForm.action = ZMG.CONST.req_uri + "&view=admin:mediaupload:store&"
+              + ZMG.CONST.sessionname + "=" + ZMG.CONST.sessionid;
             
             this.Uploader = new FancyUpload($('zmg_fancyupload_filedata'), {
                 swf: ZMG.CONST.base_path + '/var/www/templates/admin/other/uploader.swf',
                 multiple: true,
                 queued: true,
+                container: $('zmg_fancyupload'),
                 queueList: 'zmg_fancyupload_queue',
                 instantStart: false,
                 allowDuplicates: true,
@@ -299,8 +301,6 @@ ZMG.Events.Server = new Class({
                     alert('done!' + arguments.length);
                 }
             });
-            
-            $('zmg_fancyupload_clear').onclick = this.Uploader.clearList.bind(this.Uploader, [false]); 
         }
         ZMG.Admin.Events.Client.onmm_setfilterselects();
         this.onactivateview('zmg_view_mm_upload');
@@ -684,6 +684,12 @@ ZMG.Events.Client = new Class({
     },
     ongallerynewclick: function(e) {
         
+    },
+    onmm_upload_startclick: function() {
+        ZMG.Admin.Events.Server.Uploader.upload();
+    },
+    onmm_upload_clearclick: function() {
+        ZMG.Admin.Events.Server.Uploader.clearList(false);
     },
     ongallerysaveclick: function(e) {
         ZMG.Dispatches.saveGallery(FormSerializer.serialize($('zmg_form_edit_gallery')));

@@ -28,7 +28,7 @@ defined('_ZMG_EXEC') or die('Restricted access');
  * @author Ian Eure <ieure@php.net>
  * @author Mike de Boer <mike@zoomfactory.org>
  */
-class MIME_Type {
+class zmgMime {
     /**
      * The MIME media type
      *
@@ -76,7 +76,7 @@ class MIME_Type {
      * @param  string $type MIME type
      * @return void
      */
-    function MIME_Type($type = false) {
+    function zmgMime($type = false) {
         if ($type) {
             $this->parse($type);
         }
@@ -93,10 +93,10 @@ class MIME_Type {
         global $mosConfig_absolute_path;
         $this->media = $this->getMedia($type);
         $this->subType = $this->getSubType($type);
-        if (MIME_Type::hasParameters($type)) {
+        if (zmgMime::hasParameters($type)) {
             zmgimport('org.zoomfactory.lib.mime.zmgMimeParameter');
-            foreach (MIME_Type::getParameters($type) as $param) {
-                $param =  &new MIME_Type_Parameter($param);
+            foreach (zmgMime::getParameters($type) as $param) {
+                $param =  &new zmgMime_Parameter($param);
                 $this->parameters[$param->name] = $param;
             }
         }
@@ -206,8 +206,8 @@ class MIME_Type {
      * @static
      */
     function isExperimental($type) {
-        if (substr(MIME_Type::getMedia($type), 0, 2) == 'x-' ||
-            substr(MIME_Type::getSubType($type), 0, 2) == 'x-') {
+        if (substr(zmgMime::getMedia($type), 0, 2) == 'x-' ||
+            substr(zmgMime::getSubType($type), 0, 2) == 'x-') {
             return true;
         }
         return false;
@@ -223,7 +223,7 @@ class MIME_Type {
      * @static
      */
     function isVendor($type) {
-        if (substr(MIME_Type::getSubType($type), 0, 4) == 'vnd.') {
+        if (substr(zmgMime::getSubType($type), 0, 4) == 'vnd.') {
             return true;
         }
         return false;
@@ -238,7 +238,7 @@ class MIME_Type {
      * @static
      */
     function isWildcard($type) {
-        if ($type == '*/*' || MIME_Type::getSubtype($type) == '*') {
+        if ($type == '*/*' || zmgMime::getSubtype($type) == '*') {
             return true;
         }
         return false;
@@ -249,14 +249,14 @@ class MIME_Type {
      * Perform a wildcard match on a MIME type
      *
      * Example:
-     * MIME_Type::wildcardMatch('image/*', 'image/png')
+     * zmgMime::wildcardMatch('image/*', 'image/png')
      *
      * @param  string  $card Wildcard to check against
      * @param  string  $type MIME type to check
      * @return boolean true if there was a match, false otherwise
      */
     function wildcardMatch($card, $type) {
-        if (!MIME_Type::isWildcard($card)) {
+        if (!zmgMime::isWildcard($card)) {
             return false;
         }
         
@@ -264,7 +264,7 @@ class MIME_Type {
             return true;
         }
         
-        if (MIME_Type::getMedia($card) == MIME_Type::getMedia($type)) {
+        if (zmgMime::getMedia($card) == zmgMime::getMedia($type)) {
             return true;
         }
         return false;
@@ -281,7 +281,7 @@ class MIME_Type {
      */
     function addParameter($name, $value, $comment = false) {
         zmgimport('org.zoomfactory.lib.mime.zmgMimeParameter');
-        $tmp = & new MIME_Type_Parameter;
+        $tmp = & new zmgMime_Parameter;
         $tmp->name = $name;
         $tmp->value = $value;
         $tmp->comment = $comment;
@@ -324,7 +324,7 @@ class MIME_Type {
         } elseif (!empty($custom_mime)) {
             $type = $custom_mime;
         } else {
-            $type = MIME_Type::_fileAutoDetect($file);
+            $type = zmgMime::_fileAutoDetect($file);
         }
         
         // _fileAutoDetect() may have returned an error.
@@ -338,12 +338,12 @@ class MIME_Type {
             if (!empty($custom_mime)) {
                 $type = $custom_mime;
             } elseif (!empty($custom_ext)) {
-                $type = MIME_Helper::convertExtensionToMime($custom_ext);
+                $type = zmgMimeHelper::convertExtensionToMime($custom_ext);
             }
         }
         
-        if (!MIME_Helper::convertMimeToExtension($type)) {
-        	$type = MIME_Helper::convertExtensionToMime($custom_mime);
+        if (!zmgMimeHelper::convertMimeToExtension($type)) {
+        	$type = zmgMimeHelper::convertExtensionToMime($custom_mime);
         }
         
         // flv (Flash Video format) files need exceptional handling (for now I'll provide a fictional mimetype)
@@ -357,8 +357,8 @@ class MIME_Type {
         }
 
         // Strip parameters if present & requested
-        if (MIME_Type::hasParameters($type) && !$params) {
-            $type = MIME_Type::stripParameters($type);
+        if (zmgMime::hasParameters($type) && !$params) {
+            $type = zmgMime::stripParameters($type);
         }
 
         return $type;
@@ -377,11 +377,11 @@ class MIME_Type {
     function _fileAutoDetect($file) {
         // Sanity checks
         if (!file_exists($file)) {
-            return zmgError::throwError("MIME_Type: File \"$file\" doesn't exist");
+            return zmgError::throwError("zmgMime: File \"$file\" doesn't exist");
         }
         
         if (!is_readable($file)) {
-            return zmgError::throwError("MIME_Type: File \"$file\" is not readable");
+            return zmgError::throwError("zmgMime: File \"$file\" is not readable");
         }
 		$output = '';
 		$status = null;

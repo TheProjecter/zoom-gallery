@@ -51,6 +51,26 @@ class zmgFileHelper
         $regex = array('#(\.){2,}#', '#[^A-Za-z0-9\.\_\- ]#', '#^\.#');
         return preg_replace($regex, '', $file);
     }
+    
+    /**
+     * Check if a file is within the filesize limits, set by the administrator.
+     * @return boolean
+     * @param string $file
+     * @access public
+     */
+    function tooBig($file) {
+        if (zmgFileHelper::exists($file)) {
+            $zoom = & zmgFactory::getZoom();
+            $size = intval((filesize($file) / 1024));
+            if ($size <= intval($zoom->getConfig('filesystem/upload/maxfilesize'))) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Copies a file
@@ -313,7 +333,7 @@ class zmgFileHelper
             }
         } else {
             if (is_writeable($baseDir) && move_uploaded_file($src, $dest)) { // Short circuit to prevent file permission errors
-                if (zmgChmod($dest)) {
+                if (zmgChmod($dest, 0777)) {
                     $ret = true;
                 } else {
                     zmgError::throwError(T_('Unable to change file permissions.'));

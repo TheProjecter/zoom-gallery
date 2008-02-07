@@ -36,13 +36,13 @@ class zmgSessionHelper extends zmgError {
     
     function start() {
         if (!$this->hasStarted()) {
-            session_name('session.zmg');
+            //session_name('session.zmg');
 //            if (session_id()) {
 //                session_destroy();
 //            }
 //            @ini_set('session.save_handler', 'files');
 //            session_module_name('files');
-            session_start();
+            @session_start();
             
             $this->_started = true;
         }

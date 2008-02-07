@@ -116,7 +116,6 @@ class zmgViewHelper {
                     break;
                 case stristr($view, "admin:mediaupload:store"):
                     //SWFUpload needs HTTP headers to signal the user...
-                    echo "blabla test!";
                     $method = stristr($view, "jupload") ? "jupload" : "swfupload";
                     $zoom->fireEvents('onupload');
                     //exit;
