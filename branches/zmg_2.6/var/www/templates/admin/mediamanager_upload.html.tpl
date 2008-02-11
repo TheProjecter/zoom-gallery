@@ -18,7 +18,7 @@
         <div class="zmg_halfsize">
             <fieldset>
                 <legend>{t}Select a gallery{/t}</legend>
-                {$zmgAPI->callAbstract('zmgHTML', 'galleriesSelect', 'ZMG.Admin.Events.Client.onmm_gallerychange(this);')}
+                {$zmgAPI->callAbstract('zmgHTML', 'galleriesSelect', 'ZMG.Admin.Events.Client.onMmGalleryChange(this);')}
             </fieldset>
         </div>
     </form>

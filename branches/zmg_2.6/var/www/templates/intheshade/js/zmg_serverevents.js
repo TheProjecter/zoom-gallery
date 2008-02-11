@@ -7,11 +7,11 @@ ZMG.Events.Server = {
         console.log('Server#onview: ', view);
         ZMG.Dispatches.lastRequest = null;
         if (view == "admin:gallerymanager") {
-            this.ongallerymanager(text);
+            this.onGalleryManager(text);
         }
     },
     ongallerylist: function(text, xml) {
-        ZMG.Events.Client.onhideloader();
+        ZMG.Events.Client.onHideLoader();
         
         var o = Json.evaluate(text);
 

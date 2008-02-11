@@ -15,10 +15,10 @@ ZMG.Events.Client = {
     ongalleryclick: function(e) {
         
     },
-    onshowloader: function() {
+    onShowLoader: function() {
         ZMG.cacheElement('zmg_loader').setStyle('display', '');
     },
-    onhideloader: function() {
+    onHideLoader: function() {
         ZMG.cacheElement('zmg_loader').setStyle('display', 'none');
     }
 };

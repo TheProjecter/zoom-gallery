@@ -40,10 +40,19 @@
             <file href="zmg_admin.js"/>
         </resource>
         <resource name="javascript" xml:base="js/">
+            <file href="zmg_shared.js"/>
+        </resource>
+        <resource name="javascript" xml:base="js/">
             <file href="zmg_admin_dispatches.js"/>
         </resource>
         <resource name="javascript" xml:base="js/">
-            <file href="zmg_admin_events.js"/>
+            <file href="zmg_events_client.js"/>
+        </resource>
+        <resource name="javascript" xml:base="js/">
+            <file href="zmg_events_handlers.js"/>
+        </resource>
+        <resource name="javascript" xml:base="js/">
+            <file href="zmg_events_server.js"/>
         </resource>
         <resource name="javascript" xml:base="js/">
             <file href="zmg_toolbar.js"/>

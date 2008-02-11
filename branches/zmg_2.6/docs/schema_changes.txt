@@ -31,6 +31,15 @@
   * renamed '#__zoom_getid3_cache' to '#__zmg_cache_getid3'
   * renamed '#__zoom_priv' to '#__zmg_privs'
   
+  SQL:
+    RENAME TABLE `jos_zoom` TO `jos_zmg_galleries`;
+    RENAME TABLE `jos_zoomfiles` TO `jos_zmg_media`;
+    RENAME TABLE `jos_zoom_comments` TO `jos_zmg_comments`;
+    RENAME TABLE `jos_zoom_ecards` TO `jos_zmg_ecards`;
+    RENAME TABLE `jos_zoom_editmon` TO `jos_zmg_editmon`;
+    RENAME TABLE `jos_zoom_getid3_cache` TO `jos_zmg_cache_getid3`;
+    RENAME TABLE `jos_zoom_priv` TO `jos_zmg_privs`;
+  
   ======= table structure changes =======
   '#__zmg_galleries':
     * renamed 'catid' field to 'gid'
@@ -91,7 +100,7 @@
       ALTER TABLE `jos_zmg_comments` CHANGE `cmtid` `cid` INT( 11 ) NOT NULL AUTO_INCREMENT ,
       CHANGE `imgid` `mid` INT( 11 ) NOT NULL DEFAULT '0',
       CHANGE `cmtname` `name` VARCHAR( 40 ) NOT NULL ,
-      CHANGE `cmtcontent` `content` TEXT CHARACTER SET NOT NULL ,
+      CHANGE `cmtcontent` `content` TEXT NOT NULL ,
       CHANGE `cmtdate` `date_added` TIMESTAMP NOT NULL DEFAULT NOW();
     
   '#__zmg_ecards':

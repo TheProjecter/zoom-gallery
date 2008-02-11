@@ -6,12 +6,12 @@
             {literal}
             'mediumedit',
             {
-                'id': 'mediumback',
+                'id': 'mediumBack',
                 'title': {/literal}{t escape='json'}Back{/t}{literal},
                 'disabled': false
             },
             {
-                'id': 'mediumsave',
+                'id': 'mediumSave',
                 'title': {/literal}{t escape='json'}Save{/t}{literal},
                 'disabled': false
             }
@@ -20,7 +20,7 @@
             {literal}
             'zmg_view_mm',
             {
-                'id': 'mm_upload',
+                'id': 'mmUpload',
                 'title': {/literal}{t escape='json'}Upload{/t}{literal},
                 'disabled': false
             }
@@ -29,12 +29,12 @@
             {literal}
             'zmg_view_mm_upload',
             {
-                'id': 'mm_upload_start',
+                'id': 'mmUploadStart',
                 'title': {/literal}{t escape='json'}Start Upload{/t}{literal},
                 'disabled': false
             },
             {
-                'id': 'mm_upload_clear',
+                'id': 'mmUploadClear',
                 'title': {/literal}{t escape='json'}Clear Completed{/t}{literal},
                 'disabled': false
             }
@@ -43,17 +43,17 @@
             {literal}
             'zmg_view_gm',
             {
-                'id': 'gallerynew',
+                'id': 'galleryNew',
                 'title': {/literal}{t escape='json'}New{/t}{literal},
                 'disabled': false
             },
             {
-                'id': 'gallerysave',
+                'id': 'gallerySave',
                 'title': {/literal}{t escape='json'}Save{/t}{literal},
                 'disabled': true
             },
             {
-                'id': 'gallerydelete',
+                'id': 'galleryDelete',
                 'title': {/literal}{t escape='json'}Delete{/t}{literal},
                 'disabled': true
             }
@@ -62,7 +62,7 @@
             {literal}
             'zmg_view_settings',
             {
-                'id': 'settingssave',
+                'id': 'settingsSave',
                 'title': {/literal}{t escape='json'}Save{/t}{literal},
                 'disabled': false
             }

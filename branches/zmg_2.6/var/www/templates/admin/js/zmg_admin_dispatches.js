@@ -2,16 +2,13 @@ if (!window.ZMG) window.ZMG = {};
 
 ZMG.Dispatches = {
     stdDispatch:  function(options) {
-        var server = ZMG.Admin.Events.Server;
-        var client = ZMG.Admin.Events.Client;
-        var f = function() {
+        ZMG.ClientEvents.onShowLoader();
+        window.setTimeout(function() {
             new XHR({
-                onSuccess: options.onSuccess || server.ondispatchresult.bind(ZMG.Admin.Events),
-                onFailure: options.onFailure || server.onerror.bind(ZMG.Admin.Events)
+                onSuccess: options.onSuccess || ZMG.ServerEvents.onDispatchResult,
+                onFailure: options.onFailure || ZMG.ServerEvents.onError
             }).send(options.url, options.data || '');
-        };
-        client.onshowloader();
-        window.setTimeout(f.bind(this), 20); // allowing a small delay for the browser to draw the loader-icon.
+        }, 20); // allowing a small delay for the browser to draw the loader-icon.
     },
     saveSettings: function(sData) {
         return this.stdDispatch({
