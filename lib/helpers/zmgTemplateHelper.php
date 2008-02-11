@@ -94,7 +94,7 @@ class zmgTemplateHelper extends Smarty {
         if (!$name) {
             return $this->throwError('No name specified for constant');
         }
-        if (!$value) {
+        if ($value === null) {
             return $this->throwError('No value specified for constant ' . $name);
         }
         $this->_constants[trim($name)] = is_string($value) ? trim($value) : intval($value);

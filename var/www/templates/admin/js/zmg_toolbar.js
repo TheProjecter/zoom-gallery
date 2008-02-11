@@ -38,8 +38,8 @@ ZMG.Toolbar = new Class({
             
             var anchor = node.getElement('a'); 
             anchor.href      = "javascript:void(0);";
-            anchor.onclick   = ZMG.Admin.Events.Client['on' + button.id + 'click']
-              .bindWithEvent(ZMG.Admin.Events.Client);
+            anchor.onclick   = ZMG.EventHandlers[String('on-' + button.id + 'Click').camelCase()]
+              .bindWithEvent(ZMG.ClientEvents);
             anchor.innerHTML = ['<span class="zmg_tb_icon zmg_tb_icon_', button.id, '" title="',
               button.title, '"></span>', button.title].join('');
             node.obj = button;

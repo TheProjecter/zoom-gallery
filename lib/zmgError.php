@@ -247,6 +247,7 @@ function zmgErrorCallback($error) {
         $zoom->messages->append($error['message'], $error['backtrace']);
         return;
     }
+    zmgBacktrace();
     trigger_error($error['message'], $error['level']);
 }
 ?>

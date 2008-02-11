@@ -9,11 +9,11 @@ ZMG.Dispatches = {
         var client = ZMG.Events.Client;
         var f = function() {
             new XHR({
-                onSuccess: options.onSuccess || server.ondispatchresult.bind(server),
+                onSuccess: options.onSuccess || server.onDispatchResult.bind(server),
                 onFailure: options.onFailure || server.onerror.bind(server)
             }).send(options.url, options.data || '');
         };
-        client.onshowloader();
+        client.onShowLoader();
         window.setTimeout(f.bind(this), 20); // allowing a small delay for the browser to draw the loader-icon.
     },
     getGalleries: function(pos, parentGid) {
@@ -44,8 +44,8 @@ ZMG.Dispatches = {
                 ajaxOptions: {
                     method: 'get'
                 },
-                onSuccess: server.onview.bind(server),
-                onFailure: server.onerror.bind(server),
+                onSuccess: server.onView.bind(server),
+                onFailure: server.onError.bind(server),
             });
         } else {
             //prevent duplicate requests:
@@ -59,7 +59,7 @@ ZMG.Dispatches = {
             var f = function() {
                 self.requestQueue.request(vars || '');
             };
-            client.onshowloader();
+            client.onShowLoader();
             // allowing a small delay for the browser to draw the loader-icon.
             window.setTimeout(f.bind(this), 20);
         }

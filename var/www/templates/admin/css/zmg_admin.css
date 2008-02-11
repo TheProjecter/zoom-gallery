@@ -82,35 +82,35 @@
     background-position: 0px -32px;
 }
 
-.zmg_tb_icon_mm_upload
+.zmg_tb_icon_mmUpload
 {
     background-image: url(../images/toolbar/icon-32-upload.png)
 }
 
-.zmg_tb_icon_mm_upload_clear
+.zmg_tb_icon_mmUploadClear
 {
     background-image: url(../images/toolbar/icon-32-cancel.png)
 }
 
-.zmg_tb_icon_mediumback
+.zmg_tb_icon_mediumBack
 {
     background-image: url(../images/toolbar/icon-32-back.png)
 }
 
-.zmg_tb_icon_mediumsave,
-.zmg_tb_icon_gallerysave,
-.zmg_tb_icon_settingssave
+.zmg_tb_icon_mediumSave,
+.zmg_tb_icon_gallerySave,
+.zmg_tb_icon_settingsSave
 {
     background-image: url(../images/toolbar/icon-32-save.png)
 }
 
-.zmg_tb_icon_gallerynew,
-.zmg_tb_icon_mm_upload_start
+.zmg_tb_icon_galleryNew,
+.zmg_tb_icon_mmUploadStart
 {
     background-image: url(../images/toolbar/icon-32-new.png)
 }
 
-.zmg_tb_icon_gallerydelete
+.zmg_tb_icon_galleryDelete
 {
     background-image: url(../images/toolbar/icon-32-trash.png)
 }
