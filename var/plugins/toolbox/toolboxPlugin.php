@@ -68,8 +68,8 @@ class zmgToolboxPlugin extends zmgError {
         }
     }
     
-    function upload($args) {
-        return zmgUploadTool::upload($args);
+    function upload($method) {
+        return zmgUploadTool::upload($method);
     }
     
     function autoDetect($selection = 'all') {

@@ -22,5 +22,5 @@ $zoom->view->set();
 
 $zoom->view->run();
 
-$zoom->fireEvents('onfinish');
+$zoom->fireEvent('onfinish');
 ?>
