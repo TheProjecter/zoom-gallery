@@ -73,6 +73,8 @@ zmgimport('org.zoomfactory.lib.smarty.Smarty');
 
 //initialize the zoom (app) class
 zmgimport('org.zoomfactory.lib.Zoom');
+//we need the events now
+zmgimport('org.zoomfactory.lib.core.zmgEvent');
 //require_once(ZMG_ABS_PATH . DS.'lib'.DS.'Zoom.php');
 $zoom = & zmgFactory::getZoom();
 
@@ -80,7 +82,7 @@ if (!class_exists('InputFilter')) {
     zmgimport('org.zoomfactory.lib.phpinputfilter.inputfilter');
 }
 
-$zoom->fireEvents('onstartup');
+$zoom->fireEvent('onstartup', false, 'doing');
 
 $zoom->hasAccess() or die('Restricted access');
 
@@ -105,9 +107,9 @@ T_bindtextdomain($domain, ZMG_ABS_PATH . '/locale');
 T_bind_textdomain_codeset($domain, $zoom->getConfig('locale/encoding'));
 T_textdomain($domain);
 
-$zoom->fireEvents('oncontentstart');
+$zoom->fireEvent('oncontentstart');
 
-$zoom->fireEvents('oncontent');
+$zoom->fireEvent('oncontent');
 
 /**
  * Call an abstract/ static function that resides within a static class.
@@ -119,7 +121,10 @@ $zoom->fireEvents('oncontent');
  */
 function zmgCallAbstract($klass, $func, $args = null) {
     if (is_callable(array($klass, $func))) {
-        return call_user_func(array($klass, $func), $args);
+        if (!is_array($args)) {
+        	$args = array($args);
+        }
+        return call_user_func_array(array($klass, $func), $args);
     }
     return null;
 }

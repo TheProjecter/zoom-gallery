@@ -65,13 +65,17 @@ class zmgPluginHelper extends zmgError {
     }
     
     function bubbleEvent($event) {
-        if (is_array($this->_events[$event])) {
-            foreach ($this->_events[$event] as $klass => $functions) {
+        if (is_array($this->_events[$event->type])) {
+            $event_args = $event->getArguments();
+            foreach ($this->_events[$event->type] as $klass => $functions) {
                 if (is_string($functions)) {
-                    zmgCallAbstract($klass, $functions);
+                    zmgCallAbstract($klass, $functions, $event_args);
                 } else if (is_array($functions)) {
                     foreach ($functions as $function => $args) {
-                        zmgCallAbstract($klass, $function, $args);
+                        if (!is_array($args)) {
+                            $args = array($args);
+                        }
+                        zmgCallAbstract($klass, $function, array_merge($event_args, $args));
                     }
                 }
             }

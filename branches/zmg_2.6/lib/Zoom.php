@@ -388,7 +388,10 @@ class Zoom extends zmgError {
      * @param string The name of the event that is fired
      * @param bool The event may or may not bubble down
      */
-    function fireEvents($event, $nobubble = false) {
+    function fireEvent($type, $nobubble = false) {
+        $event = new zmgEvent($type);
+        $args = func_get_args();
+        $event->pass(array_splice($args, 2, count($args)));
         /*if (!empty($this->events[$event])) {
             foreach ($this->events[$event] as $cmp) {
                 zmgimport('org.zoomfactory.var.events.'.$event.'.'.$cmp.'.'.$cmp);
