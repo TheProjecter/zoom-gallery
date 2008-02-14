@@ -13,6 +13,12 @@ defined('_ZMG_EXEC') or die('Restricted access');
 
 if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
 
+//define datatype shorthands as well
+define('ZMG_DATATYPE_STRING', 0x0001);
+define('ZMG_DATATYPE_NUMBER', 0x0002);
+define('ZMG_DATATYPE_ARRAY',  0x0004);
+define('ZMG_DATATYPE_OBJECT', 0x0008);
+
 /**
  * Loads a class from specified directories.
  *

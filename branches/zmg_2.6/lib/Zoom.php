@@ -119,7 +119,8 @@ class Zoom extends zmgError {
           $this->getConfig('app/secret'));
         $this->messages = new zmgMessageCenter();
         $this->plugins  = new zmgPluginHelper();
-        $this->session  = new zmgSessionHelper();
+        
+        zmgSessionHelper::init();
 
         $this->loadEvents(); //TODO: use cached events list
 	}
