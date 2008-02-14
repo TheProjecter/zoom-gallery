@@ -24,7 +24,6 @@ class zmgUploadTool {
         } else {
             $file = zmgGetParam($_FILES, 'Filedata');
             
-            print_r($file);
             $filename = $zoom->checkDuplicate(zmgFileHelper::makeSafe(urldecode($file['name'])));
             $ext      = zmgFileHelper::getExt($filename);
             $mime     = zmgMimeHelper::getMime($file['tmp_name'], $file['type'], $ext);
@@ -40,7 +39,7 @@ class zmgUploadTool {
             }
             
             //try to move the file to a proper location:
-            $dest = "";
+            $dest = ZMG_ABS_PATH . DS."etc".DS."cache".DS.$filename;
             if (zmgFileHelper::exists($dest)) {
                 header('HTTP/1.0 409 Conflict');
                 die('Error. File already exists');
@@ -50,6 +49,10 @@ class zmgUploadTool {
                 header('HTTP/1.0 400 Bad Request');
                 die('Error. Unable to upload file');
             }
+            
+            // store the filename into the session (the data is sent to the backend
+            // after the file has been uploaded).
+            zmgSessionHelper::update('uploadtool.fancyfiles', $filename, ZMG_DATATYPE_ARRAY);
         }
     }
     function autoDetect() {
