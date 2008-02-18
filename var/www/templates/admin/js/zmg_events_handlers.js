@@ -34,7 +34,7 @@ ZMG.EventHandlers = {
     },
     
     onGalleryNewClick: function(e) {
-        
+        ZMG.ClientEvents.onViewSelect('admin:gallerymanager:get:new');
     },
     
     onMmUploadStartClick: function() {

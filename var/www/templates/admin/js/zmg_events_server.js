@@ -111,16 +111,24 @@ ZMG.ServerEvents = (function() {
             var oForm = ZMG.Shared.cacheElement('zmg_form_edit_gallery');
             oForm.reset();
             
-            oForm.elements['zmg_edit_gallery_gid'].value = data.gid;
+            oForm.elements['zmg_edit_gallery_gid'].value = data.gid || 'new';
             //ZMG.Shared.cacheElement('zmg_edit_medium_thumbnail').src = data.url;
             oForm.elements['zmg_edit_gallery_name'].value = data.name;
             oForm.elements['zmg_edit_gallery_dir'].value = data.dir;
             oForm.elements['zmg_edit_gallery_keywords'].value = data.keywords;
             //ZMG.Shared.cacheElement('zmg_edit_gallery_gimg');
             //ZMG.Shared.cacheElement('zmg_edit_gallery_pimg');
+            var oHideNM = ZMG.Shared.cacheElement('zmg_edit_gallery_hidenm');
+            oHideNM.checked = (data.hide_msg);
+            FancyForm[(oHideNM.checked ? 'select' : 'deselect')](oHideNM.parentNode);
+            
             var oPublish = ZMG.Shared.cacheElement('zmg_edit_gallery_published');
             oPublish.checked = (data.published);
             FancyForm[(oPublish.checked ? 'select' : 'deselect')](oPublish.parentNode);
+            
+            var oShared = ZMG.Shared.cacheElement('zmg_edit_gallery_shared');
+            oShared.checked = (data.shared);
+            FancyForm[(oShared.checked ? 'select' : 'deselect')](oShared.parentNode);
             
             oForm.elements['zmg_edit_gallery_descr'].value = data.descr;
         }
