@@ -152,6 +152,13 @@ class zmgGallery extends zmgTable {
         return "";
     }
     
+    /**
+     * Generate a random directory-name for a new gallery.
+     * 
+     * @return string
+     * @access public
+     * @static
+     */
     function generateDir() {
     	$newdir = "";
         srand((double) microtime() * 1000000);
