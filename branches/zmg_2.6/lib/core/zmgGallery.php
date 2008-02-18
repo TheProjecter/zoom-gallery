@@ -44,6 +44,11 @@ class zmgGallery extends zmgTable {
      */
     var $cover_img = null;
     /**
+     * @var zmgImage
+     * @access private
+     */
+    var $_obj_cover_img = null;
+    /**
      * @var string
      * @access public
      */
@@ -113,12 +118,77 @@ class zmgGallery extends zmgTable {
         $this->zmgTable('#__zmg_galleries', 'gid', $db);
     }
     
+    function getCoverImage() {
+        if (empty($this->gid)) {
+        	return zmgError::throwError('zmgGallery: gallery data not loaded yet!');
+        }
+        
+        if (is_object($this->_obj_cover_img)) {
+        	return $this->_obj_cover_img->getRelPath();
+        }
+        
+        $db = & zmgDatabase::getDBO();
+        if ($this->cover_img == null) {
+        	// first, check if the gallery contains any media at all:
+            $zoom = & zmgFactory::getZoom();
+            $database->setQuery("SELECT mid FROM #__zmg_media WHERE gid = " . $this->gid
+              . " ORDER BY " . $zoom->getMediaOrdering() . " LIMIT 1");
+            $medium = intval($database->loadResult());
+            if ($medium > 0) {
+            	// get the first available medium
+                $this->_obj_cover_img = new zmgMedium($db);
+                $this->_obj_cover_img->load($medium);
+    
+                return $this->_obj_cover_img->getRelPath();
+            }
+        } else {
+        	$this->_obj_cover_img = new zmgMedium($db);
+            $this->_obj_cover_img->load($this->cover_img);
+
+            return $this->_obj_cover_img->getRelPath();
+        }
+        
+        //TODO: display an 'empty gallery' image...or let the client handle this?
+        return "";
+    }
+    
+    function generateDir() {
+    	$newdir = "";
+        srand((double) microtime() * 1000000);
+        for ($acc = 1; $acc <= 6; $acc++){
+            $newdir .= chr(rand (0,25) + 65);
+        }
+        //TODO: get CMS absolute path to root
+        $zoom = & zmgFactory::getZoom();
+        $path = ABS_PATH . DS . $zoom->getConfig('filesystem/mediapath') . $newdir;
+        if (is_dir($path)) {
+        	return zmgGallery::generateDir();
+        }
+        return $newdir;
+    }
+    
+    function getEmpty($ret_type = 'json') {
+    	if ($ret_type == "json") {
+            $json = new zmgJSON();
+            return ("'gallery': {
+                'name'     : 'New',
+                'descr'    : 'New',
+                'dir'      : ".$json->encode(zmgGallery::generateDir()).",
+                'keywords' : '',
+                'hide_msg' : false,
+                'published': true,
+                'shared'   : true
+            }");
+        }
+    }
+    
     function toJSON() {
         $json = new zmgJSON();
         return ("'gallery': {
             'gid'      : $this->gid,
             'name'     : ".$json->encode($this->name).",
             'descr'    : ".$json->encode($this->descr).",
+            'cover_img': ".$json->encode($this->getCoverImage()).",
             'dir'      : ".$json->encode($this->dir).",
             'keywords' : ".$json->encode($this->keywords).",
             'sub_gid'  : $this->sub_gid,

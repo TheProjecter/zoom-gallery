@@ -161,10 +161,12 @@ ZMG.ClientEvents = (function() {
         if (!view) return;
         var oToolbar = ZMG.Shared.get('toolbar');
         if (!oToolbar) return;
-        
-        if (view == "admin:gallerymanager") {
+
+        if (view === "admin:gallerymanager") {
             oToolbar.disable('zmg_view_gm', ['gallerysave', 'gallerydelete']);
-        } else if (view.indexOf('admin:gallerymanager:get:') > -1) {
+        } else if (view.indexOf('admin:gallerymanager:get:new') > -1) {
+            oToolbar.enable('zmg_view_gm', ['gallerysave']);
+        }  else if (view.indexOf('admin:gallerymanager:get:') > -1) {
             oToolbar.enable('zmg_view_gm', ['gallerysave', 'gallerydelete']);
         }
     }

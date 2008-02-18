@@ -325,15 +325,20 @@ class Zoom extends zmgError {
         return $ret;
     }
     function getGallery($gid, $ret_type = 'object') {
-        $gid = intval($gid);
-        $gallery = new zmgGallery(zmgDatabase::getDBO());
-        $gallery->load($gid);
-        if ($ret_type == "json") {
-            return $gallery->toJSON();
-        } else if ($ret_type == "xml") {
-            return $gallery->toXML();
+        if ($gid === "new") {
+        	return zmgGallery::getEmpty($ret_type);
+        } else {
+        	$gid = intval($gid);
+            $gallery = new zmgGallery(zmgDatabase::getDBO());
+            $gallery->load($gid);
+            if ($ret_type == "json") {
+                return $gallery->toJSON();
+            } else if ($ret_type == "xml") {
+                return $gallery->toXML();
+            }
+            return $gallery;
         }
-        return $gallery;
+        return null;
     }
     function getMedium($mid, $ret_type = 'object') {
         $mid = intval($mid);
