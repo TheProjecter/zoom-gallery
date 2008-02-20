@@ -77,7 +77,15 @@ class zmgViewHelper {
                     $zoom->setResult($zoom->getMediumCount($filter));
                     break;
                 case "admin:galleryedit:store":
-                    $gid     = intval(zmgGetParam($_REQUEST, 'zmg_edit_gallery_gid', 0));
+                    $gid     = zmgGetParam($_REQUEST, 'zmg_edit_gallery_gid', 0);
+                    
+                    $isNew = false;
+                    if ($gid === "new") {
+                    	$isNew = true;
+                        $gid = 0;
+                    }
+                    
+                    $gid     = intval($gid);
                     
                     $gallery = new zmgGallery(zmgDatabase::getDBO());
                     
@@ -89,6 +97,9 @@ class zmgViewHelper {
                       'shared'    => intval(zmgGetParam($_REQUEST, 'zmg_edit_gallery_shared', $gallery->shared)),
                       'published' => intval(zmgGetParam($_REQUEST, 'zmg_edit_gallery_published', $gallery->published))
                     );
+                    if ($isNew) {
+                    	$data['dir'] = zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_edit_gallery_dir', ''));
+                    }
                     
                     $res = true;
 
@@ -98,13 +109,16 @@ class zmgViewHelper {
                         }
                     }
                     
-                    if ($res && $gid > 0) {
+                    if (($res && $gid > 0) || $isNew) {
                         if (!$gallery->bind($data)) {
                             $zoom->messages->append(T_('Gallery could not be saved') . ': ' . $gallery->getError());
                         } else {
                             if (!$gallery->store()) {
                                 $zoom->messages->append(T_('Gallery could not be saved') . ': ' . $gallery->getError());
                             } else {
+                                if ($isNew) {
+                                	$gallery->buildDirStructure();
+                                }
                                 $zoom->messages->append(T_('Gallery saved successfully!'));
                             }
                         }

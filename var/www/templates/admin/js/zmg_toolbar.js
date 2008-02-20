@@ -52,6 +52,8 @@ ZMG.Toolbar = new Class({
             
             self.buttonSource.getParent().appendChild(node);
             
+            node.obj = button;
+            
             self.cache[name].nodes.push(node);
         });
     },

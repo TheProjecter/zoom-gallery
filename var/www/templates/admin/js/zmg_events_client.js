@@ -163,11 +163,11 @@ ZMG.ClientEvents = (function() {
         if (!oToolbar) return;
 
         if (view === "admin:gallerymanager") {
-            oToolbar.disable('zmg_view_gm', ['gallerysave', 'gallerydelete']);
+            oToolbar.disable('zmg_view_gm', ['gallerySave', 'galleryDelete']);
         } else if (view.indexOf('admin:gallerymanager:get:new') > -1) {
-            oToolbar.enable('zmg_view_gm', ['gallerysave']);
+            oToolbar.enable('zmg_view_gm', ['gallerySave']);
         }  else if (view.indexOf('admin:gallerymanager:get:') > -1) {
-            oToolbar.enable('zmg_view_gm', ['gallerysave', 'gallerydelete']);
+            oToolbar.enable('zmg_view_gm', ['gallerySave', 'galleryDelete']);
         }
     }
     
@@ -288,6 +288,7 @@ ZMG.ClientEvents = (function() {
     };
     
     return {
+        onShowLoader: onShowLoader,
         onHideLoader: onHideLoader,
         onLiveGridBodySlide: onLiveGridBodySlide,
         onLiveGridPager: onLiveGridPager,
