@@ -53,6 +53,28 @@ class zmgFileHelper
     }
     
     /**
+     * Function to strip additional / or \ in a path name
+     *
+     * @static
+     * @param   string  $path   The path to clean
+     * @param   string  $ds     Directory separator (optional)
+     * @return  string  The cleaned path
+     * @since   1.5
+     */
+    function cleanPath($path, $ds=DS) {
+        $path = trim($path);
+
+        if (empty($path)) {
+            $path = zmgEnv::getRootPath();
+        } else {
+            // Remove double slashes and backslahses and convert all slashes and backslashes to DS
+            $path = preg_replace('#[/\\\\]+#', $ds, $path);
+        }
+
+        return $path;
+    }
+    
+    /**
      * Check if a file is within the filesize limits, set by the administrator.
      * @return boolean
      * @param string $file
@@ -109,7 +131,7 @@ class zmgFileHelper
             }
 
             //Translate the destination path for the FTP account
-            $dest = zmgPathName(str_replace(JPATH_ROOT, $FTPOptions['root'], $dest), '/');
+            $dest = zmgPathName(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $dest), '/');
             if (!$ftp->store($src, $dest)) {
                 // FTP connector throws an error
                 return false;
@@ -161,7 +183,7 @@ class zmgFileHelper
             if (@unlink($file)) {
                 // Do nothing
             } elseif ($FTPOptions['enabled'] == 1) {
-                $file = zmgPathName(str_replace(JPATH_ROOT, $FTPOptions['root'], $file), '/');
+                $file = zmgPathName(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $file), '/');
                 if (!$ftp->delete($file)) {
                     // FTP connector throws an error
                     return false;
@@ -196,7 +218,7 @@ class zmgFileHelper
 
         //Check src path
         if (!is_readable($src) && !is_writable($src)) {
-            return JText::_('Cannot find source file');
+            return T_('Cannot find source file');
         }
 
         if (false) {//$FTPOptions['enabled'] == 1) {
@@ -276,7 +298,7 @@ class zmgFileHelper
 
         // If the destination directory doesn't exist we need to create it
         if (!file_exists(dirname($file))) {
-            JFolder::create(dirname($file));
+            zmgFileHelper::createDir(dirname($file));
         }
 
         if (false) {//$FTPOptions['enabled'] == 1) {
@@ -285,7 +307,7 @@ class zmgFileHelper
             $ftp = & JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
 
             // Translate path for the FTP account and use FTP write buffer to file
-            $file = zmgPathName(str_replace(JPATH_ROOT, $FTPOptions['root'], $file), '/');
+            $file = zmgPathName(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $file), '/');
             $ret = $ftp->write($file, $buffer);
         } else {
             $file = zmgPathName($file);
@@ -313,7 +335,7 @@ class zmgFileHelper
         // Create the destination directory if it does not exist
         $baseDir = dirname($dest);
         if (!file_exists($baseDir)) {
-            JFolder::create($baseDir);
+            zmgFileHelper::createDir($baseDir);
         }
 
         if (false) {//$FTPOptions['enabled'] == 1) {
@@ -322,7 +344,7 @@ class zmgFileHelper
             $ftp = & JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
 
             //Translate path for the FTP account
-            $dest = zmgPathName(str_replace(JPATH_ROOT, $FTPOptions['root'], $dest), '/');
+            $dest = zmgPathName(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $dest), '/');
 
             // Copy the file to the destination directory
             if ($ftp->store($src, $dest)) {
@@ -365,6 +387,108 @@ class zmgFileHelper
     function getName($file) {
         $slash = strrpos($file, DS) + 1;
         return substr($file, $slash);
+    }
+    
+    /**
+     * Create a folder -- and all necessary parent folders
+     *
+     * @param string $path A path to create from the base path
+     * @param int $mode Directory permissions to set for folders created
+     * @return boolean True if successful
+     * @since 1.5
+     */
+    function createDir($path = '', $mode = 0755)
+    {
+        // Initialize variables
+        //jimport('joomla.client.helper');
+        //$FTPOptions = JClientHelper::getCredentials('ftp');
+        static $nested = 0;
+
+        // Check to make sure the path valid and clean
+        $path = zmgPathName($path);
+
+        // Check if parent dir exists
+        $parent = dirname($path);
+        if (!is_dir($parent)) {
+            // Prevent infinite loops!
+            $nested++;
+            if (($nested > 20) || ($parent == $path)) {
+                zmgError::throwError(T_('Infinite loop detected'));
+                $nested--;
+                return false;
+            }
+
+            // Create the parent directory
+            if (zmgFileHelper::createDir($parent, $mode) !== true) {
+                // zmgFileHelper::createDir throws an error
+                $nested--;
+                return false;
+            }
+
+            // OK, parent directory has been created
+            $nested--;
+        }
+
+        // Check if dir already exists
+        if (is_dir($path)) {
+            return true;
+        }
+
+        // Check for safe mode NOT SUPPORTED BY ZMG (yet)
+        if (false) {//''$FTPOptions['enabled'] == 1) {
+            // Connect the FTP client
+            jimport('joomla.client.ftp');
+            $ftp = & JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
+
+            // Translate path to FTP path
+            $path = zmgPathName(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $path), '/');
+            $ret = $ftp->mkdir($path);
+            $ftp->chmod($path, $mode);
+        } else {
+            // We need to get and explode the open_basedir paths
+            $obd = ini_get('open_basedir');
+
+            // If open_basedir is set we need to get the open_basedir that the path is in
+            if ($obd != null)
+            {
+                if (ZMG_ISWIN) {
+                    $obdSeparator = ";";
+                } else {
+                    $obdSeparator = ":";
+                }
+                // Create the array of open_basedir paths
+                $obdArray = explode($obdSeparator, $obd);
+                $inOBD = false;
+                // Iterate through open_basedir paths looking for a match
+                foreach ($obdArray as $test) {
+                    $test = zmgPathName($test);
+                    if (strpos($path, $test) === 0) {
+                        $obdpath = $test;
+                        $inOBD = true;
+                        break;
+                    }
+                }
+                if ($inOBD == false) {
+                    // Return false for zmgFileHelper::createDir because the path to be created is not in open_basedir
+                    zmgError::throwError(T_('Path not in open_basedir paths'));
+                    return false;
+                }
+            }
+
+            // First set umask
+            $origmask = @ umask(0);
+
+            // Create the path
+            if (!$ret = @mkdir($path, $mode)) {
+                @ umask($origmask);
+                zmgError::throwError(T_('Could not create directory'));
+                return false;
+            }
+
+            // Reset umask
+            @ umask($origmask);
+        }
+        return $ret;
     }
 }
 ?>

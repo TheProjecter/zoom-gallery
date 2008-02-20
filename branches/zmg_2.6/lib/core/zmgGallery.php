@@ -165,13 +165,39 @@ class zmgGallery extends zmgTable {
         for ($acc = 1; $acc <= 6; $acc++){
             $newdir .= chr(rand (0,25) + 65);
         }
-        //TODO: get CMS absolute path to root
         $zoom = & zmgFactory::getZoom();
-        $path = ABS_PATH . DS . $zoom->getConfig('filesystem/mediapath') . $newdir;
+        $path = zmgEnv::getRootPath() .DS.$zoom->getConfig('filesystem/mediapath') . $newdir;
         if (is_dir($path)) {
         	return zmgGallery::generateDir();
         }
         return $newdir;
+    }
+    
+    function buildDirStructure() {
+    	zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
+        
+        $html_file = "<html><body bgcolor=\"#FFFFFF\"></body></html>";
+        
+        $root = zmgEnv::getRootPath();
+        $zoom = & zmgFactory::getZoom();
+        $mediapath = $root .DS.$zoom->getConfig('filesystem/mediapath');
+        $dirs = array(
+          $mediapath . $this->dir,
+          $mediapath . $this->dir .DS.'thumbs',
+          $mediapath . $this->dir .DS.'viewsize'
+        );
+        
+        foreach ($dirs as $dir) {
+        	if (zmgFileHelper::createDir($dir, 0777)) {
+        		if (!zmgFileHelper::write($dir.DS.'index.html', $html_file)) {
+        			zmgError::throwError(T_('Unable to write to file: ') . $dir.DS.'index.html');
+        		}
+        	} else {
+        		zmgError::throwError(T_('Unable to create directory: ') . $dir);
+        	}
+        }
+        
+        return true;
     }
     
     function getEmpty($ret_type = 'json') {

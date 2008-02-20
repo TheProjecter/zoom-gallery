@@ -42,6 +42,11 @@ class zmgEnv extends zmgError {
         return $mosConfig_live_site;
     }
     
+    function getRootPath() {
+    	global $mosConfig_absolute_path;
+        return $mosConfig_absolute_path;
+    }
+    
     function getViewType() {
         $forcetype = trim(zmgGetParam($_GET, 'forcetype', ''));
         if (zmgEnv::isRPC() && $forcetype != "html") {

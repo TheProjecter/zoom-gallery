@@ -41,6 +41,10 @@ class zmgEnv extends zmgError {
         return substr_replace(JURI::root(), '', -1, 1);
     }
     
+    function getRootPath() {
+    	return JPATH_ROOT;
+    }
+    
     function getViewType() {
         $forcetype = trim(zmgGetParam($_GET, 'forcetype', ''));
         if (zmgEnv::isRPC() && $forcetype != "html") {

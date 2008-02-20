@@ -65,7 +65,7 @@
       CHANGE `subcat_id` `sub_gid` INT( 11 ) NOT NULL DEFAULT '0',
       CHANGE `hideMsg` `hide_msg` TINYINT( 1 ) NOT NULL DEFAULT '0',
       CHANGE `catmembers` `members` VARCHAR( 240 ) NOT NULL,
-      CHANGE `custom_order` `ordering` INT( 20 ) NULL DEFAULT NULL; 
+      CHANGE `custom_order` `ordering` INT( 20 ) NOT NULL DEFAULT '0'; 
   
   '#__zmg_media':
     * renamed 'imgid' field to 'mid'
