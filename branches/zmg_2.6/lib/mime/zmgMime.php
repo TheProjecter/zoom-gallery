@@ -332,7 +332,7 @@ class zmgMime {
             return $type;
         }
 
-        zmgimport('org.zoomfactory.lib.mime.zmgMimeHelper.php');
+        zmgimport('org.zoomfactory.lib.mime.zmgMimeHelper');
         
         if ($type == "application/octet-stream" || $type == "application/unknown") {
             if (!empty($custom_mime)) {

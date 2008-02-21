@@ -390,7 +390,7 @@ function zmgChmodRecursive($path, $filemode = "0644", $dirmode = "0777")
  * @return TRUE=all succeeded FALSE=one or more chmods failed
  */
 function zmgChmod($path) {
-    global $zoom;
+    $zoom = & zmgFactory::getZoom();
     $fileperms = $zoom->getConfig('filesystem/fileperms');
     $dirperms  = $zoom->getConfig('filesystem/dirperms');
     if (isset($filemode) || isset($dirmode))

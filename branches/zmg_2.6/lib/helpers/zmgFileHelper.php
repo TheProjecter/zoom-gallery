@@ -85,9 +85,9 @@ class zmgFileHelper
             $zoom = & zmgFactory::getZoom();
             $size = intval((filesize($file) / 1024));
             if ($size <= intval($zoom->getConfig('filesystem/upload/maxfilesize'))) {
-                return true;
-            } else {
                 return false;
+            } else {
+                return true;
             }
         } else {
             return false;
