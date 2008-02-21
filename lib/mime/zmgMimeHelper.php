@@ -312,7 +312,7 @@ class zmgMimeHelper {
      * @param string $tag
      * @param int $isMime
      */
-    function acceptableFormat($tag, $isMime = true) {
+    function acceptableFormat($tag, $isMime = false) {
         if ($isMime) {
             $tag = zmgMimeHelper::convertMimeToExtension($tag);
         }
@@ -426,7 +426,7 @@ class zmgMimeHelper {
      * @param string $tag
      * @param int $isMime
      */
-    function isImage($tag, $isMime = true) {
+    function isImage($tag, $isMime = false) {
         if ($isMime) {
             $tag = zmgMimeHelper::convertMimeToExtension($tag);
         }
@@ -439,7 +439,7 @@ class zmgMimeHelper {
      * @param string $tag
      * @param int $isMime
      */
-    function isMovie($tag, $isMime = true) {
+    function isMovie($tag, $isMime = false) {
         if ($isMime) {
             $tag = zmgMimeHelper::convertMimeToExtension($tag);
         }
@@ -452,7 +452,7 @@ class zmgMimeHelper {
      * @param string $tag
      * @param int $isMime
      */
-    function isAudio($tag, $isMime = true) {
+    function isAudio($tag, $isMime = false) {
         if ($isMime) {
             $tag = zmgMimeHelper::convertMimeToExtension($tag);
         }
@@ -466,7 +466,7 @@ class zmgMimeHelper {
      * @param string $tag
      * @param int $isMime
      */
-    function isPlayable($tag, $isMime = true) {
+    function isPlayable($tag, $isMime = false) {
         if ($isMime) {
             $tag = zmgMimeHelper::convertMimeToExtension($tag);
         }
@@ -480,7 +480,7 @@ class zmgMimeHelper {
      * @param string $tag
      * @param int $isMime
      */
-    function isRealmedia($tag, $isMime = true) {
+    function isRealmedia($tag, $isMime = false) {
         if ($isMime) {
             $tag = zmgMimeHelper::convertMimeToExtension($tag);
         }
@@ -498,7 +498,7 @@ class zmgMimeHelper {
      * @param string $tag
      * @param int $isMime
      */
-    function isQuicktime($tag, $isMime = true) {
+    function isQuicktime($tag, $isMime = false) {
         if ($isMime) {
             $tag = zmgMimeHelper::convertMimeToExtension($tag);
         }
@@ -516,7 +516,7 @@ class zmgMimeHelper {
      * @param string $tag
      * @param int $isMime
      */
-    function isFlashvideo($tag, $isMime = true) {
+    function isFlashvideo($tag, $isMime = false) {
         if ($isMime) {
             $tag = zmgMimeHelper::convertMimeToExtension($tag);
         }
@@ -534,7 +534,7 @@ class zmgMimeHelper {
      * @param string $tag
      * @param int $isMime
      */
-    function isDocument($tag, $isMime = true) {
+    function isDocument($tag, $isMime = false) {
         if ($isMime) {
             $tag = zmgMimeHelper::convertMimeToExtension($tag);
         }
@@ -548,7 +548,7 @@ class zmgMimeHelper {
      * @param string $tag
      * @param int $isMime
      */
-    function isThumbnailable($tag, $isMime = true) {
+    function isThumbnailable($tag, $isMime = false) {
         if ($isMime) {
             $tag = zmgMimeHelper::convertMimeToExtension($tag);
         }
@@ -562,7 +562,7 @@ class zmgMimeHelper {
      * @param string $tag
      * @param int $isMime
      */
-    function isIndexable($tag, $isMime = true) {
+    function isIndexable($tag, $isMime = false) {
         if ($isMime) {
             $tag = zmgMimeHelper::convertMimeToExtension($tag);
         }

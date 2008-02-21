@@ -11,7 +11,7 @@
 
 defined('_ZMG_EXEC') or die('Restricted access');
 
-class zmgMessageCenter extends zmgError {
+class zmgMessageCenter {
     
     var $_messages = array();
     
@@ -38,7 +38,7 @@ class zmgMessageCenter extends zmgError {
                 $counter++;
             }
         } else {
-            return $this->throwError('zmgMessageCenter::invalid number of messages requested');
+            return zmgError::throwError('zmgMessageCenter::invalid number of messages requested');
         }
         
         if ($output == "json") {

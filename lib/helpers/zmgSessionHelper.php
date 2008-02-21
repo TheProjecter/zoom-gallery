@@ -63,7 +63,7 @@ class zmgSessionHelper {
  * Class that assists Zoom in retrieving and storing application settings
  * @package zmg
  */
-class zmgSession extends zmgError {
+class zmgSession {
     /**
      * Internal variable that sets the prefix for each session variable.
      *
@@ -110,10 +110,10 @@ class zmgSession extends zmgError {
     
     function get($name) {
         if (!$this->hasStarted()) {
-            return $this->throwError('zmgSessionHelper: session not started yet.');
+            return zmgError::throwError('zmgSessionHelper: session not started yet.');
         }
         if (empty($this->_vars)) {
-            return $this->throwError('zmgSessionHelper: no variables to fetch.');
+            return zmgError::throwError('zmgSessionHelper: no variables to fetch.');
         }
         
         $name = trim($name);
@@ -127,13 +127,13 @@ class zmgSession extends zmgError {
     
     function update($name, $value, $vartype = ZMG_DATATYPE_ARRAY) {
     	if (!$this->hasStarted()) {
-            return $this->throwError('zmgSessionHelper: session not started yet.');
+            return zmgError::throwError('zmgSessionHelper: session not started yet.');
         }
         if (empty($name)) {
-            return $this->throwError('zmgSessionHelper: no variable name specified.');
+            return zmgError::throwError('zmgSessionHelper: no variable name specified.');
         }
         if (empty($value)) {
-            return $this->throwError('zmgSessionHelper: no value to update.');
+            return zmgError::throwError('zmgSessionHelper: no value to update.');
         }
         
         $name = trim($name);
@@ -173,13 +173,13 @@ class zmgSession extends zmgError {
     
     function put($name, $value, $serialize = false) {
         if (!$this->hasStarted()) {
-            return $this->throwError('zmgSessionHelper: session not started yet.');
+            return zmgError::throwError('zmgSessionHelper: session not started yet.');
         }
         if (empty($name)) {
-            return $this->throwError('zmgSessionHelper: no variable name specified.');
+            return zmgError::throwError('zmgSessionHelper: no variable name specified.');
         }
         if (empty($value)) {
-            return $this->throwError('zmgSessionHelper: no value to store.');
+            return zmgError::throwError('zmgSessionHelper: no value to store.');
         }
         
         $name = trim($name);

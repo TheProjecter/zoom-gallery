@@ -253,7 +253,7 @@ ZMG.ClientEvents = (function() {
         ZMG.Dispatches.mediaCount(value);
         
         var liveGrid = ZMG.Shared.get('liveGrid');
-        liveGrid.options.count = ZMG.CONST.mediumcount || 1;
+        liveGrid.options.count = ZMG.CONST.mediumconMmGalleryChangeount || 1;
         liveGrid.options.url   = ZMG.CONST.req_uri + "&view=admin:mediamanager:getmedia"
           + (value ? ":" + value : "");
         liveGrid.refresh();
@@ -294,6 +294,7 @@ ZMG.ClientEvents = (function() {
         onLiveGridPager: onLiveGridPager,
         onLoadNavigation: onLoadNavigation,
         onMmSetFilterSelects: onMmSetFilterSelects,
+        onMmGalleryChange: onMmGalleryChange,
         onSelectSettingsTab: onSelectSettingsTab,
         onShowMessage: onShowMessage,
         onStart: onStart,

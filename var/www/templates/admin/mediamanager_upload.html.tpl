@@ -18,7 +18,7 @@
         <div class="zmg_halfsize">
             <fieldset>
                 <legend>{t}Select a gallery{/t}</legend>
-                {$zmgAPI->callAbstract('zmgHTML', 'galleriesSelect', 'ZMG.Admin.Events.Client.onMmGalleryChange(this);')}
+                {$zmgAPI->callAbstract('zmgHTML', 'galleriesSelect', 'ZMG.ClientEvents.onMmGalleryChange(this);')}
             </fieldset>
         </div>
     </form>
@@ -44,11 +44,6 @@
         </div>
     
         <div class="zmg_clear"></div>
-    
-        <div class="zmg_fancyupload_btn_cont">
-            <input type="button" class="zmg_button" id="zmg_fancyupload_clear" value="{t}Clear Completed{/t}"/>
-            <input type="submit" class="zmg_button" id="zmg_fancyupload_submit" value="{t}Start Upload{/t}"/>
-        </div>
     </form>
 </div>
 

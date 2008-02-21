@@ -30,10 +30,10 @@ class zmgUploadTool {
             
             if (zmgFileHelper::tooBig($file['tmp_name'])) {
                 header('HTTP/1.0 415 Unsupported Media Type');
-                die('Error. Unsupported Media Type!');
+                die('Error. File too big!');
             }
             
-            if (!zmgMimeHelper::acceptableFormat($mime)) {
+            if (!zmgMimeHelper::acceptableFormat($mime, true)) {
                 header('HTTP/1.0 415 Unsupported Media Type');
                 die('Error. Unsupported Media Type!');
             }
@@ -53,6 +53,8 @@ class zmgUploadTool {
             // store the filename into the session (the data is sent to the backend
             // after the file has been uploaded).
             zmgSessionHelper::update('uploadtool.fancyfiles', $filename, ZMG_DATATYPE_ARRAY);
+            
+            print_r($_SESSION);
         }
     }
     function autoDetect() {
