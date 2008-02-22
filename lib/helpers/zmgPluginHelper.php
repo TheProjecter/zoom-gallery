@@ -24,11 +24,13 @@ class zmgPluginHelper extends zmgError {
     }
     
     function _loadPlugins() {
-        $plugin_cats = zmgReadDirectory(ZMG_ABS_PATH . DS.'var'.DS.'plugins', '[^index\.html]');
+        zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
+        
+        $plugin_cats = zmgFileHelper::readDir(ZMG_ABS_PATH . DS.'var'.DS.'plugins', '[^index\.html]');
         $this->_plugins = array();
         foreach ($plugin_cats as $plugin) {
             if ($plugin != "shared") {
-                $content = zmgReadDirectory(ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS . $plugin, '[^index\.html]');
+                $content = zmgFileHelper::readDir(ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS . $plugin, '[^index\.html]');
                 if (is_array($content) && count($content) > 0) {
                     $plugin_class = "zmg" . ucfirst($plugin) . "Plugin";
                     
@@ -65,21 +67,28 @@ class zmgPluginHelper extends zmgError {
     }
     
     function bubbleEvent($event) {
+        $res = array();
+        
         if (is_array($this->_events[$event->type])) {
             $event_args = $event->getArguments();
             foreach ($this->_events[$event->type] as $klass => $functions) {
                 if (is_string($functions)) {
-                    zmgCallAbstract($klass, $functions, $event_args);
+                    $res[] = zmgCallAbstract($klass, $functions, $event_args);
                 } else if (is_array($functions)) {
                     foreach ($functions as $function => $args) {
                         if (!is_array($args)) {
                             $args = array($args);
                         }
-                        zmgCallAbstract($klass, $function, array_merge($event_args, $args));
+                        $res[] = zmgCallAbstract($klass, $function, array_merge($event_args, $args));
                     }
                 }
             }
         }
+
+        if (count($res) == 1) {
+        	return $res[0];
+        }
+        return $res;
     }
     
     function isLoaded($name) {

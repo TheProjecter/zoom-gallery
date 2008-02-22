@@ -382,7 +382,8 @@ class zmgTemplateHelper extends Smarty {
         //TODO: what if the manifest changed? Need to implement proper caching
         //Cache_Lite, maybe?
         if (is_writable($this->cache_dir) && !empty($this->_manifest)) {
-            zmgWriteFile($this->cache_dir .DS.$this->_active_template.'_tpl.cache',
+            zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
+            zmgFileHelper::write($this->cache_dir .DS.$this->_active_template.'_tpl.cache',
               serialize($this->_manifest));
         } else {
             $this->throwError('ZMG cache directory not writable.');

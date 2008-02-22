@@ -109,8 +109,8 @@ class zmgFileHelper
 
         // Prepend a base path if it exists
         if ($path) {
-            $src  = zmgPathName($path.DS.$src);
-            $dest = zmgPathName($path.DS.$dest);
+            $src  = zmgFileHelper::cleanPath($path.DS.$src);
+            $dest = zmgFileHelper::cleanPath($path.DS.$dest);
         }
 
         //Check src path
@@ -131,7 +131,7 @@ class zmgFileHelper
             }
 
             //Translate the destination path for the FTP account
-            $dest = zmgPathName(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $dest), '/');
+            $dest = zmgFileHelper::cleanPath(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $dest), '/');
             if (!$ftp->store($src, $dest)) {
                 // FTP connector throws an error
                 return false;
@@ -172,7 +172,7 @@ class zmgFileHelper
         }
 
         foreach ($files as $file) {
-            $file = zmgPathName($file);
+            $file = zmgFileHelper::cleanPath($file);
 
             // Try making the file writeable first. If it's read-only, it can't be deleted
             // on Windows, even if the parent folder is writeable
@@ -183,7 +183,7 @@ class zmgFileHelper
             if (@unlink($file)) {
                 // Do nothing
             } elseif ($FTPOptions['enabled'] == 1) {
-                $file = zmgPathName(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $file), '/');
+                $file = zmgFileHelper::cleanPath(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $file), '/');
                 if (!$ftp->delete($file)) {
                     // FTP connector throws an error
                     return false;
@@ -212,8 +212,8 @@ class zmgFileHelper
         //$FTPOptions = JClientHelper::getCredentials('ftp');
 
         if ($path) {
-            $src  = zmgPathName($path.DS.$src);
-            $dest = zmgPathName($path.DS.$dest);
+            $src  = zmgFileHelper::cleanPath($path.DS.$src);
+            $dest = zmgFileHelper::cleanPath($path.DS.$dest);
         }
 
         //Check src path
@@ -227,8 +227,8 @@ class zmgFileHelper
             $ftp = & JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
 
             //Translate path for the FTP account
-            $src    = zmgPathName(str_replace(JPATH_ROOT, $FTPOptions['root'], $src), '/');
-            $dest   = zmgPathName(str_replace(JPATH_ROOT, $FTPOptions['root'], $dest), '/');
+            $src    = zmgFileHelper::cleanPath(str_replace(JPATH_ROOT, $FTPOptions['root'], $src), '/');
+            $dest   = zmgFileHelper::cleanPath(str_replace(JPATH_ROOT, $FTPOptions['root'], $dest), '/');
 
             // Use FTP rename to simulate move
             if (!$ftp->rename($src, $dest)) {
@@ -307,10 +307,10 @@ class zmgFileHelper
             $ftp = & JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
 
             // Translate path for the FTP account and use FTP write buffer to file
-            $file = zmgPathName(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $file), '/');
+            $file = zmgFileHelper::cleanPath(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $file), '/');
             $ret = $ftp->write($file, $buffer);
         } else {
-            $file = zmgPathName($file);
+            $file = zmgFileHelper::cleanPath($file);
             $ret = file_put_contents($file, $buffer);
         }
         return $ret;
@@ -330,7 +330,7 @@ class zmgFileHelper
         $ret        = false;
 
         // Ensure that the path is valid and clean
-        $dest = zmgPathName($dest);
+        $dest = zmgFileHelper::cleanPath($dest);
 
         // Create the destination directory if it does not exist
         $baseDir = dirname($dest);
@@ -344,7 +344,7 @@ class zmgFileHelper
             $ftp = & JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
 
             //Translate path for the FTP account
-            $dest = zmgPathName(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $dest), '/');
+            $dest = zmgFileHelper::cleanPath(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $dest), '/');
 
             // Copy the file to the destination directory
             if ($ftp->store($src, $dest)) {
@@ -355,7 +355,7 @@ class zmgFileHelper
             }
         } else {
             if (is_writeable($baseDir) && move_uploaded_file($src, $dest)) { // Short circuit to prevent file permission errors
-                if (zmgChmod($dest, 0777)) {
+                if (zmgFileHelper::chmod($dest, 0777)) {
                     $ret = true;
                 } else {
                     zmgError::throwError(T_('Unable to change file permissions.'));
@@ -374,7 +374,7 @@ class zmgFileHelper
      * @return boolean True if path is a file
      */
     function exists($file) {
-        return is_file(zmgPathName($file));
+        return is_file(zmgFileHelper::cleanPath($file));
     }
 
     /**
@@ -405,7 +405,7 @@ class zmgFileHelper
         static $nested = 0;
 
         // Check to make sure the path valid and clean
-        $path = zmgPathName($path);
+        $path = zmgFileHelper::cleanPath($path);
 
         // Check if parent dir exists
         $parent = dirname($path);
@@ -441,7 +441,7 @@ class zmgFileHelper
             $ftp = & JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
 
             // Translate path to FTP path
-            $path = zmgPathName(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $path), '/');
+            $path = zmgFileHelper::cleanPath(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $path), '/');
             $ret = $ftp->mkdir($path);
             $ftp->chmod($path, $mode);
         } else {
@@ -461,7 +461,7 @@ class zmgFileHelper
                 $inOBD = false;
                 // Iterate through open_basedir paths looking for a match
                 foreach ($obdArray as $test) {
-                    $test = zmgPathName($test);
+                    $test = zmgFileHelper::cleanPath($test);
                     if (strpos($path, $test) === 0) {
                         $obdpath = $test;
                         $inOBD = true;
@@ -489,6 +489,91 @@ class zmgFileHelper
             @ umask($origmask);
         }
         return $ret;
+    }
+    
+    /**
+     * Utility function to read the files in a directory
+     * @param string The file system path
+     * @param string A filter for the names
+     * @param boolean Recurse search into sub-directories
+     * @param boolean True if to prepend the full path to the file name
+     */
+    function readDir($path, $filter='.', $recurse=false, $fullpath=false) {
+        $arr = array();
+        if (!@is_dir( $path )) {
+            return $arr;
+        }
+        $handle = opendir($path);
+    
+        while ($file = readdir($handle)) {
+            $dir   = zmgFileHelper::cleanPath( $path.'/'.$file, false );
+            $isDir = is_dir( $dir );
+            if (($file != ".") && ($file != "..") && ($file != ".svn")) {
+                if (preg_match( "/$filter/", $file )) {
+                    if ($fullpath) {
+                        $arr[] = trim(zmgFileHelper::cleanPath( $path.'/'.$file, false ));
+                    } else {
+                        $arr[] = trim($file);
+                    }
+                }
+                if ($recurse && $isDir) {
+                    $arr2 = zmgFileHelper::readDir($dir, $filter, $recurse, $fullpath);
+                    $arr  = array_merge($arr, $arr2);
+                }
+            }
+        }
+        closedir($handle);
+        asort($arr);
+        return $arr;
+    }
+    
+    /**
+     * Chmods files and directories recursively to given permissions. Available from 1.0.0 up.
+     * @param path The starting file or directory (no trailing slash)
+     * @param filemode Integer value to chmod files. NULL = dont chmod files.
+     * @param dirmode Integer value to chmod directories. NULL = dont chmod directories.
+     * @return TRUE=all succeeded FALSE=one or more chmods failed
+     */
+    function chmodRecursive($path, $filemode = "0644", $dirmode = "0777") {
+        $ret = true;
+        if (is_dir($path)) {
+            $dh = opendir($path);
+            while ($file = readdir($dh)) {
+                if ($file != '.' && $file != '..') {
+                    $fullpath = $path.'/'.$file;
+                    if (is_dir($fullpath)) {
+                        if (!zmgFileHelper::chmodRecursive($fullpath, $filemode, $dirmode))
+                            $ret = false;
+                    } else {
+                        if (isset($filemode))
+                            if (!@chmod($fullpath, octdec($filemode)))
+                                $ret = false;
+                    } // if
+                } // if
+            } // while
+            closedir($dh);
+            if (isset($dirmode))
+                if (!@chmod($path, octdec($dirmode)))
+                    $ret = false;
+        } else {
+            if (isset($filemode))
+                $ret = @chmod($path, octdec($filemode));
+        } // if
+        return $ret;
+    }
+    
+    /**
+     * Chmods files and directories recursively to Zoom global permissions. Available from 1.0.0 up.
+     * @param path The starting file or directory (no trailing slash)
+     * @return TRUE=all succeeded FALSE=one or more chmods failed
+     */
+    function chmod($path) {
+        $zoom = & zmgFactory::getZoom();
+        $fileperms = $zoom->getConfig('filesystem/fileperms');
+        $dirperms  = $zoom->getConfig('filesystem/dirperms');
+        if (isset($filemode) || isset($dirmode))
+            return zmgFileHelper::chmodRecursive($path, $fileperms, $dirperms);
+        return true;
     }
 }
 ?>

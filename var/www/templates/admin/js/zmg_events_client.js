@@ -195,8 +195,8 @@ ZMG.ClientEvents = (function() {
                 ajaxOptions: {
                     method: 'get'
                 },
-                onSuccess: ZMG.ServerEvents.onView.bind(ZMG.Admin.Events),
-                onFailure: ZMG.ServerEvents.onError.bind(ZMG.Admin.Events),
+                onSuccess: ZMG.ServerEvents.onView.bind(ZMG.ServerEvents),
+                onFailure: ZMG.ServerEvents.onError.bind(ZMG.ServerEvents),
             });
         } else {
             //prevent duplicate requests:

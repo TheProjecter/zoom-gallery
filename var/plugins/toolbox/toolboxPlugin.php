@@ -40,6 +40,9 @@ class zmgToolboxPlugin extends zmgError {
             ),
             "onupload"   => array(
                 "upload" => array('method')
+            ),
+            "onautodetect" => array(
+                "autoDetect" => array('selection')
             )
             //more Events to come...
         );
@@ -72,7 +75,12 @@ class zmgToolboxPlugin extends zmgError {
         return zmgUploadTool::upload($method);
     }
     
-    function autoDetect($selection = 'all') {
+    function autoDetect($args) {
+        $selection = $args[0];
+        if (!is_array($selection)) {
+        	$selection = "all";
+        }
+        
         $getall  = false;
         if (!is_array($selection) && $selection == "all") {
             $getall = true;

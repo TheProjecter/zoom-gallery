@@ -407,7 +407,7 @@ ZMG.ServerEvents = (function() {
                         } else if (this.value == "4") {
                             tool = "gd2x";
                         }
-                        ZMG.Admin.Events.Client.onViewSelect('admin:settings:plugins:autodetect:'
+                        ZMG.ClientEvents.onViewSelect('admin:settings:plugins:autodetect:'
                           + tool);
                     }
                     

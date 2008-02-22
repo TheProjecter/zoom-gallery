@@ -171,7 +171,7 @@ class Zoom extends zmgError {
      */
     function checkDuplicate($checkThis, $checkWhat = 'filename') {
         $db = & zmgDatabase::getDBO();
-        $db->setQuery("SELECT imgid FROM #__zoomfiles WHERE imgfilename = '$checkThis' AND catid = '".$this->_gallery->_id."'");
+        $db->setQuery("SELECT mid FROM #__zoomfiles WHERE filename = '$checkThis' AND gid = '".$this->_gallery->_id."'");
         if ($this->_result = $db->query()) {
             if (mysql_num_rows($this->_result) > 0) {
                 // filename exists already for this gallery, so change the filename and test again...
@@ -346,12 +346,14 @@ class Zoom extends zmgError {
      * Load all available custom events from the /var/events folder.
      */
     function loadEvents() {
+        zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
+        
         //TODO: move reading directory stuff to zmgConfigurationHelper class
-        $event_cats = zmgReadDirectory(ZMG_ABS_PATH . DS.'var'.DS.'events', '[^index\.html]');
+        $event_cats = zmgFileHelper::readDir(ZMG_ABS_PATH . DS.'var'.DS.'events', '[^index\.html]');
         $this->events = array();
         foreach ($event_cats as $cat) {
             if ($cat != "shared") {
-                $events = zmgReadDirectory(ZMG_ABS_PATH . DS.'var'.DS.'events'.DS . $cat, '[^index\.html]');
+                $events = zmgFileHelper::readDir(ZMG_ABS_PATH . DS.'var'.DS.'events'.DS . $cat, '[^index\.html]');
                 if (count($events) > 0) {
                     $this->events[$cat] = $events;
                 }
@@ -377,7 +379,7 @@ class Zoom extends zmgError {
         }*/
         //bubble through to plugins:
         if (!(bool)$nobubble) {
-            $this->plugins->bubbleEvent($event);
+            return $this->plugins->bubbleEvent($event);
         }
     }
     function setResult($result = true) {
