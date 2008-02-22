@@ -88,7 +88,7 @@ if (!class_exists('InputFilter')) {
     zmgimport('org.zoomfactory.lib.phpinputfilter.inputfilter');
 }
 
-$zoom->fireEvent('onstartup', false, 'doing');
+$zoom->fireEvent('onstartup', false);
 
 $zoom->hasAccess() or die('Restricted access');
 
@@ -229,42 +229,6 @@ function zmgBindArrayToObject( $array, &$obj, $ignore='', $prefix=NULL, $checkSl
 }
 
 /**
- * Utility function to read the files in a directory
- * @param string The file system path
- * @param string A filter for the names
- * @param boolean Recurse search into sub-directories
- * @param boolean True if to prepend the full path to the file name
- */
-function zmgReadDirectory( $path, $filter='.', $recurse=false, $fullpath=false  ) {
-    $arr = array();
-    if (!@is_dir( $path )) {
-        return $arr;
-    }
-    $handle = opendir( $path );
-
-    while ($file = readdir($handle)) {
-        $dir = zmgPathName( $path.'/'.$file, false );
-        $isDir = is_dir( $dir );
-        if (($file != ".") && ($file != "..") && ($file != ".svn")) {
-            if (preg_match( "/$filter/", $file )) {
-                if ($fullpath) {
-                    $arr[] = trim( zmgPathName( $path.'/'.$file, false ) );
-                } else {
-                    $arr[] = trim( $file );
-                }
-            }
-            if ($recurse && $isDir) {
-                $arr2 = zmgReadDirectory( $dir, $filter, $recurse, $fullpath );
-                $arr = array_merge( $arr, $arr2 );
-            }
-        }
-    }
-    closedir($handle);
-    asort($arr);
-    return $arr;
-}
-
-/**
  * Utility function redirect the browser location to another url
  *
  * Can optionally provide a message.
@@ -346,73 +310,6 @@ function zmgSQLEscape($string) {
     // current function
     else mysql_real_escape_string($string);
     return $string;
-}
-
-/**
- * Chmods files and directories recursively to given permissions. Available from 1.0.0 up.
- * @param path The starting file or directory (no trailing slash)
- * @param filemode Integer value to chmod files. NULL = dont chmod files.
- * @param dirmode Integer value to chmod directories. NULL = dont chmod directories.
- * @return TRUE=all succeeded FALSE=one or more chmods failed
- */
-function zmgChmodRecursive($path, $filemode = "0644", $dirmode = "0777")
-{
-    $ret = true;
-    if (is_dir($path)) {
-        $dh = opendir($path);
-        while ($file = readdir($dh)) {
-            if ($file != '.' && $file != '..') {
-                $fullpath = $path.'/'.$file;
-                if (is_dir($fullpath)) {
-                    if (!zmgChmodRecursive($fullpath, $filemode, $dirmode))
-                        $ret = false;
-                } else {
-                    if (isset($filemode))
-                        if (!@chmod($fullpath, octdec($filemode)))
-                            $ret = false;
-                } // if
-            } // if
-        } // while
-        closedir($dh);
-        if (isset($dirmode))
-            if (!@chmod($path, octdec($dirmode)))
-                $ret = false;
-    } else {
-        if (isset($filemode))
-            $ret = @chmod($path, octdec($filemode));
-    } // if
-    return $ret;
-}
-
-/**
- * Chmods files and directories recursively to Zoom global permissions. Available from 1.0.0 up.
- * @param path The starting file or directory (no trailing slash)
- * @return TRUE=all succeeded FALSE=one or more chmods failed
- */
-function zmgChmod($path) {
-    $zoom = & zmgFactory::getZoom();
-    $fileperms = $zoom->getConfig('filesystem/fileperms');
-    $dirperms  = $zoom->getConfig('filesystem/dirperms');
-    if (isset($filemode) || isset($dirmode))
-        return zmgChmodRecursive($path, $fileperms, $dirperms);
-    return true;
-}
-
-/**
- * Write content to a file on the filesystem. $filename needs to be a FULL path. 
- * @param string $filename
- * @param string $content
- * @return boolean
- */
-function zmgWriteFile($filename, $content) {
-    $res = true;
-    if ($fp = @fopen($filename, 'w+')) {
-        fputs($fp, $content, strlen($content));
-        fclose($fp);
-    } else {
-        $res = false;
-    }
-    return $res;
 }
 
 function zmgGetBasePath() {

@@ -55,89 +55,18 @@ class zmgViewHelper {
         $this->_view_tokens = split(':', $view);
         
         $zoom = & zmgFactory::getZoom();
-        
-        //check for dispatches that 'put' data (in contrary to 'get' requests)
-        if (in_array('store', $this->_view_tokens) || in_array('update', $this->_view_tokens)
-          || in_array('autodetect', $this->_view_tokens)) {
-            switch ($view) {
-                case "admin:settings:store":
-                    $zoom->setResult($zoom->updateConfig($_POST));
-                    break;
-                case stristr($view, "admin:settings:plugins:autodetect"):
-                    $tool = trim($this->_view_tokens[count($this->_view_tokens) - 1]);
-                    if ($tool == "autodetect") {
-                        $tool = "all";
-                    } else {
-                        $tool = array($tool);
-                    }
-                    zmgToolboxPlugin::autoDetect($tool);
-                    break;
-                case stristr($view, "admin:update:mediacount"):
-                    $filter = intval(array_pop($this->_view_tokens));
-                    $zoom->setResult($zoom->getMediumCount($filter));
-                    break;
-                case "admin:galleryedit:store":
-                    $gid     = zmgGetParam($_REQUEST, 'zmg_edit_gallery_gid', 0);
-                    
-                    $isNew = false;
-                    if ($gid === "new") {
-                    	$isNew = true;
-                        $gid = 0;
-                    }
-                    
-                    $gid     = intval($gid);
-                    
-                    $gallery = new zmgGallery(zmgDatabase::getDBO());
-                    
-                    $data    = array(
-                      'name'      => zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_edit_gallery_name', $gallery->name)),
-                      'descr'     => zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_edit_gallery_descr', $gallery->descr)),
-                      'keywords'  => zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_edit_gallery_keywords', $gallery->keywords)),
-                      'hide_msg'  => intval(zmgGetParam($_REQUEST, 'zmg_edit_gallery_hidenm', $gallery->hide_msg)),
-                      'shared'    => intval(zmgGetParam($_REQUEST, 'zmg_edit_gallery_shared', $gallery->shared)),
-                      'published' => intval(zmgGetParam($_REQUEST, 'zmg_edit_gallery_published', $gallery->published))
-                    );
-                    if ($isNew) {
-                    	$data['dir'] = zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_edit_gallery_dir', ''));
-                    }
-                    
-                    $res = true;
 
-                    if ($gid > 0) {
-                        if (!($res = $gallery->load($gid))) {
-                            $zoom->messages->append(T_('Gallery could not be saved') . ': ' . $gallery->getError());
-                        }
-                    }
-                    
-                    if (($res && $gid > 0) || $isNew) {
-                        if (!$gallery->bind($data)) {
-                            $zoom->messages->append(T_('Gallery could not be saved') . ': ' . $gallery->getError());
-                        } else {
-                            if (!$gallery->store()) {
-                                $zoom->messages->append(T_('Gallery could not be saved') . ': ' . $gallery->getError());
-                            } else {
-                                if ($isNew) {
-                                	$gallery->buildDirStructure();
-                                }
-                                $zoom->messages->append(T_('Gallery saved successfully!'));
-                            }
-                        }
-                    } else {
-                        $zoom->messages->append(T_('Gallery could not be saved') . ': ' . $gid);
-                    }
-                    break;
-                case "admin:mediumedit:store":
-                    break;
-                case stristr($view, "admin:mediaupload:store"):
-                    //SWFUpload needs HTTP headers to signal the user...
-                    $method = stristr($view, "jupload") ? "jupload" : "swfupload";
-                    $zoom->fireEvent('onupload', false, $method);
-                    //exit;
-                    break;
-                default:
-                    break;
-            }
+        //check for dispatches that 'put' data (in contrary to 'get' requests)
+        $isDataStore = $zoom->fireEvent('onisdatastore', false, $this->_view_tokens);
+        
+        if ((bool)$isDataStore) {
+        	$zoom->fireEvent('ondatastore', false, $this->_view_tokens);
             
+            $this->_active_view = (ZMG_ADMIN ? "admin:dispatchresult" : "dispatchresult")
+             . ":" . str_replace(':', '_', str_replace('admin:', '', $view));
+            $this->_view_tokens = split(':', $this->_active_view);
+        }
+        
             /*
             switch ($page) {
                 case 'editimg':
@@ -267,10 +196,6 @@ class zmgViewHelper {
             }
             */
             
-            $this->_active_view = (ZMG_ADMIN ? "admin:dispatchresult" : "dispatchresult")
-             . ":" . str_replace(':', '_', str_replace('admin:', '', $view));
-            $this->_view_tokens = split(':', $this->_active_view);
-        }
         
         if (ZMG_ADMIN) {
             $this->_template->appendConstant('mediumcount', $zoom->getMediumCount());
