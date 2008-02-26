@@ -161,8 +161,8 @@ class zmgGallery extends zmgTable {
      */
     function generateDir() {
     	$newdir = "";
-        srand((double) microtime() * 1000000);
-        for ($acc = 1; $acc <= 6; $acc++){
+        srand((double)microtime() * 1000000);
+        for ($acc = 1; $acc <= 6; $acc++) {
             $newdir .= chr(rand (0,25) + 65);
         }
         $zoom = & zmgFactory::getZoom();

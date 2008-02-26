@@ -367,8 +367,13 @@ class Zoom extends zmgError {
      */
     function fireEvent($type, $nobubble = false) {
         $event = new zmgEvent($type);
+        
         $args = func_get_args();
-        $event->pass(array_splice($args, 2, count($args)));
+        $newArgs = array_splice($args, 2, count($args));
+        if (count($newArgs) == 1) {
+        	$newArgs = $newArgs[0];
+        }
+        $event->pass($newArgs);
         /*if (!empty($this->events[$event])) {
             foreach ($this->events[$event] as $cmp) {
                 zmgimport('org.zoomfactory.var.events.'.$event.'.'.$cmp.'.'.$cmp);
@@ -377,6 +382,7 @@ class Zoom extends zmgError {
                 }
             }
         }*/
+        
         //bubble through to plugins:
         if (!(bool)$nobubble) {
             return $this->plugins->bubbleEvent($event);

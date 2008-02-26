@@ -11,6 +11,11 @@
 
 defined('_ZMG_EXEC') or die('Restricted access');
 
+/**
+ * The zmgDataStorePlugin class handles all the view requests that need specific
+ * action. It delegates each view requests to an appropriate store
+ * ('save gallery' -> 'galleryStore', 'upload' -> 'toolbox plugin', etc.).
+ */
 class zmgDatastorePlugin {
     function bindEvents() {
         return array(
@@ -23,9 +28,9 @@ class zmgDatastorePlugin {
         );
     }
     
-    function isDataStore($args) {
-    	$aView = $args[0];
-
+    function isDataStore(&$event) {
+    	$aView = $event->getArgument('view');
+        
         //check for dispatches that 'put' data (in contrary to 'get' requests)
         if (in_array('store', $aView) || in_array('update', $aView)
           || in_array('autodetect', $aView)) {
@@ -34,8 +39,8 @@ class zmgDatastorePlugin {
         return 0;
     }
     
-    function storeDelegate($args) {
-    	$aView = $args[0];
+    function storeDelegate(&$event) {
+    	$aView = $event->getArgument('view');
         $view  = implode(':', $aView);
         
         $zoom = & zmgFactory::getZoom();

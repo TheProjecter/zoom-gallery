@@ -71,12 +71,14 @@ class zmgToolboxPlugin extends zmgError {
         }
     }
     
-    function upload($method) {
+    function upload(&$event) {
+        $method = $event->getArgument('method');
+        
         return zmgUploadTool::upload($method);
     }
     
-    function autoDetect($args) {
-        $selection = $args[0];
+    function autoDetect(&$event) {
+        $selection = $event->getArgument('selection');
         if (!is_array($selection)) {
         	$selection = "all";
         }
