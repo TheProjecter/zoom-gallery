@@ -35,8 +35,37 @@ class zmgEvent {
             $this->_arguments[] = $arg;
         }
     }
+    
+    function mapArguments($map) {
+    	if (!is_array($this->_arguments) || count($this->_arguments) == 0) {
+    		return;
+    	}
+        
+        $newArgs = array();
+        
+        for ($i = 0; $i < count($this->_arguments); $i++) {
+        	if (is_string($map[$i])) {
+        		$newArgs[$map[$i]] = $this->_arguments[$i];
+        	} else {
+        		$newArgs[] = $this->_arguments[$i];
+        	}
+        }
+        
+        $this->_arguments = $newArgs;
+
+        return $this->_arguments;
+    }
+    
     function getArguments() {
         return $this->_arguments;
+    }
+    
+    function getArgument($name) {
+    	if (isset($this->_arguments[$name]) && !empty($this->_arguments[$name])) {
+    		return $this->_arguments[$name];
+    	}
+        
+        return null;
     }
 }
 ?>
