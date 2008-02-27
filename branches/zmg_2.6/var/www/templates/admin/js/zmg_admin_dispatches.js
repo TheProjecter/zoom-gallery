@@ -22,6 +22,13 @@ ZMG.Dispatches = {
             data: sData
         });
     },
+    saveMedia:    function(type, sData) {
+        return this.stdDispatch({
+            url: ZMG.CONST.req_uri + "&view=admin:mediaupload:update:"
+             + ZMG.ClientEvents.getActiveFilter(),
+            data: sData
+        });
+    },
     saveGallery:  function(sData) {
         return this.stdDispatch({
             url: ZMG.CONST.req_uri + "&view=admin:galleryedit:store",

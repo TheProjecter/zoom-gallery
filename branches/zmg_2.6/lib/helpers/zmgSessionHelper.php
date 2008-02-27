@@ -57,6 +57,18 @@ class zmgSessionHelper {
         
         return $session->put($name, $value, $serialize);
     }
+    
+    function restore() {
+        $session = & zmgSessionHelper::getSession();
+        
+        return $session->restore();
+    }
+    
+    function store() {
+        $session = & zmgSessionHelper::getSession();
+        
+        return $session->store();
+    }
 }
 
 /**
@@ -163,7 +175,9 @@ class zmgSession {
             } else {
             	$new_value = array();
             }
-            $new_value[] = $value;
+            if (!in_array($value, $new_value)) {
+            	$new_value[] = $value;
+            }
         }
         
         if ($new_value !== null) {
@@ -213,13 +227,13 @@ class zmgSession {
         		//variable already serialized
                 $_SESSION[$varname] = $value;
         	} else {
-        		if (!is_object($value) || is_array($value)) {
+        		if (is_object($value) || is_array($value)) {
         			if (isset($_SESSION[$varname])) {
         				unset($_SESSION[$varname]);
         			}
-                    $_SESSION[$varname . '.serialized'] = serialize($value);
+                    $_SESSION[$this->_var_prefix . $varname . '.serialized'] = serialize($value);
         		} else {
-        			$_SESSION[$varname] = $value;
+        			$_SESSION[$this->_var_prefix . $varname] = $value;
         		}
         	}
         }

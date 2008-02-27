@@ -19,10 +19,10 @@ defined('_ZMG_EXEC') or die('Restricted access');
 class zmgDatastorePlugin {
     function bindEvents() {
         return array(
-            "onisdatastore"   => array(
+            "onisdatastore" => array(
                 "isDataStore" => array('view')
             ),
-            "ondatastore"     => array(
+            "ondatastore" => array(
                 "storeDelegate" => array('view')
             )
         );
@@ -74,6 +74,10 @@ class zmgDatastorePlugin {
                 $method = stristr($view, "jupload") ? "jupload" : "swfupload";
                 $zoom->fireEvent('onupload', false, $method);
                 //exit;
+                break;
+            case stristr($view, "admin:mediaupload:update"):
+                $gid = array_pop($aView);
+                $zoom->fireEvent('onuploadupdate', false, $gid);
                 break;
             default:
                 break;

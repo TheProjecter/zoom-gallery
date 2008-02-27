@@ -41,6 +41,9 @@ class zmgToolboxPlugin extends zmgError {
             "onupload"   => array(
                 "upload" => array('method')
             ),
+            "onuploadupdate" => array(
+                "finalizeUpload" => array('gid')
+            ),
             "onautodetect" => array(
                 "autoDetect" => array('selection')
             )
@@ -75,6 +78,12 @@ class zmgToolboxPlugin extends zmgError {
         $method = $event->getArgument('method');
         
         return zmgUploadTool::upload($method);
+    }
+    
+    function finalizeUpload(&$event) {
+    	$gid = intval($event->getArgument('gid'));
+        
+        return zmgUploadTool::finalizeUpload($gid);
     }
     
     function autoDetect(&$event) {

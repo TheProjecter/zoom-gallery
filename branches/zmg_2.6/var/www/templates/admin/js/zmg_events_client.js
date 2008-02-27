@@ -299,6 +299,9 @@ ZMG.ClientEvents = (function() {
         onShowMessage: onShowMessage,
         onStart: onStart,
         onViewSelect: onViewSelect,
-        onWindowResize: onWindowResize
+        onWindowResize: onWindowResize,
+        getActiveFilter: function() {
+            return activeFilter;
+        }
     };
 })();
