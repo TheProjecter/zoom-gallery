@@ -47,6 +47,10 @@ ZMG.EventHandlers = {
         if (oUploader) oUploader.clearList(false);
     },
     
+    onMmUploadCompleted: function() {
+        ZMG.Dispatches.saveMedia('fanyupload', FormSerializer.serialize($('zmg_fancyupload_data')));
+    },
+    
     onGallerySaveClick: function(e) {
         ZMG.Dispatches.saveGallery(FormSerializer.serialize($('zmg_form_edit_gallery')));
     },

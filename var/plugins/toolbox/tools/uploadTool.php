@@ -12,9 +12,8 @@
 defined('_ZMG_EXEC') or die('Restricted access');
 
 class zmgUploadTool {
-    function upload($args) {
+    function upload($method) {
         $zoom = & zmgFactory::getZoom();
-        $method = stristr($zoom->view->get(), 'jupload') ? "jupload" : "swf";
         
         zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
         zmgimport('org.zoomfactory.lib.mime.zmgMimeHelper');
@@ -54,9 +53,14 @@ class zmgUploadTool {
             // after the file has been uploaded).
             zmgSessionHelper::update('uploadtool.fancyfiles', $filename, ZMG_DATATYPE_ARRAY);
             
-            print_r($_SESSION);
+            zmgSessionHelper::store();
         }
     }
+    
+    function finalizeUpload($gid = 0) {
+    	//finish the SwfUpload sequence...
+    }
+    
     function autoDetect() {
         return;
     }
