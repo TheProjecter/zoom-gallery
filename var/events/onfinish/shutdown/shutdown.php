@@ -20,7 +20,8 @@ defined('_ZMG_EXEC') or die('Restricted access');
  */
 class shutdown {
     function start(&$zoom) {
-        zmgSessionHelper::store();
+        $session = & zmgFactory::getSession();
+        $session->store();
     }
 }
 ?>

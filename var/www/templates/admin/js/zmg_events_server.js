@@ -300,7 +300,7 @@ ZMG.ServerEvents = (function() {
                 instantStart: false,
                 allowDuplicates: true,
                 types: {'All Files (*.*)': '*.*'},
-                onAllComplete: ZMG.ClientEvents.onMmUploadCompleted
+                onAllComplete: ZMG.EventHandlers.onMmUploadCompleted
             });
             ZMG.Shared.register('uploader', oUploader);
         }

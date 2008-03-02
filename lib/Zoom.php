@@ -47,6 +47,16 @@ class zmgFactory {
         
         return $zoom_config;
     }
+    
+    function &getSession() {
+        static $session;
+        
+        if (!is_object($session)) {
+            $session = new zmgSession();
+        }
+
+        return $session;
+    }
 }
 
 /**
@@ -97,12 +107,6 @@ class Zoom extends zmgError {
      * @var zmgPluginHelper()
      */
     var $plugins = null;
-    /**
-     * Public variable, containing the ZMG session variables.
-     * 
-     * @var zmgSessionHelper()
-     */
-    var $session = null;
     
 	/**
      * The class constructor.
@@ -111,7 +115,6 @@ class Zoom extends zmgError {
         zmgimport('org.zoomfactory.lib.helpers.zmgConfigurationHelper');
         zmgimport('org.zoomfactory.lib.helpers.zmgMessageCenter');
         zmgimport('org.zoomfactory.lib.helpers.zmgPluginHelper');
-        zmgimport('org.zoomfactory.lib.helpers.zmgSessionHelper');
         zmgimport('org.zoomfactory.lib.helpers.zmgViewHelper');
         
         $this->_config  = new zmgConfigurationHelper($config);
@@ -120,7 +123,8 @@ class Zoom extends zmgError {
         $this->messages = new zmgMessageCenter();
         $this->plugins  = new zmgPluginHelper();
         
-        zmgSessionHelper::init();
+        //just make sure the session initializes:
+        zmgFactory::getSession();
 
         $this->loadEvents(); //TODO: use cached events list
 	}

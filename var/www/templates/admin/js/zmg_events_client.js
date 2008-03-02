@@ -287,10 +287,15 @@ ZMG.ClientEvents = (function() {
         console.dir(arguments);
     };
     
+    function getActiveFilter() {
+        return activeFilter;
+    };
+    
     return {
         onShowLoader: onShowLoader,
         onHideLoader: onHideLoader,
         onLiveGridBodySlide: onLiveGridBodySlide,
+        onLiveGridEditSlide: onLiveGridEditSlide,
         onLiveGridPager: onLiveGridPager,
         onLoadNavigation: onLoadNavigation,
         onMmSetFilterSelects: onMmSetFilterSelects,
@@ -300,8 +305,6 @@ ZMG.ClientEvents = (function() {
         onStart: onStart,
         onViewSelect: onViewSelect,
         onWindowResize: onWindowResize,
-        getActiveFilter: function() {
-            return activeFilter;
-        }
+        getActiveFilter: getActiveFilter
     };
 })();

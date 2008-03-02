@@ -51,14 +51,54 @@ class zmgUploadTool {
             
             // store the filename into the session (the data is sent to the backend
             // after the file has been uploaded).
-            zmgSessionHelper::update('uploadtool.fancyfiles', $filename, ZMG_DATATYPE_ARRAY);
+            $session = & zmgFactory::getSession();
+            $session->update('uploadtool.fancyfiles', $filename, ZMG_DATATYPE_ARRAY);
             
-            zmgSessionHelper::store();
+            $session->store();
         }
     }
     
     function finalizeUpload($gid = 0) {
-    	//finish the SwfUpload sequence...
+        //finish the SwfUpload sequence...
+        if ($gid === 0) {
+        	return zmgToolboxPlugin::registerError('No valid gallery ID provided');
+        }
+        
+        $gallery = new zmgGallery(zmgDatabase::getDBO());
+        $gallery->load($gid);
+        
+        //now we got the gallery and its data, retrieve the uploaded media
+        $session = & zmgFactory::getSession();
+        $media = $session->get('uploadtool.fancyfiles');
+
+        zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
+        $zoom      = & zmgFactory::getZoom();
+        $db        = & zmgDatabase::getDBO();
+        $src_path  = ZMG_ABS_PATH . DS."etc".DS."cache".DS;
+        $dest_path = zmgEnv::getRootPath() .DS.$zoom->getConfig('filesystem/mediapath').$gallery->dir.DS;
+        
+        foreach ($media as $medium) {
+        	$obj  = new zmgMedium($db);
+            $data = array(
+              'name'      => zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_upload_name', '')),
+              'descr'     => zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_upload_descr', '')),
+              'published' => 1,
+              'gid'       => $gallery->gid
+            );
+            if (!$obj->bind($data)) {
+                zmgToolboxPlugin::registerError(T_('Upload media'), T_('Medium could not be saved') . ': ' . $obj->getError());
+            } else if (!zmgFileHelper::copy($src_path . $medium, $dest_path . $medium)) {
+        		zmgToolboxPlugin::registerError(T_('Upload media'), T_('Unable to copy file') . ' ' . $medium);
+        	} else if (!zmgFileHelper::delete($src_path . $medium)) {
+        		zmgToolboxPlugin::registerError(T_('Upload media'), T_('Unable to delete temporary file') . ' ' . $medium);
+        	} else if (!zmgToolboxPlugin::processMedium($obj, $gallery)) {
+        		zmgToolboxPlugin::registerError(T_('Upload media'), T_('Unable to generate thumbnail') . ' ' . $medium);
+        	} else if (!$obj->store()) { //now save this medium in our DB
+        		zmgToolboxPlugin::registerError(T_('Upload media'), T_('Medium could not be saved') . ': ' . $medium->getError());
+        	}
+            //delete medium from session data: fourth parameter as TRUE 
+            $session->update('uploadtool.fancyfiles', $medium, ZMG_DATATYPE_ARRAY, true);
+        }
     }
     
     function autoDetect() {

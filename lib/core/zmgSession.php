@@ -11,66 +11,6 @@
 
 defined('_ZMG_EXEC') or die('Restricted access');
 
-class zmgSessionHelper {
-	function &getSession() {
-		static $instance;
-        
-        if (!is_object($instance)) {
-            $instance = new zmgSession();
-        }
-
-        return $instance;
-	}
-    
-    function &init() {
-    	$session = & zmgSessionHelper::getSession();
-        
-        return $session;
-    }
-    
-    function start() {
-    	$session = & zmgSessionHelper::getSession();
-        
-        return $session->start();
-    }
-    
-    function hasStarted() {
-        $session = & zmgSessionHelper::getSession();
-        
-        return $session->hasStarted();
-    }
-    
-    function get($name) {
-        $session = & zmgSessionHelper::getSession();
-        
-        return $session->get($name);
-    }
-    
-    function update($name, $value, $vartype = ZMG_DATATYPE_ARRAY) {
-        $session = & zmgSessionHelper::getSession();
-        
-        return $session->update($name, $value, $vartype);
-    }
-    
-    function put($name, $value, $serialize = false) {
-        $session = & zmgSessionHelper::getSession();
-        
-        return $session->put($name, $value, $serialize);
-    }
-    
-    function restore() {
-        $session = & zmgSessionHelper::getSession();
-        
-        return $session->restore();
-    }
-    
-    function store() {
-        $session = & zmgSessionHelper::getSession();
-        
-        return $session->store();
-    }
-}
-
 /**
  * Class that assists Zoom in retrieving and storing application settings
  * @package zmg
@@ -122,30 +62,30 @@ class zmgSession {
     
     function get($name) {
         if (!$this->hasStarted()) {
-            return zmgError::throwError('zmgSessionHelper: session not started yet.');
+            return zmgError::throwError('zmgSession: session not started yet.');
         }
         if (empty($this->_vars)) {
-            return zmgError::throwError('zmgSessionHelper: no variables to fetch.');
+            return zmgError::throwError('zmgSession: no variables to fetch.');
         }
         
         $name = trim($name);
         if ($this->_vars[$this->_var_prefix . $name]) {
-        	return $this->_vars[$this->_var_prefix . $name];
+            return $this->_vars[$this->_var_prefix . $name];
         } else if ($this->_vars[$name]) {
             return $this->_vars[$name];
         }
         return null;
     }
     
-    function update($name, $value, $vartype = ZMG_DATATYPE_ARRAY) {
-    	if (!$this->hasStarted()) {
-            return zmgError::throwError('zmgSessionHelper: session not started yet.');
+    function update($name, $value, $vartype = ZMG_DATATYPE_ARRAY, $delete = false) {
+        if (!$this->hasStarted()) {
+            return zmgError::throwError('zmgSession: session not started yet.');
         }
         if (empty($name)) {
-            return zmgError::throwError('zmgSessionHelper: no variable name specified.');
+            return zmgError::throwError('zmgSession: no variable name specified.');
         }
         if (empty($value)) {
-            return zmgError::throwError('zmgSessionHelper: no value to update.');
+            return zmgError::throwError('zmgSession: no value to update.');
         }
         
         $name = trim($name);
@@ -153,47 +93,59 @@ class zmgSession {
         $new_value = null;
         
         if ($vartype & ZMG_DATATYPE_STRING) {
-            if (!empty($old_value)) {
-        		$new_value = $old_value;
-        	} else {
-        		$new_value = "";
-        	}
+            if ($delete === true) {
+            	return $this->delete($name);
+            }
+        	if (!empty($old_value)) {
+                $new_value = $old_value;
+            } else {
+                $new_value = "";
+            }
             $new_value .= strval($value);
         } else if ($vartype & ZMG_DATATYPE_NUMBER) {
-            if (!is_int($value) | !is_float($value)) {
-            	$value = intval($value);
+            if ($delete === true) {
+            	return $this->delete($name);
+            }
+        	if (!is_int($value) | !is_float($value)) {
+                $value = intval($value);
             }
             if (isset($old_value)) {
-            	$new_value = $old_value;
+                $new_value = $old_value;
             } else {
-            	$new_value = 0;
+                $new_value = 0;
             }
             $new_value += $value;
         } else if ($vartype & ZMG_DATATYPE_ARRAY) {
             if (!empty($old_value) && is_array($old_value)) {
                 $new_value = $old_value;
             } else {
-            	$new_value = array();
+                $new_value = array();
             }
-            if (!in_array($value, $new_value)) {
-            	$new_value[] = $value;
+            if (!in_array($value, $new_value) && $delete === false) {
+                $new_value[] = $value;
+            } else if ($delete === true) {
+            	for ($i = count($new_value) - 1; $i >= 0; $i--) {
+            		if ($new_value[$i] == $value) {
+            			array_splice($new_value, $i, 1);
+            		}
+            	}
             }
         }
         
         if ($new_value !== null) {
-        	$this->put($name, $new_value);
+            $this->put($name, $new_value);
         }
     }
     
     function put($name, $value, $serialize = false) {
         if (!$this->hasStarted()) {
-            return zmgError::throwError('zmgSessionHelper: session not started yet.');
+            return zmgError::throwError('zmgSession: session not started yet.');
         }
         if (empty($name)) {
-            return zmgError::throwError('zmgSessionHelper: no variable name specified.');
+            return zmgError::throwError('zmgSession: no variable name specified.');
         }
         if (empty($value)) {
-            return zmgError::throwError('zmgSessionHelper: no value to store.');
+            return zmgError::throwError('zmgSession: no value to store.');
         }
         
         $name = trim($name);
@@ -204,6 +156,23 @@ class zmgSession {
         }
         $_SESSION[$this->_var_prefix . (string)$name] = $value;
         return true;
+    }
+    
+    function delete() {
+    	if (!$this->hasStarted()) {
+            return zmgError::throwError('zmgSession: session not started yet.');
+        }
+        if (empty($this->_vars)) {
+            return zmgError::throwError('zmgSession: no variables to fetch.');
+        }
+        
+        $name = trim($name);
+        if ($this->_vars[$this->_var_prefix . $name]) {
+            unset($this->_vars[$this->_var_prefix . $name]);
+        }
+        if ($this->_vars[$name]) {
+            unset($this->_vars[$name]);
+        }
     }
     
     function restore() {
@@ -223,19 +192,19 @@ class zmgSession {
     
     function store() {
         foreach ($this->_vars as $varname => $value) {
-        	if (strstr($varname, '.serialized')) {
-        		//variable already serialized
+            if (strstr($varname, '.serialized')) {
+                //variable already serialized
                 $_SESSION[$varname] = $value;
-        	} else {
-        		if (is_object($value) || is_array($value)) {
-        			if (isset($_SESSION[$varname])) {
-        				unset($_SESSION[$varname]);
-        			}
+            } else {
+                if (is_object($value) || is_array($value)) {
+                    if (isset($_SESSION[$varname])) {
+                        unset($_SESSION[$varname]);
+                    }
                     $_SESSION[$this->_var_prefix . $varname . '.serialized'] = serialize($value);
-        		} else {
-        			$_SESSION[$this->_var_prefix . $varname] = $value;
-        		}
-        	}
+                } else {
+                    $_SESSION[$this->_var_prefix . $varname] = $value;
+                }
+            }
         }
     }
 }
