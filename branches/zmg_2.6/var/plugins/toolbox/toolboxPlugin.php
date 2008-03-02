@@ -14,11 +14,12 @@ defined('_ZMG_EXEC') or die('Restricted access');
 
 $GLOBALS['_ZMG_TOOLBOX_TOOLS'] = array(
     'document',
+    'image',
     'gd1x',
     'gd2x',
     'imagemagick',
     'mime',
-    'music',
+    'audio',
     'netpbm',
     'upload',
     'video',
@@ -53,7 +54,7 @@ class zmgToolboxPlugin extends zmgError {
     
     function embed() {
         $zoom = & zmgFactory::getZoom();
-        $imagetools_loaded = false;
+        /*$imagetools_loaded = false;
         foreach ($GLOBALS['_ZMG_TOOLBOX_TOOLS'] as $tool) {
             if (in_array($tool, $GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'])) {
                 if (!$imagetools_loaded) {
@@ -67,6 +68,7 @@ class zmgToolboxPlugin extends zmgError {
                  . $tool . 'Tool');
             }
         }
+        */
         $settings_file = ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS.'toolbox'.DS.'settings.xml';
         if (file_exists($settings_file)) {
             $plugin = & $zoom->plugins->get('toolbox');
@@ -103,13 +105,15 @@ class zmgToolboxPlugin extends zmgError {
         $imagetool = $GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'][$toolkey - 1];
         if ($getall) {
             //auto-detect currently selected imagetool first
+            zmgimport('org.zoomfactory.var.plugins.toolbox.tools.'.$imagetool.'Tool');
             zmgCallAbstract('zmg'.ucfirst($imagetool).'Tool', 'autoDetect');
         }
         
         //auto-detect other tools as well
         foreach ($selection as $tool) {
             if (!in_array($tool, $GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'])) {
-                eval('zmg'.ucfirst($tool).'Tool::autoDetect();');
+                zmgimport('org.zoomfactory.var.plugins.toolbox.tools.'.$tool.'Tool');
+                zmgCallAbstract('zmg'.ucfirst($tool).'Tool', 'autoDetect');
             } else if (!$getall) {
                 if ($tool != $imagetool) {
                     zmgimport('org.zoomfactory.var.plugins.toolbox.tools.'.$tool.'Tool');
@@ -122,7 +126,29 @@ class zmgToolboxPlugin extends zmgError {
     }
     
     function processMedium(&$medium, &$gallery) {
-    	return true;//TODO
+    	$mime = $medium->getMimeType();
+        
+        zmgimport('org.zoomfactory.lib.mime.zmgMimeHelper');
+        
+        if (zmgMimeHelper::isImage($mime, true)) {
+        	zmgimport('org.zoomfactory.var.plugins.toolbox.tools.imageTool');
+            
+            zmgImageTool::process($medium, $gallery);
+        } else if (zmgMimeHelper::isDocument($mime, true)) {
+        	zmgimport('org.zoomfactory.var.plugins.toolbox.tools.documentTool');
+            
+            zmgDocumentTool::process($medium, $gallery);
+        } else if (zmgMimeHelper::isVideo($mime, true)) {
+        	zmgimport('org.zoomfactory.var.plugins.toolbox.tools.videoTool');
+            
+            zmgVideoTool::process($medium, $gallery);
+        } else if (zmgMimeHelper::isAudio($mime, true)) {
+        	zmgimport('org.zoomfactory.var.plugins.toolbox.tools.audioTool');
+            
+            zmgAudioTool::process($medium, $gallery);
+        }
+        
+        return true;//TODO
     }
     
     function &getErrors() {

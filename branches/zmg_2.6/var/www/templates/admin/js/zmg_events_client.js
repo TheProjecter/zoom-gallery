@@ -27,8 +27,6 @@ ZMG.ClientEvents = (function() {
         el.onmouseout  = ZMG.EventHandlers.onPinMouseLeave;
         el.onclick     = ZMG.EventHandlers.onPinMouseClick;
         
-        onPing.periodical(ZMG.CONST.refreshtime);
-        
         //set correct dimensions of the admin content
         onWindowResize();
         //load the tree
@@ -305,6 +303,9 @@ ZMG.ClientEvents = (function() {
         onStart: onStart,
         onViewSelect: onViewSelect,
         onWindowResize: onWindowResize,
+        onPing: onPing,
         getActiveFilter: getActiveFilter
     };
 })();
+
+ZMG.ClientEvents.onPing.periodical(ZMG.CONST.refreshtime);

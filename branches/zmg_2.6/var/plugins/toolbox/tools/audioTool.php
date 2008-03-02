@@ -11,7 +11,7 @@
 
 defined('_ZMG_EXEC') or die('Restricted access');
 
-class zmgMusicTool {
+class zmgAudioTool {
     /**
      * Get the ID3v2.x tag from an mp3 file.
      *
