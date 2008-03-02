@@ -85,6 +85,8 @@ class zmgUploadTool {
               'published' => 1,
               'gid'       => $gallery->gid
             );
+            $obj->setGalleryDir($gallery->dir); //saves a SQL query later on...
+            
             if (!$obj->bind($data)) {
                 zmgToolboxPlugin::registerError(T_('Upload media'), T_('Medium could not be saved') . ': ' . $obj->getError());
             } else if (!zmgFileHelper::copy($src_path . $medium, $dest_path . $medium)) {

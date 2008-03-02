@@ -316,7 +316,7 @@ class zmgMimeHelper {
         if ($isMime) {
             $tag = zmgMimeHelper::convertMimeToExtension($tag);
         }
-        return (zmgMimeHelper::isImage($tag) || zmgMimeHelper::isMovie($tag) || zmgMimeHelper::isDocument($tag) || zmgMimeHelper::isAudio($tag));
+        return (zmgMimeHelper::isImage($tag) || zmgMimeHelper::isVideo($tag) || zmgMimeHelper::isDocument($tag) || zmgMimeHelper::isAudio($tag));
     }
     
     /**
@@ -439,7 +439,7 @@ class zmgMimeHelper {
      * @param string $tag
      * @param int $isMime
      */
-    function isMovie($tag, $isMime = false) {
+    function isVideo($tag, $isMime = false) {
         if ($isMime) {
             $tag = zmgMimeHelper::convertMimeToExtension($tag);
         }
