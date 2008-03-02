@@ -81,6 +81,7 @@ zmgimport('org.zoomfactory.lib.smarty.Smarty');
 zmgimport('org.zoomfactory.lib.Zoom');
 //we need the events now
 zmgimport('org.zoomfactory.lib.core.zmgEvent');
+zmgimport('org.zoomfactory.lib.core.zmgSession');
 //require_once(ZMG_ABS_PATH . DS.'lib'.DS.'Zoom.php');
 $zoom = & zmgFactory::getZoom();
 

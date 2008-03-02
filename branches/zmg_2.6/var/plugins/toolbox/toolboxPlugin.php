@@ -121,6 +121,10 @@ class zmgToolboxPlugin extends zmgError {
         zmgToolboxPlugin::throwErrors();
     }
     
+    function processMedium(&$medium, &$gallery) {
+    	return true;//TODO
+    }
+    
     function &getErrors() {
         static $zmgToolboxErrors;
         
