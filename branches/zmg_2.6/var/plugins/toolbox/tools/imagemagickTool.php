@@ -23,9 +23,10 @@ class zmgImagemagickTool {
      */
     function resize($src_file, $dest_file, $new_size) {
         $retval = $output = null;
+        
         $cmd = zmgImagemagickTool::detectPath()."convert -resize $new_size \"$src_file\" \"$dest_file\"";
         exec($cmd, $output, $retval);
-        if($retval) {
+        if ($retval) {
             return zmgToolboxPlugin::registerError($src_file, 'ImageMagick: Could not convert image: ' . $output);
         }
         return true;

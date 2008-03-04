@@ -11,7 +11,7 @@
 
 defined('_ZMG_EXEC') or die('Restricted access');
 
-class zmgPluginHelper extends zmgError {
+class zmgPluginHelper {
     
     var $_plugins = null;
     
@@ -116,11 +116,11 @@ class zmgPluginHelper extends zmgError {
                 $plugin = & $this->get($plugin);
             }
         } else {
-            return $this->throwError('embedSettings::Invalid plugin.');
+            return zmgError::throwError('embedSettings::Invalid plugin.');
         }
         
         if (!file_exists($xml_path))
-            return $this->throwError('Settings file not found ('.$xml_path.').');
+            return zmgError::throwError('Settings file not found ('.$xml_path.').');
 
         require_once(ZMG_ABS_PATH . DS.'lib'.DS.'domit'.DS.'xml_domit_lite_include.php');
         $xmldoc = & new DOMIT_Lite_Document();
@@ -128,12 +128,12 @@ class zmgPluginHelper extends zmgError {
         
         if (!$xmldoc->loadXML($xml_path, false, true)) {
             unset($xmldoc);
-            return $this->throwError('DOMIT error: could not open document.');
+            return zmgError::throwError('DOMIT error: could not open document.');
         }
         
         if ($xmldoc->documentElement->getTagName() != "settings") {
             unset($xmldoc);
-            return $this->throwError('Invalid plugin settings file.');
+            return zmgError::throwError('Invalid plugin settings file.');
         }
         
         $zoom = & zmgFactory::getZoom();
@@ -209,13 +209,22 @@ class zmgPluginHelper extends zmgError {
         $zoom->_config->fromPlugin($plugin);
     }
     
+    function prettifyName($name) {
+        $parts = explode('_', $name);
+        for ($i = 0; $i < count($parts); $i++) {
+        	$parts[$i] = ucfirst($parts[$i]);
+        }
+        
+        return implode(' ', $parts);
+    }
+    
     function embedHTML() {
         $zoom = & zmgFactory::getZoom();
         
         $out  = "<div id=\"zmg_plugins_accordion\" class=\"zmg_halfsize\">\n";
         
         foreach ($this->_plugins as $plugin) {
-            $name      = ucfirst($plugin['name']);
+            $name      = $this->prettifyName($plugin['name']);
             $settings  = $plugin['settings'];
             if (is_array($settings)) {
                 $out .= "<div class=\"zmg_accordion_panel\">\n" 

@@ -81,6 +81,7 @@ class zmgUploadTool {
         	$obj  = new zmgMedium($db);
             $data = array(
               'name'      => zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_upload_name', '')),
+              'filename'  => $medium,
               'descr'     => zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_upload_descr', '')),
               'published' => 1,
               'gid'       => $gallery->gid
@@ -96,10 +97,12 @@ class zmgUploadTool {
         	} else if (!zmgToolboxPlugin::processMedium($obj, $gallery)) {
         		zmgToolboxPlugin::registerError(T_('Upload media'), T_('Unable to generate thumbnail') . ' ' . $medium);
         	} else if (!$obj->store()) { //now save this medium in our DB
-        		zmgToolboxPlugin::registerError(T_('Upload media'), T_('Medium could not be saved') . ': ' . $medium->getError());
+        		zmgToolboxPlugin::registerError(T_('Upload media'), T_('Medium could not be saved') . ': ' . $obj->getError());
         	}
             //delete medium from session data: fourth parameter as TRUE 
             $session->update('uploadtool.fancyfiles', $medium, ZMG_DATATYPE_ARRAY, true);
+            
+            zmgToolboxPlugin::throwErrors();
         }
     }
     

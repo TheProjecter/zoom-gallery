@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings plugin="JPEG Metadata">
+    <category name="general">
+        <setting name="readwrite" type="select" default="1" label="Read/ write Metadata" description="">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </setting>
+    </category>
+</settings>

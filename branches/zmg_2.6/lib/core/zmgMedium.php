@@ -41,9 +41,9 @@ class zmgMedium extends zmgTable {
     
     var $gid = null;
     
-    var $gallery_dir = null;
+    var $_gallery_dir = null;
     
-    var $mime_type = null;
+    var $_mime_type = null;
     
     var $uid = null;
     
@@ -56,30 +56,31 @@ class zmgMedium extends zmgTable {
     }
     
     function getAbsPath($type = ZMG_MEDIUM_ORIGINAL, $mediapath = '') {
-        if (!$this->gid) {
-            zmgError::throwError('zmgMedium: medium data not loaded yet');
+        if (!$this->_gallery_dir || !$this->filename) {
+            zmgError::throwError('zmgMedium: medium data not loaded yet;'.$this->dir.' '.$this->filename);
         }
+        
+        $path = zmgEnv::getRootPath() . DS;
         
         if (empty($mediapath)) {
             $zoom = & zmgFactory::getZoom();
             $mediapath = $zoom->getConfig('filesystem/mediapath');
         }
+        $path .= $mediapath . $this->getGalleryDir() . DS;
         
         if ($type & ZMG_MEDIUM_ORIGINAL) {
             $path .= "";
         } else if ($type & ZMG_MEDIUM_VIEWSIZE) {
-            $path .= "viewsize";
+            $path .= "viewsize" . DS;
         } else if ($type & ZMG_MEDIUM_THUMBNAIL) {
-            $path .= "thumbs";
+            $path .= "thumbs" . DS;
         }
         
-        $path = zmgEnv::getRootPath() .DS.$mediapath;
-        
-        return $path.DS.$this->getGalleryDir();
+        return $path . $this->filename;
     }
     
-    function getRelPath($type = ZMG_MEDIUM_ORIGINAL, $mediapath = '') {
-        if (!$this->gid) {
+    function getRelPath($type = ZMG_MEDIUM_THUMBNAIL, $mediapath = '') {
+        if (!$this->_gallery_dir || !$this->filename) {
             zmgError::throwError('zmgMedium: medium data not loaded yet');
         }
         if (empty($mediapath)) {
@@ -104,21 +105,13 @@ class zmgMedium extends zmgTable {
     }
     
     function getGalleryDir() {
-        if (!$this->gid) {
-            zmgError::throwError('zmgMedium: medium data not loaded yet');
-        }
-        
-        if (empty($this->gallery_dir)) {
+        if (empty($this->_gallery_dir)) {
             $this->setGalleryDir();
         }
-        return $this->gallery_dir;
+        return $this->_gallery_dir;
     }
     
     function setGalleryDir($dir = null) {
-    	if (!$this->gid) {
-            zmgError::throwError('zmgMedium: medium data not loaded yet');
-        }
-        
         if ($dir === null) {
     		$db = & zmgDatabase::getDBO();
             $db->setQuery("SELECT dir FROM #__zmg_galleries WHERE gid=".$this->gid);
@@ -127,23 +120,28 @@ class zmgMedium extends zmgTable {
             }
     	}
         
-        $this->gallery_dir = $dir;
+        $this->_gallery_dir = $dir;
     }
     
-    function getMimeType() {
-    	if (!$this->gid) {
+    function getExtension() {
+    	if (!$this->filename) {
             zmgError::throwError('zmgMedium: medium data not loaded yet');
         }
         
-        if (empty($this->mime_type)) {
+        $dot = strrpos($this->filename, '.') + 1;
+        return substr($this->filename, $dot);
+    }
+    
+    function getMimeType() {
+        if (empty($this->_mime_type)) {
         	$this->setMimeType();
         }
         
-        return $this->mime_type;
+        return $this->_mime_type;
     }
     
     function setMimeType($mime = null) {
-    	if (!$this->gid) {
+    	if (!$this->filename) {
             zmgError::throwError('zmgMedium: medium data not loaded yet');
         }
         
@@ -152,12 +150,11 @@ class zmgMedium extends zmgTable {
             
             zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
             zmgimport('org.zoomfactory.lib.mime.zmgMimeHelper');
-            
-            $ext  = zmgFileHelper::getExt($this->filename);
-            $mime = zmgMimeHelper::getMime($path, null, $ext);
+
+            $mime = zmgMimeHelper::getMime($path, null, $this->getExtension());
     	}
         
-        $this->mime_type = $mime;
+        $this->_mime_type = $mime;
     }
     
     function toJSON() {
