@@ -13,6 +13,8 @@ defined('_ZMG_EXEC') or die('Restricted access');
 
 if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
 
+define('ZMG_SAFEMODE_ON', (bool)ini_get('safe_mode'));
+
 //define datatype shorthands as well
 define('ZMG_DATATYPE_STRING', 0x0001);
 define('ZMG_DATATYPE_NUMBER', 0x0002);

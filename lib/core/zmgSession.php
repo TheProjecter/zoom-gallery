@@ -144,8 +144,9 @@ class zmgSession {
         if (empty($name)) {
             return zmgError::throwError('zmgSession: no variable name specified.');
         }
+        
         if (empty($value)) {
-            return zmgError::throwError('zmgSession: no value to store.');
+            unset($_SESSION[$this->_var_prefix . (string)$name]); //return zmgError::throwError('zmgSession: no value to store.');
         }
         
         $name = trim($name);

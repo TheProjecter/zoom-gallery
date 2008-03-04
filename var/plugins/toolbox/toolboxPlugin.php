@@ -79,12 +79,14 @@ class zmgToolboxPlugin extends zmgError {
     function upload(&$event) {
         $method = $event->getArgument('method');
         
+        zmgimport('org.zoomfactory.var.plugins.toolbox.tools.uploadTool');
         return zmgUploadTool::upload($method);
     }
     
     function finalizeUpload(&$event) {
     	$gid = intval($event->getArgument('gid'));
         
+        zmgimport('org.zoomfactory.var.plugins.toolbox.tools.uploadTool');
         return zmgUploadTool::finalizeUpload($gid);
     }
     
@@ -130,25 +132,29 @@ class zmgToolboxPlugin extends zmgError {
         
         zmgimport('org.zoomfactory.lib.mime.zmgMimeHelper');
         
+        $ok = true;
+        
         if (zmgMimeHelper::isImage($mime, true)) {
         	zmgimport('org.zoomfactory.var.plugins.toolbox.tools.imageTool');
-            
-            zmgImageTool::process($medium, $gallery);
+
+            $ok = zmgImageTool::process($medium, $gallery);
         } else if (zmgMimeHelper::isDocument($mime, true)) {
         	zmgimport('org.zoomfactory.var.plugins.toolbox.tools.documentTool');
             
-            zmgDocumentTool::process($medium, $gallery);
+            $ok = zmgDocumentTool::process($medium, $gallery);
         } else if (zmgMimeHelper::isVideo($mime, true)) {
         	zmgimport('org.zoomfactory.var.plugins.toolbox.tools.videoTool');
             
-            zmgVideoTool::process($medium, $gallery);
+            $ok = zmgVideoTool::process($medium, $gallery);
         } else if (zmgMimeHelper::isAudio($mime, true)) {
         	zmgimport('org.zoomfactory.var.plugins.toolbox.tools.audioTool');
             
-            zmgAudioTool::process($medium, $gallery);
+            $ok = zmgAudioTool::process($medium, $gallery);
+        } else {
+        	zmgToolboxPlugin::registerError('Upload medium', 'Unsupported medium type.');
         }
         
-        return true;//TODO
+        return $ok;
     }
     
     function &getErrors() {

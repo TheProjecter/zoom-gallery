@@ -108,4 +108,7 @@ $zoom_config['plugins']['toolbox']['pdftotext']['override'] = "0";
 $zoom_config['plugins']['toolbox']['ffmpeg'] = array();
 $zoom_config['plugins']['toolbox']['ffmpeg']['path'] = "auto";
 $zoom_config['plugins']['toolbox']['ffmpeg']['override'] = "0";
+$zoom_config['plugins']['jpeg_metadata'] = array();
+$zoom_config['plugins']['jpeg_metadata']['general'] = array();
+$zoom_config['plugins']['jpeg_metadata']['general']['readwrite'] = "1";
 ?>
