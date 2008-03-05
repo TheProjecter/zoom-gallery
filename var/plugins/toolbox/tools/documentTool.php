@@ -19,25 +19,20 @@ class zmgDocumentTool {
      * @param string $filename
      * @return boolean
      */
-    function index($file, $filename) {
-        global $mosConfig_absolute_path, $zoom;
+    function process(&$medium, &$gallery) {
         // this function will contain the algorithm to index a document (like a pdf)...
         // Method: use PDFtoText to create a plain ASCII text-file, which can be easily
         //         searched through. The text-file will be placed into the same dir as the
         //         original pdf.
         // Note: support for MS Word, Excel and Powerpoint indexing will be added later.
-        if ($this->_PDF_path == 'auto') {
-            $this->_PDF_path = '';
-        } else {
-            if (!empty($this->_PDF_path) && !$zoom->_CONFIG['override_PDF']) {
-                if (!$zoom->platform->is_dir($this->_PDF_path)) {
-                    return zmgToolboxPlugin::registerError($file, 'Xpdf: Your PDFtoText path is not correct! Please (re)specify it in the Admin-system under \'Settings\'');
-                }
-            }
-        }
-        $desfile = ereg_replace("(.*)\.([^\.]*)$", "\\1", $filename).".txt";
-        $target = $mosConfig_absolute_path."/".$zoom->_CONFIG['imagepath'].$zoom->_gallery->getDir()."/".$desfile;
-        $cmd = zmgDocumentTool::detectPath() . "pdftotext \"$file\" \"$target\"";
+        $zoom = & zmgFactory::getZoom();
+
+        $file = $medium->getAbsPath();
+
+        $filename    = ereg_replace("(.*)\.([^\.]*)$", "\\1", $medium->filename).".txt";
+        $target_file = zmgEnv::getRootPath() .DS.$zoom->getConfig('filesystem/mediapath').$gallery->dir.DS.$filename;
+
+        $cmd = zmgDocumentTool::getPath() . "pdftotext \"$file\" \"$target_file\"";
         $output = $retval = null;
         exec($cmd, $output, $retval);
         if ($retval) {
@@ -69,6 +64,20 @@ class zmgDocumentTool {
         unset($txt);
         return zmgToolboxPlugin::registerError($file, 'Search: Term not found in this document.');
     }
+    
+    function getPath() {
+         $zoom = & zmgFactory::getZoom();
+         
+         $path     = trim($zoom->getConfig('plugins/toolbox/pdftotext/path'));
+         $override = intval($zoom->getConfig('plugins/toolbox/pdftotext/override'));
+         
+         if ($path == "auto") {
+            $path = zmgDocumentTool::detectPath();
+         }
+         
+         return $path;
+    }
+    
     function detectPath() {
         $path = "";
         if (file_exists('/usr/bin/pdftotext') && is_executable('/usr/bin/pdftotext')) {
@@ -76,6 +85,7 @@ class zmgDocumentTool {
         }
         return $path;
     }
+
     /**
      * Detect if Xpdf is available on the system.
      *

@@ -20,17 +20,7 @@ class zmgVideoTool {
      * @param string $filename
      * @return boolean
      */
-    function createThumbnail($file, $size, $filename) {
-        global $mosConfig_absolute_path, $zoom;
-        if ($this->_FFMPEG_path == 'auto') {
-            $this->_FFMPEG_path = '';
-        } else {
-            if (!empty($this->_FFMPEG_path) && !$zoom->_CONFIG['override_FFMPEG']) {
-                if (!$zoom->platform->is_dir($this->_FFMPEG_path)) {
-                    return zmgToolboxPlugin::registerError($file, 'FFMpeg: Your FFMpeg path is not correct! Please (re)specify it in the Admin-system under \'Settings\'');
-                }
-            }
-        }
+    function process(&$medium, &$gallery) {//$file, $size, $filename) {
         $desfile = ereg_replace("(.*)\.([^\.]*)$", "\\1", $filename).".jpg";
         if ($tempdir = $zoom->createTempDir()) {
             $gen_path = $mosConfig_absolute_path."/".$tempdir;
@@ -56,6 +46,28 @@ class zmgVideoTool {
             return zmgToolboxPlugin::registerError($file, 'FFmpeg: Could not create temporary directory.');
         }
     }
+    
+    function getPath() {
+         $zoom = & zmgFactory::getZoom();
+         
+         $path     = trim($zoom->getConfig('plugins/toolbox/ffmpeg/path'));
+         $override = intval($zoom->getConfig('plugins/toolbox/ffmpeg/override'));
+         
+         if ($path == "auto") {
+            $path = zmgVideoTool::detectPath();
+         }
+         
+         return $path;
+    }
+    
+    function detectPath() {
+        $path = "";
+        if (file_exists('/usr/bin/ffmpeg') && is_executable('/usr/bin/ffmpeg')) {
+            $path = "/usr/bin/"; //Debian systems
+        }
+        return $path;
+    }
+    
     /**
      * Detect if FFmpeg is available on the system.
      *
@@ -63,7 +75,10 @@ class zmgVideoTool {
      */
     function autoDetect() {
         static $output, $status;
-        exec('ffmpeg', $output, $status);
+        //get the absolute location first:
+        $path = zmgVideoTool::detectPath();
+        //execute test command
+        @exec($path . 'ffmpeg',  $output, $status);
         
         $res = false;
         if (!empty($output[0])) {

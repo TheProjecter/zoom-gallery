@@ -31,7 +31,7 @@ class zmgNetpbmTool {
         $destWidth = (int)($imgobj->_size[0] / $ratio);
         $destHeight = (int)($imgobj->_size[1] / $ratio);
         
-        $path = zmgNetpbmTool::detectPath();
+        $path = zmgNetpbmTool::getPath();
         if (eregi("\.png", $imgobj->_filename)) {
             $cmd = $path . "pngtopnm $src_file | " . $path . "pnmscale -xysize $destWidth $destHeight | " . $path . "pnmtopng > $dest_file" ; 
         } elseif (eregi("\.(jpg|jpeg)", $imgobj->_filename)) {
@@ -61,7 +61,7 @@ class zmgNetpbmTool {
         $fileOut = "$src_file.1";
         @copy($src_file, $fileOut);
         
-        $path = zmgNetpbmTool::detectPath();
+        $path = zmgNetpbmTool::getPath();
         if (eregi("\.png", $imgobj->_filename)) {
             $cmd = $path . "pngtopnm $src_file | " . $path . "pnmrotate $degrees | " . $path . "pnmtopng > $fileOut" ; 
         } elseif (eregi("\.(jpg|jpeg)", $imgobj->_filename)) {
@@ -79,6 +79,20 @@ class zmgNetpbmTool {
         $erg = @rename($fileOut, $dest_file); 
         return true;
     }
+    
+    function getPath() {
+         $zoom = & zmgFactory::getZoom();
+         
+         $path     = trim($zoom->getConfig('plugins/toolbox/netpbm/path'));
+         $override = intval($zoom->getConfig('plugins/toolbox/netpbm/override'));
+         
+         if ($path == "auto") {
+            $path = zmgNetpbmTool::detectPath();
+         }
+         
+         return $path;
+    }
+    
     function detectPath() {
         $path = "";
         if (file_exists('/usr/bin/jpegtopnm') && is_executable('/usr/bin/jpegtopnm')) {
@@ -86,6 +100,7 @@ class zmgNetpbmTool {
         }
         return $path;
     }
+    
     /**
      * Detect if NetPBM is available on the system.
      *

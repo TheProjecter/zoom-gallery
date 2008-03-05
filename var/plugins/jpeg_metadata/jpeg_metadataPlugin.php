@@ -22,6 +22,9 @@ class zmgJpeg_metadataPlugin {
             ),
             "ongetimagemetadata" => array(
                 "getImageMetadata" => array('medium')
+            ),
+            "onputimagemetadata" => array(
+                "putImageMetadata" => array('medium', 'metadata')
             )
         );
     }
@@ -93,6 +96,10 @@ class zmgJpeg_metadataPlugin {
         }
         
         return $data;
+    }
+    
+    function putImageMetadata($event) {
+    	return true;
     }
 }
 ?>

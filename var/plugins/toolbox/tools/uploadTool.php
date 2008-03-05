@@ -61,7 +61,7 @@ class zmgUploadTool {
     function finalizeUpload($gid = 0) {
         //finish the SwfUpload sequence...
         if ($gid === 0) {
-        	return zmgToolboxPlugin::registerError('No valid gallery ID provided');
+        	return zmgToolboxPlugin::registerError(T_('Upload media'), T_('No valid gallery ID provided'));
         }
         
         $gallery = new zmgGallery(zmgDatabase::getDBO());
@@ -95,7 +95,7 @@ class zmgUploadTool {
         	} else if (!zmgFileHelper::delete($src_path . $medium)) {
         		zmgToolboxPlugin::registerError(T_('Upload media'), T_('Unable to delete temporary file') . ' ' . $medium);
         	} else if (!zmgToolboxPlugin::processMedium($obj, $gallery)) {
-        		zmgToolboxPlugin::registerError(T_('Upload media'), T_('Unable to generate thumbnail') . ' ' . $medium);
+        		zmgToolboxPlugin::registerError(T_('Upload media'), T_('Medium could not be processed') . ' ' . $medium);
         	} else if (!$obj->store()) { //now save this medium in our DB
         		zmgToolboxPlugin::registerError(T_('Upload media'), T_('Medium could not be saved') . ': ' . $obj->getError());
         	}
