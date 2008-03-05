@@ -261,6 +261,10 @@ ZMG.ClientEvents = (function() {
         onViewSelect('ping');
     };
     
+    var pingTimer = window.setInterval(function() {
+        onPing();
+    }, ZMG.CONST.refreshtime);
+    
     function onShowLoader() {
         ZMG.Shared.cacheElement('zmg_admin_loader').setStyle('display', '');
     };
@@ -307,5 +311,3 @@ ZMG.ClientEvents = (function() {
         getActiveFilter: getActiveFilter
     };
 })();
-
-ZMG.ClientEvents.onPing.periodical(ZMG.CONST.refreshtime);

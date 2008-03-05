@@ -49,6 +49,10 @@ class zmgImageTool {
         //apply watermarks
         //TODO
         
+        if ($ok) {
+        	$ok = $zoom->fireEvent('onputimagemetadata', false, $medium, $metadata);
+        }
+        
         return $ok;
     }
 }

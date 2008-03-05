@@ -138,20 +138,38 @@ class zmgToolboxPlugin extends zmgError {
         	zmgimport('org.zoomfactory.var.plugins.toolbox.tools.imageTool');
 
             $ok = zmgImageTool::process($medium, $gallery);
-        } else if (zmgMimeHelper::isDocument($mime, true)) {
+            if (!$ok) {
+                zmgToolboxPlugin::registerError(T_('Upload medium'), T_('Could not create thumbnail of image file'));
+                //TODO: cleanup
+            }
+        } else if (zmgMimeHelper::isDocument($mime, true)
+          && zmgMimeHelper::isIndexable($mime, true)) {
         	zmgimport('org.zoomfactory.var.plugins.toolbox.tools.documentTool');
             
             $ok = zmgDocumentTool::process($medium, $gallery);
-        } else if (zmgMimeHelper::isVideo($mime, true)) {
+            if (!$ok) {
+                zmgToolboxPlugin::registerError(T_('Upload medium'), T_('Could not index document'));
+                //TODO: cleanup
+            }
+        } else if (zmgMimeHelper::isVideo($mime, true)
+          && zmgMimeHelper::isThumbnailable($mime, true)) {
         	zmgimport('org.zoomfactory.var.plugins.toolbox.tools.videoTool');
             
             $ok = zmgVideoTool::process($medium, $gallery);
+            if (!$ok) {
+                zmgToolboxPlugin::registerError(T_('Upload medium'), T_('Could not create thumbnail of video file'));
+                //TODO: cleanup
+            }
         } else if (zmgMimeHelper::isAudio($mime, true)) {
         	zmgimport('org.zoomfactory.var.plugins.toolbox.tools.audioTool');
             
             $ok = zmgAudioTool::process($medium, $gallery);
+            if (!$ok) {
+            	zmgToolboxPlugin::registerError(T_('Upload medium'), T_('Audio file not supported'));
+                //TODO: cleanup
+            }
         } else {
-        	zmgToolboxPlugin::registerError('Upload medium', 'Unsupported medium type.');
+        	zmgToolboxPlugin::registerError(T_('Upload medium'), T_('Unsupported medium type.'));
         }
         
         return $ok;

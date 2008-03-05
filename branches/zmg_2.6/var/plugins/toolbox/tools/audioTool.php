@@ -12,6 +12,10 @@
 defined('_ZMG_EXEC') or die('Restricted access');
 
 class zmgAudioTool {
+	function process() {
+		return true;
+	}
+
     /**
      * Get the ID3v2.x tag from an mp3 file.
      *
