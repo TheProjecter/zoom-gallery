@@ -41,6 +41,10 @@ class zmgViewHelper {
         $this->_template = new zmgTemplateHelper(&$smarty_cfg, $secret);
     }
     
+    function getActiveTemplate() {
+    	return $this->_template->getActiveTemplate();
+    }
+    
     function setViewType($view = 'html') {
         $this->_viewtype = $view;
     }

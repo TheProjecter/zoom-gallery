@@ -79,12 +79,14 @@ class zmgMedium extends zmgTable {
         return $path . $this->filename;
     }
     
-    function getRelPath($type = ZMG_MEDIUM_THUMBNAIL, $mediapath = '') {
+    function getRelPath($type = ZMG_MEDIUM_THUMBNAIL, $mediapath = '', $smallthumb = true) {
         if (!$this->_gallery_dir || !$this->filename) {
             zmgError::throwError('zmgMedium: medium data not loaded yet');
         }
+        
+        $zoom = & zmgFactory::getZoom();
+        
         if (empty($mediapath)) {
-            $zoom = & zmgFactory::getZoom();
             $mediapath = $zoom->getConfig('filesystem/mediapath');
         }
         
@@ -93,15 +95,47 @@ class zmgMedium extends zmgTable {
         $path = zmgEnv::getSiteURL() . "/" . $mediapath
          . $this->getGalleryDir() . "/";
          
+        $filename = $this->filename;
+        
         if ($type & ZMG_MEDIUM_ORIGINAL) {
         	$path .= "";
         } else if ($type & ZMG_MEDIUM_VIEWSIZE) {
         	$path .= "viewsize";
         } else if ($type & ZMG_MEDIUM_THUMBNAIL) {
         	$path .= "thumbs";
+            
+            $template_path = zmgEnv::getSiteURL() . "/components/com_zoom/var/www/templates/"
+              . $zoom->view->getActiveTemplate() . "/images/mimetypes";
+            if ($smallthumb) {
+            	$template_path .= "/small";
+            }
+              
+            $ext = $this->getExtension();
+            zmgimport('org.zoomfactory.lib.mime.zmgMimeHelper');
+            if (!zmgMimeHelper::isImage($ext)) {
+            	if (zmgMimeHelper::isDocument($ext)) {
+            		$path = $template_path;
+                    if (strstr($ext, 'pdf')) {
+                        $filename = "pdf.png";
+            		} else {
+            			$filename = "doc.png";
+            		}
+            	} else if (zmgMimeHelper::isMovie($ext)) {
+            		if (zmgMimeHelper::isThumbnailable($ext)) {
+            			$filename = ereg_replace("(.*)\.([^\.]*)$", "\\1", $this->filename).".jpg";
+                        //TODO: improve error-checking
+            		} else {
+            			$path = $template_path;
+                        $filename = (strstr('flv', $ext)) ? "flv.png" : "video.png";
+            		}
+            	} else if (zmgMimeHelper::isAudio($ext)) {
+            		$path = $template_path;
+                    $filename = "audio.png";
+            	}
+            }
         }
         
-        return $path . "/" . $this->filename;
+        return $path . "/" . $filename;
     }
     
     function getGalleryDir() {
@@ -166,7 +200,7 @@ class zmgMedium extends zmgTable {
             'descr'    : ".$json->encode($this->descr).",
             'keywords' : ".$json->encode($this->keywords).",
             'date_add' : ".$json->encode($this->date_add).",
-            'url'      : ".$json->encode($this->getRelPath(ZMG_MEDIUM_THUMBNAIL)).",
+            'url'      : ".$json->encode($this->getRelPath(ZMG_MEDIUM_THUMBNAIL, '', false)).",
             'hits'     : $this->hits,
             'votenum'  : $this->votenum,
             'votesum'  : $this->votesum,

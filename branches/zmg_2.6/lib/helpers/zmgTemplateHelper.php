@@ -51,6 +51,10 @@ class zmgTemplateHelper extends Smarty {
         $this->_loadManifest();
     }
     
+    function getActiveTemplate() {
+    	return $this->_active_template;
+    }
+    
     function run($view, $subview, $viewtype) {
         //mootools & Ajax preparing stuff
         $this->_type = $viewtype;

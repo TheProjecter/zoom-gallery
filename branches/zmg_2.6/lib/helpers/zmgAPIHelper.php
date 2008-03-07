@@ -134,5 +134,11 @@ class zmgAPIHelper {
         
         return $zoom->getMedia($gid, $offset, $length, $filter);
     }
+    
+    function getActiveTemplate() {
+    	$zoom = & zmgFactory::getZoom();
+        
+        return $zoom->view->getActiveTemplate();
+    }
 }
 ?>
