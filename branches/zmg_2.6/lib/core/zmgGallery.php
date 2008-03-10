@@ -122,18 +122,18 @@ class zmgGallery extends zmgTable {
         if (empty($this->gid)) {
         	return zmgError::throwError('zmgGallery: gallery data not loaded yet!');
         }
-        
+
         if (is_object($this->_obj_cover_img)) {
         	return $this->_obj_cover_img->getRelPath();
         }
-        
+
         $db = & zmgDatabase::getDBO();
-        if ($this->cover_img == null) {
+        if (!is_int($this->cover_img)) {
         	// first, check if the gallery contains any media at all:
             $zoom = & zmgFactory::getZoom();
-            $database->setQuery("SELECT mid FROM #__zmg_media WHERE gid = " . $this->gid
+            $db->setQuery("SELECT mid FROM #__zmg_media WHERE gid = " . $this->gid
               . " ORDER BY " . $zoom->getMediaOrdering() . " LIMIT 1");
-            $medium = intval($database->loadResult());
+            $medium = intval($db->loadResult());
             if ($medium > 0) {
             	// get the first available medium
                 $this->_obj_cover_img = new zmgMedium($db);
@@ -142,12 +142,11 @@ class zmgGallery extends zmgTable {
                 return $this->_obj_cover_img->getRelPath();
             }
         } else {
-        	$this->_obj_cover_img = new zmgMedium($db);
+            $this->_obj_cover_img = new zmgMedium($db);
             $this->_obj_cover_img->load($this->cover_img);
 
             return $this->_obj_cover_img->getRelPath();
         }
-        
         //TODO: display an 'empty gallery' image...or let the client handle this?
         return "";
     }
