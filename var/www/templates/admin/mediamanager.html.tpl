@@ -43,8 +43,9 @@
             <div id="zmg_edit_medium_tabs" class="tab-all-container">
                 <div class="tab-strip-wrapper">
                     <ul class="tab-strip">
-                        <li><a>{t}Properties{/t}</a></li>
-                        <li><a>{t}Permissions{/t}</a></li>
+                        <li><a rel="properties">{t}Properties{/t}</a></li>
+                        <li><a rel="permissions">{t}Permissions{/t}</a></li>
+                        <li><a rel="comments">{t}Comments{/t}</a></li>
                     </ul>
                 </div>
                 <div class="tab-wrapper"></div>
@@ -100,11 +101,21 @@
                 </table>
             </div>
             <div class="tab-container" rel="permissions">
-                <!-- new tab should start here... 'Members' -->
+                <!-- new tab should start here... 'Permissions' -->
                 <table border="0" width="300">
                 <tr>
                     <td>
                     <!-- List of members put here... -->
+                    </td>
+                </tr>
+                </table>
+            </div>
+            <div class="tab-container" rel="comments">
+                <!-- new tab should start here... 'Comments' -->
+                <table border="0" width="300">
+                <tr>
+                    <td>
+                    <!-- List of comments put here... -->
                     </td>
                 </tr>
                 </table>

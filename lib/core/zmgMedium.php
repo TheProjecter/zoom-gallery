@@ -120,7 +120,7 @@ class zmgMedium extends zmgTable {
             		} else {
             			$filename = "doc.png";
             		}
-            	} else if (zmgMimeHelper::isMovie($ext)) {
+            	} else if (zmgMimeHelper::isVideo($ext)) {
             		if (zmgMimeHelper::isThumbnailable($ext)) {
             			$filename = ereg_replace("(.*)\.([^\.]*)$", "\\1", $this->filename).".jpg";
                         //TODO: improve error-checking
@@ -189,6 +189,28 @@ class zmgMedium extends zmgTable {
     	}
         
         $this->_mime_type = $mime;
+    }
+    
+    /**
+     * Get the comments a medium contains.
+     *
+     * @return void
+     * @access public
+     */
+    function getComments() {
+        $comments = array();
+        
+        $db = & zmgDatabase::getDBO();
+        $db->setQuery('SELECT cid FROM #__zmg_comments WHERE mid = '.$this->mid.' ORDER BY date_added ASC');
+
+        $_result = $db->loadObjectList();
+        foreach ($_result as $row) {
+            $comment = new zmgComment($db);
+            $comment->load(intval($row->cmtid));
+            $comments[] = $comment;
+        }
+        
+        return $comments;
     }
     
     function toJSON() {

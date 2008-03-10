@@ -38,6 +38,11 @@ ZMG.EventHandlers = {
     },
     
     onMmUploadStartClick: function() {
+        if (!ZMG.ClientEvents.getActiveFilter()) {
+            return ZMG.ClientEvents.onShowMessage('Medium Upload',
+              'You must select a gallery before you can upload media!'); //no gallery selected!
+        }
+        
         var oUploader = ZMG.Shared.get('uploader');
         if (oUploader) oUploader.upload();
     },

@@ -111,6 +111,12 @@ ZMG.ServerEvents = (function() {
             var oForm = ZMG.Shared.cacheElement('zmg_form_edit_gallery');
             oForm.reset();
             
+            var oImg = ZMG.Shared.cacheElement('zmg_edit_gallery_thumbnail');
+            if (data.cover_img)
+                oImg.src = data.cover_img;
+            else
+                oImg.src = ""; //TODO: 'empty' picture.
+            
             oForm.elements['zmg_edit_gallery_gid'].value = data.gid || 'new';
             //ZMG.Shared.cacheElement('zmg_edit_medium_thumbnail').src = data.url;
             oForm.elements['zmg_edit_gallery_name'].value = data.name;
@@ -222,7 +228,7 @@ ZMG.ServerEvents = (function() {
                     container.setStyle('display', ''); // 2) then show the element, to prevent flickering
                 },
                 getContent: function(el) {
-                    var content, rel = el.innerHTML.toString().toLowerCase();
+                    var content, rel = el.getAttribute('rel');
                     oLiveGrid.options.editpanel.getElements('div.tab-container')
                      .each(function(el) {
                         if (el.getAttribute('rel') == rel) content = el;
