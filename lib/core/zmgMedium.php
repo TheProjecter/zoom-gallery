@@ -57,7 +57,7 @@ class zmgMedium extends zmgTable {
     
     function getAbsPath($type = ZMG_MEDIUM_ORIGINAL, $mediapath = '') {
         if (!$this->_gallery_dir || !$this->filename) {
-            zmgError::throwError('zmgMedium: medium data not loaded yet;'.$this->dir.' '.$this->filename);
+            zmgError::throwError('zmgMedium: medium data not loaded yet;'.$this->_gallery_dir.' '.$this->filename);
         }
         
         $path = zmgEnv::getRootPath() . DS;
@@ -122,9 +122,13 @@ class zmgMedium extends zmgTable {
             		}
             	} else if (zmgMimeHelper::isVideo($ext)) {
             		if (zmgMimeHelper::isThumbnailable($ext)) {
-            			$filename = ereg_replace("(.*)\.([^\.]*)$", "\\1", $this->filename).".jpg";
-                        //TODO: improve error-checking
-            		} else {
+            			zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
+                        $filename = ereg_replace("(.*)\.([^\.]*)$", "\\1", $this->filename).".jpg";
+                        if (!zmgFileHelper::exists(str_replace($this->filename, $filename, $this->getAbsPath(ZMG_MEDIUM_THUMBNAIL)))) {
+                        	$filename = null;
+                        }
+            		}
+                    if (!$filename) {
             			$path = $template_path;
                         $filename = (strstr('flv', $ext)) ? "flv.png" : "video.png";
             		}

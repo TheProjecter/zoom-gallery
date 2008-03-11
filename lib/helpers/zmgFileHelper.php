@@ -182,7 +182,7 @@ class zmgFileHelper
             // as long as the owner is either the webserver or the ftp
             if (@unlink($file)) {
                 // Do nothing
-            } elseif ($FTPOptions['enabled'] == 1) {
+            } elseif (false) {//$FTPOptions['enabled'] == 1) {
                 $file = zmgFileHelper::cleanPath(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $file), '/');
                 if (!$ftp->delete($file)) {
                     // FTP connector throws an error
@@ -489,6 +489,40 @@ class zmgFileHelper
             @ umask($origmask);
         }
         return $ret;
+    }
+    
+    /**
+     * remove a gallery completely including sub-directories.
+     * @param string $dir
+     * @return boolean
+     */
+    function deleteDir($dir) {
+        // Sanity check
+        if (!$dir) {
+            // Bad programmer! Bad Bad programmer!
+            zmgError::throwError('zmgFileHelper: ' . _('Attempt to delete base directory'));
+            return false;
+        }
+        
+        if (false) {//$this->_CONFIG['safemodeON']) {    
+           //$dir = substr($dir,strlen($mosConfig_absolute_path));
+           $ftp_dirtoremove = $this->_CONFIG['ftp_hostdir'].$dir;
+           //remove directory
+           $result = $this->ftp_rmAll($ftp_dirtoremove); //do it recursively with helper function
+           return $result;
+        } else {
+            $current_dir = opendir($dir);
+            while ($entryname = readdir($current_dir)) {
+                if (is_dir($dir.DS.$entryname) && ($entryname != "." && $entryname != "..")) {
+                    zmgFileHelper::deleteDir("${dir}/${entryname}");
+                } else if ($entryname != "." && $entryname != "..") {
+                    zmgFileHelper::delete($dir.DS.$entryname);
+                }
+            }
+            closedir($current_dir);
+            rmdir("${dir}");
+            return true;
+        }
     }
     
     /**

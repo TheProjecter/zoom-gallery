@@ -55,7 +55,11 @@ class zmgJpeg_metadataPlugin {
         $file = $medium->getAbsPath();
         if ($zoom->getConfig('plugins/jpeg_metadata/general/readwrite')
           && ($ext == "jpg" || $ext == "jpeg") && !ZMG_SAFEMODE_ON) {
-        	// Retreive the EXIF, XMP and Photoshop IRB information from
+        	//import libs first (duh ;) )
+            zmgimport('org.zoomfactory.var.plugins.jpeg_metadata.v1_11.EXIF'); //takes care of some deferred loading as well
+            zmgimport('org.zoomfactory.var.plugins.jpeg_metadata.v1_11.Photoshop_File_Info');
+            
+            // Retreive the EXIF, XMP and Photoshop IRB information from
             // the existing file, so that it can be updated later on...
             $data['headers'] = get_jpeg_header_data($file);
             $data['exif']    = get_EXIF_JPEG($file);

@@ -1,5 +1,7 @@
 <?php
 
+defined('_ZMG_EXEC') or die('Restricted access');
+
 /******************************************************************************
 *
 * Filename:     EXIF_Tags.php
@@ -366,10 +368,10 @@ $GLOBALS[ "IFD_Tag_Definitions" ] = array(
                 9 => "Fine weather",
                 10 => "Cloudy weather",
                 11 => "Shade",
-                12 => "Daylight fluorescent (D 5700 – 7100K)",
-                13 => "Day white fluorescent (N 4600 – 5400K)",
-                14 => "Cool white fluorescent (W 3900 – 4500K)",
-                15 => "White fluorescent (WW 3200 – 3700K)",
+                12 => "Daylight fluorescent (D 5700 ï¿½ 7100K)",
+                13 => "Day white fluorescent (N 4600 ï¿½ 5400K)",
+                14 => "Cool white fluorescent (W 3900 ï¿½ 4500K)",
+                15 => "White fluorescent (WW 3200 ï¿½ 3700K)",
                 17 => "Standard light A",
                 18 => "Standard light B",
                 19 => "Standard light C",
