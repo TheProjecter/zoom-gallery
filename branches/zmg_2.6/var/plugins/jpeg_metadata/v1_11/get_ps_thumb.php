@@ -1,5 +1,7 @@
 <?php
 
+defined('_ZMG_EXEC') or die('Restricted access');
+
 /******************************************************************************
 *
 * Filename:     get_ps_thumb.php

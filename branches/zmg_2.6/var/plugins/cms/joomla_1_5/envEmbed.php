@@ -45,6 +45,10 @@ class zmgEnv extends zmgError {
     	return JPATH_ROOT;
     }
     
+    function getTempDir() {
+    	return JPATH_ROOT . DS."tmp";
+    }
+    
     function getViewType() {
         $forcetype = trim(zmgGetParam($_GET, 'forcetype', ''));
         if (zmgEnv::isRPC() && $forcetype != "html") {
