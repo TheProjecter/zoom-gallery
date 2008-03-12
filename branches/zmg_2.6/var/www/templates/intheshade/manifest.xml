@@ -44,6 +44,9 @@
         <resource name="javascript" xml:base="js/">
             <file href="shadowbox.js" />
         </resource>
+        <resource name="javascript" xml:base="js/">
+            <file href="imageflow.js" />
+        </resource>
         <resource name="template" type="html" view="singlepage" xml:base="">
             <file href="intheshade.html.tpl" />
         </resource>
