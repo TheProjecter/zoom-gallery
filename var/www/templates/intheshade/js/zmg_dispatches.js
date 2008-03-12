@@ -5,29 +5,23 @@ ZMG.Dispatches = {
     requestQueue: null,
     
     stdDispatch: function(options) {
-        var server = ZMG.Events.Server;
-        var client = ZMG.Events.Client;
-        var f = function() {
+        ZMG.ClientEvents.onShowLoader();
+        window.setTimeout(function() {
             new XHR({
-                onSuccess: options.onSuccess || server.onDispatchResult.bind(server),
-                onFailure: options.onFailure || server.onerror.bind(server)
+                onSuccess: options.onSuccess || ZMG.ServerEvents.onDispatchResult,
+                onFailure: options.onFailure || ZMG.ServerEvents.onError
             }).send(options.url, options.data || '');
-        };
-        client.onShowLoader();
-        window.setTimeout(f.bind(this), 20); // allowing a small delay for the browser to draw the loader-icon.
+        }, 20); // allowing a small delay for the browser to draw the loader-icon.
     },
-    getGalleries: function(pos, parentGid) {
-        if (isNaN(pos) || isNaN(parentGid)) return;
-        
+    
+    getMedia: function() {
         this.stdDispatch({
-            url: ZMG.CONST.req_uri + '&view=gallery:get&pos=' + pos + '&sub=' + parentGid,
-            onSuccess: ZMG.Events.Server.ongallerylist.bind(ZMG.Events.Server)
+            url: ZMG.CONST.req_uri + '&view=gallery:thumbnails',
+            onSuccess: ZMG.ServerEvents.onMediaList
         });
     },
+    
     selectView: function(view, forcetype) {
-        var server = ZMG.Events.Server;
-        var client = ZMG.Events.Client;
-        
         view = view || ZMG.CONST.active_view;
         if (!view) return;
         
@@ -44,8 +38,8 @@ ZMG.Dispatches = {
                 ajaxOptions: {
                     method: 'get'
                 },
-                onSuccess: server.onView.bind(server),
-                onFailure: server.onError.bind(server),
+                onSuccess: ZMG.ServerEvents.onView,
+                onFailure: ZMG.ServerEvents.onError,
             });
         } else {
             //prevent duplicate requests:
@@ -55,11 +49,12 @@ ZMG.Dispatches = {
         
         if (valid) {
             this.lastRequest = vars.view;
+            ZMG.ClientEvents.onShowLoader();
+            
             var self = this;
             var f = function() {
                 self.requestQueue.request(vars || '');
             };
-            client.onShowLoader();
             // allowing a small delay for the browser to draw the loader-icon.
             window.setTimeout(f.bind(this), 20);
         }

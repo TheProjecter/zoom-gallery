@@ -1,40 +1,47 @@
 if (!window.ZMG) window.ZMG = {};
-if (!ZMG.Events) ZMG.Events = {};
 
-ZMG.Events.Server = {
-    onview: function(text, xml, data, resp) {
+ZMG.ServerEvents = (function() {
+    function onView(text, xml, data, resp) {
         var key, view = data.view, o, isJSON = false;
         console.log('Server#onview: ', view);
         ZMG.Dispatches.lastRequest = null;
+        
+        //TODO
         if (view == "admin:gallerymanager") {
-            this.onGalleryManager(text);
+            onGalleryManager(text);
         }
-    },
-    ongallerylist: function(text, xml) {
-        ZMG.Events.Client.onHideLoader();
+    }
+    
+    function onMediaList(text, xml) {
+        ZMG.ClientEvents.onHideLoader();
         
         var o = Json.evaluate(text);
 
         if (o.result == ZMG.CONST.result_ok) {
-            var gallery, el, oGalleries = ZMG.cacheElement('zmg_galleries_body');
-            oGalleries.innerHTML = "";
+            var medium, el, oImages = ZMG.cacheElement('zmg_images');
+            oImages.innerHTML = "";
 
-            for (var i in o.data) {
-                gallery = o.data[i].gallery;
-                el = new Element('div', {
-                    'class': 'zmg_gallery',
-                    events: {
-                        click    : ZMG.Events.Client.ongalleryclick.bindWithEvent(ZMG.Events.Client),
-                        //mouseover: this.onMouseEnter.bindWithEvent(this),
-                        //mouseout : this.onMouseLeave.bindWithEvent(this)
-                        mousedown: function() {this.addClass('zmg_gallery_sel');},
-                        mouseup  : function() {this.removeClass('zmg_gallery_sel');}
-                    }
-                }).setHTML(gallery.name).inject(oGalleries);
+            for (var i = 0; i < o.data.length; i++) {
+                medium = o.data[i].medium;
+                el = new Element('img', {
+                    src: medium.url,
+                    longdesc: '#medium:' + medium.mid,
+                    alt: medium.name
+                }).inject(oImages);
             }
         }
-    },
-    onerror: function() {
+        
+        ZMG.ImageFlow.refresh(true);
+    }
+    
+    function onError() {
         //TODO
     }
-};
+    
+    //publish to the world:
+    return {
+        onView: onView,
+        onMediaList: onMediaList,
+        onError: onError
+    };
+})();

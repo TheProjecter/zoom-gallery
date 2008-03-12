@@ -1,18 +1,16 @@
 {literal}
 {
     'result': '{/literal}{$zmgAPI->getParam('result_ok')}{literal}',
-    'data': {
+    'data': [
         {/literal}
-        {foreach item=medium from=$zmgAPI->getMedia($zmgAPI->getParamInt('gid'))}
-            '{$medium->medium}':{literal} {{/literal}
-                {$medium->toJSON()}
-            {literal}
-            },
-            {/literal}
+        {foreach name=mediaiterator item=medium from=$zmgAPI->getMedia($zmgAPI->getParamInt('gid'))}
+            {literal}{{/literal}
+            {$medium->toJSON()}
+            {literal}}{/literal}{if !$smarty.foreach.mediaiterator.last},{/if}
         {foreachelse}
         
         {/foreach}
         {literal}
-    }
+    ]
 }
 {/literal}

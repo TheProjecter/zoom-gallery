@@ -2,7 +2,7 @@
 {
     {/literal}
     {if $zmgAPI->getParam('subview') eq 'getgalleries'}
-        {foreach item=gallery from=$zmgAPI->getGalleries($zmgAPI->getParamInt('sub'),$zmgAPI->getParamInt('pos'))}
+        {foreach name=galleryiterator item=gallery from=$zmgAPI->getGalleries($zmgAPI->getParamInt('sub'),$zmgAPI->getParamInt('pos'))}
             '{$gallery->gid}':{literal} {{/literal}
                 'text': {$zmgAPI->jsonHelper($gallery->name)},
 		        'id'  : 'admin:gallerymanager:get:{$gallery->gid}',
@@ -10,9 +10,8 @@
 		        'openicon': ZMG.CONST.res_path + '/images/admin_treeitems.gif#3',
 		        'open': false,
 		        'load': ZMG.CONST.req_uri + '&view=admin:gallerymanager:getgalleries&sub={$gallery->gid}&pos={$zmgAPI->getParamInt('pos')+1}',
-            {literal}
-            },
-            {/literal}
+            {literal}}{/literal}
+            {if !$smarty.foreach.galleryiterator.last},{/if}
         {foreachelse}
         
         {/foreach}

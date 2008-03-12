@@ -164,3 +164,51 @@
     margin-top: 4px;
     color: #aaa;
 }
+
+
+#zmg_captions
+{
+    font-weight: bold;
+    position: relative;
+    text-align: center !important;
+    text-align: center;
+    z-index: 10000;
+}
+
+#zmg_scrollbar
+{
+    visibility: hidden;
+    position: relative; 
+    border-bottom: 1px solid #b3b3b3;
+    z-index: 10001;
+}
+
+#zmg_slider
+{
+    position: absolute;
+    margin-top: -10px;
+    margin-left: -10px;
+    z-index: 10002;
+    background-image: url(../images/slider.png);
+    background-repeat: no-repeat;
+    width: 20px;
+    height: 20px;    
+}
+
+#zmg_imageflow
+{
+    margin-right: 80px;
+    text-align: center;
+}
+
+#zmg_imageflow img
+{
+    position: absolute; 
+    top: 0px;
+    border: none;
+}
+
+#zmg_images
+{
+    visibility: hidden;
+}

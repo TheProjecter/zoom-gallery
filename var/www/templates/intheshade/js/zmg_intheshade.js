@@ -1,27 +1,29 @@
 if (!window.ZMG) window.ZMG = {};
-if (!ZMG.Events) ZMG.Events = {};
 
-ZMG.Events.Client = {
-    onstart: function() {
-        this.onloadgallerylist();
-    },
-    onloadgallerylist: function(pos, parentGid) {
-        if (parseInt(pos) > 0) {
-            //we need to process the parentGid
-        } else
-            pos = parentGid = 0;
-        ZMG.Dispatches.getGalleries(pos, parentGid);
-    },
-    ongalleryclick: function(e) {
-        
-    },
-    onShowLoader: function() {
+ZMG.ClientEvents = (function() {
+    function onStart() {
+        onLoadMedia();
+    }
+    
+    function onLoadMedia() {
+        ZMG.Dispatches.getMedia();
+    }
+    
+    function onShowLoader() {
         ZMG.cacheElement('zmg_loader').setStyle('display', '');
-    },
-    onHideLoader: function() {
+    }
+    
+    function onHideLoader() {
         ZMG.cacheElement('zmg_loader').setStyle('display', 'none');
     }
-};
+    
+    //publish methods to the world:
+    return {
+        onStart: onStart,
+        onHideLoader: onHideLoader,
+        onShowLoader: onShowLoader
+    };
+})();
 
 /**
  * Add a DOM element to the DOM cache, for easy retrieval throughout
@@ -44,4 +46,4 @@ ZMG.cacheElement = function(id, elname) {
     return this.nodeCache[elname || id] || null;
 };
 
-window.addEvent('domready', ZMG.Events.Client.onstart.bind(ZMG.Events.Client));
+window.addEvent('domready', function() { ZMG.ClientEvents.onStart(); });
