@@ -246,8 +246,6 @@ ZMG.ServerEvents = (function() {
             paging[0].getParent().addClass('lgrid-nav-btn-disabled');
             paging[1].addEvent('click', oLiveGrid.scrollByPage.bind(oLiveGrid, [-1]));
             paging[1].getParent().addClass('lgrid-nav-btn-disabled');
-            //paging[2].addEvent('click', oLiveGrid.scrollBy.bind(oLiveGrid, [-1]));
-            //paging[3].addEvent('click', oLiveGrid.scrollBy.bind(oLiveGrid, [1]));
             paging[2].addEvent('click', oLiveGrid.scrollByPage.bind(oLiveGrid, [1]));
             paging[3].addEvent('click', oLiveGrid.scrollComplete.bind(oLiveGrid, [1]));
             
@@ -442,7 +440,6 @@ ZMG.ServerEvents = (function() {
             if (oParent.childNodes[i].nodeType == 1)
                 oParent.childNodes[i].setStyle('display', 'none');
         
-        
         var oActiveView = ZMG.Shared.cacheElement(el);
         oActiveView.setStyle('display', '');
         ZMG.Shared.register('activeView', oActiveView);
@@ -459,7 +456,7 @@ ZMG.ServerEvents = (function() {
     };
     
     function onError() {
-        //console.dir(arguments);
+        console.dir(arguments);
     }
     
     return {
