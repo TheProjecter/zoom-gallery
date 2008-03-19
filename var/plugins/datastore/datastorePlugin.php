@@ -79,6 +79,10 @@ class zmgDatastorePlugin {
                 $gid = array_pop($aView);
                 $zoom->fireEvent('onuploadupdate', false, $gid);
                 break;
+            case stristr($view, "admin:update:mediacount"):
+                $gid = intval(array_pop($aView));
+                echo $zoom->getMediumCount($gid);
+                break;
             default:
                 break;
         }
