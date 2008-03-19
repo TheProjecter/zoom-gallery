@@ -43,7 +43,7 @@ ZMG.Dispatches = {
             onSuccess: function(text, xml) {
                 var o = Json.evaluate(text);
                 var num = parseInt(o.result);
-                ZMG.CONST.mediumcount = isNaN(num) ? 0 : num;
+                ZMG.CONST.mediumcount = isNaN(num) ? 1 : num;
             }
         }).send(ZMG.CONST.req_uri + "&view=admin:update:mediacount:" + gid, '');
     }

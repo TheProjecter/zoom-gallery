@@ -49,8 +49,7 @@ var LiveGrid = new Class({
 		this.scrollFx = new Fx.Scroll(this.scroller, this.options.scrollOptions);
 		this.scrollFx.addEvent('onStart', this.checkTimeout.pass([true], this));
 		this.scrollFx.addEvent('onComplete', this.checkTimeout.pass([false], this));
-		this.prepare();
-		this.reset();
+		this.prepare().reset();
 		this.scroller.addEvent('scroll', this.onScrollEvt.bind(this));
 	},
 
@@ -64,8 +63,7 @@ var LiveGrid = new Class({
 			this.getRows().empty();
 			this.body.innerHTML = "";
 		}
-		this.prepare();
-		this.reset();
+		this.prepare().reset();
 	},
 
 	prepare: function() {
@@ -78,6 +76,22 @@ var LiveGrid = new Class({
 		}
 		this.rows = this.getRows();
 		this.resetCalcs();
+		
+		return this;
+	},
+	
+	setCount: function(count) {
+	    this.options.count = isNaN(count) ? false : count;
+	    if (this.options.count !== false) {
+	        this.count = this.options.count;
+	    }
+	    return this;
+	},
+	
+	setUrl: function(sUrl) {
+	    if (sUrl)
+	       this.options.url = sUrl;
+	    return this;
 	},
 
 	reset: function() {

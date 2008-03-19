@@ -115,7 +115,7 @@ ZMG.ServerEvents = (function() {
             if (data.cover_img)
                 oImg.src = data.cover_img;
             else
-                oImg.src = ""; //TODO: 'empty' picture.
+                oImg.src = ZMG.CONST.res_path + "/images/mimetypes/unknown.png";
             
             oForm.elements['zmg_edit_gallery_gid'].value = data.gid || 'new';
             //ZMG.Shared.cacheElement('zmg_edit_medium_thumbnail').src = data.url;
