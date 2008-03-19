@@ -39,7 +39,7 @@
         <resource name="javascript" xml:base="js/">
             <file href="zmg_admin.js"/>
         </resource>
-        <resource name="javascript" xml:base="js/">
+        <resource name="javascript" xml:base="../shared/">
             <file href="zmg_shared.js"/>
         </resource>
         <resource name="javascript" xml:base="js/">
