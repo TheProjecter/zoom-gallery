@@ -151,16 +151,12 @@ var LiveGrid = new Class({
 		var length = rows.length;
 		this.setRowState(offset, length, true);
 		if (!this.xhr) {
-			console.log('request:', this.options.url);
 			this.xhr = new AjaxQueue(this.options.url, {
 				ajaxOptions: this.options.ajaxOptions,
 				onSuccess: (this.options.responseHandler || this.responseHandler).bind(this),
 				onFailure: this.onFailure.bind(this),
 				onComplete: this.onComplete.bind(this)
 			});
-			//this.xhr.addEvents({
-			//	
-			//});
 		};
 		var data = $merge(this.options.ajaxData);
 		data[this.options.requestVars.offset] = offset;

@@ -86,17 +86,9 @@ ZMG.ClientEvents = (function() {
         bodySlide.slideOut();
         editSlide.slideOut();
         
-        var oScrollerSize = livegrid.scroller.getSize().size;
-        var oEditSize = livegrid.options.editpanel.getSize().size;
-        
         ZMG.Shared.cacheElement('zmg_lgrid_pagination').setStyle('visibility', 'hidden');
         livegrid.scroller.setStyle('overflow-y', 'hidden');
         
-        setTimeout(function() {
-            if (oScrollerSize.y < (oEditSize.y + 40))
-                livegrid.scroller.style.height = (oEditSize.y + 40) + "px";
-        }, 200);
-
         livegrid.scrollComplete(-1);
         
         var oToolbar = ZMG.Shared.get('toolbar');
