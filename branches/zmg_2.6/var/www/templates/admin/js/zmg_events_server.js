@@ -319,7 +319,10 @@ ZMG.ServerEvents = (function() {
             var data = node.data.medium;
             var oForm = ZMG.Shared.cacheElement('zmg_form_edit_medium');
             oForm.reset();
-            ZMG.Shared.cacheElement('zmg_edit_medium_thumbnail').src = data.url;
+            
+            var oImg = ZMG.Shared.cacheElement('zmg_edit_medium_thumbnail');
+            oImg.src = data.url;
+            oImg.onload = ZMG.EventHandlers.onMediumCorrectPanel;
             ZMG.Shared.cacheElement('zmg_edit_filename').innerHTML = data.filename;
             ZMG.Shared.cacheElement('zmg_edit_name').value = data.name;
             ZMG.Shared.cacheElement('zmg_edit_keywords').value = data.keywords;
@@ -337,8 +340,7 @@ ZMG.ServerEvents = (function() {
         var name = node.toolbar.shift();
         var oToolbar = ZMG.Shared.get('toolbar');
         if (!oToolbar) return;
-        oToolbar.create(name, node.toolbar);
-        oToolbar.show(name);
+        oToolbar.create(name, node.toolbar).show(name);
     };
     
     var settingsMap = [];

@@ -21,6 +21,7 @@ ZMG.Toolbar = new Class({
             this.buttonSource.setStyle('display', 'none');
             //no spacer yet...
         }
+        return this;
     },
     create: function(name, buttons) {
         if (name == "clear") return;
@@ -56,6 +57,7 @@ ZMG.Toolbar = new Class({
             
             self.cache[name].nodes.push(node);
         });
+        return this;
     },
     get: function(name) {
         for (var i in this.cache) {
@@ -81,9 +83,11 @@ ZMG.Toolbar = new Class({
                 node.setStyle('display', '');
             });
         }
+
+        return this;
     },
     clear: function() {
-        this.show('clear');
+        return this.show('clear');
     },
     disable: function(toolbar, buttons) {
         if (!buttons.length) return;
@@ -104,6 +108,8 @@ ZMG.Toolbar = new Class({
                 });
             }
         }
+
+        return this;
     },
     enable: function(toolbar, buttons) {
         if (!buttons.length) return;
@@ -124,5 +130,7 @@ ZMG.Toolbar = new Class({
                 });
             }
         }
+
+        return this;
     }
 });
