@@ -103,10 +103,6 @@ class zmgFileHelper
      * @return boolean True on success
      */
     function copy($src, $dest, $path = null) {
-        // Initialize variables
-        //jimport('joomla.client.helper');
-        //$FTPOptions = JClientHelper::getCredentials('ftp');
-
         // Prepend a base path if it exists
         if ($path) {
             $src  = zmgFileHelper::cleanPath($path.DS.$src);
@@ -119,24 +115,10 @@ class zmgFileHelper
             return false;
         }
 
-        if (false) {//$FTPOptions['enabled'] == 1) {
-            // Connect the FTP client
-            jimport('joomla.client.ftp');
-            $ftp = & JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
-
-            // If the parent folder doesn't exist we must create it
-            if (!file_exists(dirname($dest))) {
-                jimport('joomla.filesystem.folder');
-                JFolder::create(dirname($dest));
-            }
-
-            //Translate the destination path for the FTP account
-            $dest = zmgFileHelper::cleanPath(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $dest), '/');
-            if (!$ftp->store($src, $dest)) {
-                // FTP connector throws an error
-                return false;
-            }
-            $ret = true;
+        $zoom = & zmgFactory::getZoom();
+        
+        if ($zoom->getConfig('plugins/safemode/general/enable') == 1) {
+            $ret = $zoom->fireEvent('onfilecopy', $src, $dest);
         } else {
             if (!@ copy($src, $dest)) {
                 zmgError::throwError(T_('Copy failed'));
@@ -154,21 +136,17 @@ class zmgFileHelper
      * @return boolean  True on success
      */
     function delete($file) {
-        // Initialize variables
-        //jimport('joomla.client.helper');
-        //$FTPOptions = JClientHelper::getCredentials('ftp');
-
         if (is_array($file)) {
             $files = $file;
         } else {
             $files[] = $file;
         }
+        
+        $zoom = & zmgFactory::getZoom();
 
-        // Do NOT use ftp if it is not enabled
-        if (false) {//$FTPOptions['enabled'] == 1) {
-            // Connect the FTP client
-            jimport('joomla.client.ftp');
-            $ftp = & JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
+        $ftp_enabled = (bool)$zoom->getConfig('plugins/safemode/general/enable');
+        if ($ftp_enabled) {
+            $zoom = & zmgFactory::getZoom();
         }
 
         foreach ($files as $file) {
@@ -182,12 +160,8 @@ class zmgFileHelper
             // as long as the owner is either the webserver or the ftp
             if (@unlink($file)) {
                 // Do nothing
-            } elseif (false) {//$FTPOptions['enabled'] == 1) {
-                $file = zmgFileHelper::cleanPath(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $file), '/');
-                if (!$ftp->delete($file)) {
-                    // FTP connector throws an error
-                    return false;
-                }
+            } elseif ($ftp_enabled) {
+                return $zoom->fireEvent('onfiledelete', $file);
             } else {
                 $filename   = basename($file);
                 zmgError::throwError(T_('Delete failed') . ": '$filename'");
@@ -207,10 +181,6 @@ class zmgFileHelper
      * @return boolean True on success
      */
     function move($src, $dest, $path = '') {
-        // Initialize variables
-        //jimport('joomla.client.helper');
-        //$FTPOptions = JClientHelper::getCredentials('ftp');
-
         if ($path) {
             $src  = zmgFileHelper::cleanPath($path.DS.$src);
             $dest = zmgFileHelper::cleanPath($path.DS.$dest);
@@ -220,18 +190,11 @@ class zmgFileHelper
         if (!is_readable($src) && !is_writable($src)) {
             return T_('Cannot find source file');
         }
+        
+        $zoom = & zmgFactory::getZoom();
 
-        if (false) {//$FTPOptions['enabled'] == 1) {
-            // Connect the FTP client
-            jimport('joomla.client.ftp');
-            $ftp = & JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
-
-            //Translate path for the FTP account
-            $src    = zmgFileHelper::cleanPath(str_replace(JPATH_ROOT, $FTPOptions['root'], $src), '/');
-            $dest   = zmgFileHelper::cleanPath(str_replace(JPATH_ROOT, $FTPOptions['root'], $dest), '/');
-
-            // Use FTP rename to simulate move
-            if (!$ftp->rename($src, $dest)) {
+        if ($zoom->getConfig('plugins/safemode/general/enable') == 1) {
+            if (!$zoom->fireEvent('onfilemove', $src, $dest)) {
                 zmgError::throwError(T_('Rename failed'));
                 return false;
             }
@@ -292,23 +255,15 @@ class zmgFileHelper
      * @return boolean True on success
      */
     function write($file, $buffer) {
-        // Initialize variables
-        //jimport('joomla.client.helper');
-        //$FTPOptions = JClientHelper::getCredentials('ftp');
-
         // If the destination directory doesn't exist we need to create it
         if (!file_exists(dirname($file))) {
             zmgFileHelper::createDir(dirname($file));
         }
+        
+        $zoom = & zmgFactory::getZoom();
 
-        if (false) {//$FTPOptions['enabled'] == 1) {
-            // Connect the FTP client
-            jimport('joomla.client.ftp');
-            $ftp = & JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
-
-            // Translate path for the FTP account and use FTP write buffer to file
-            $file = zmgFileHelper::cleanPath(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $file), '/');
-            $ret = $ftp->write($file, $buffer);
+        if ($zoom->getConfig('plugins/safemode/general/enable') == 1) {
+            $ret = $zoom->fireEvent('onfilewrite', $file, $buffer);
         } else {
             $file = zmgFileHelper::cleanPath($file);
             $ret = file_put_contents($file, $buffer);
@@ -324,10 +279,7 @@ class zmgFileHelper
      * @return boolean True on success
      */
     function upload($src, $dest) {
-        // Initialize variables
-        //jimport('joomla.client.helper');
-        //$FTPOptions = JClientHelper::getCredentials('ftp');
-        $ret        = false;
+        $ret = false;
 
         // Ensure that the path is valid and clean
         $dest = zmgFileHelper::cleanPath($dest);
@@ -337,25 +289,20 @@ class zmgFileHelper
         if (!file_exists($baseDir)) {
             zmgFileHelper::createDir($baseDir);
         }
+        
+        $zoom = & zmgFactory::getZoom();
 
-        if (false) {//$FTPOptions['enabled'] == 1) {
+        if ($zoom->getConfig('plugins/safemode/general/enable') == 1) {
             // Connect the FTP client
-            jimport('joomla.client.ftp');
-            $ftp = & JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
-
-            //Translate path for the FTP account
-            $dest = zmgFileHelper::cleanPath(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $dest), '/');
-
-            // Copy the file to the destination directory
-            if ($ftp->store($src, $dest)) {
-                $ftp->chmod($dest, 0777);
+            if ($zoom->fireEvent('onfileupload', $src, $dest)) {
+                zmgFileHelper::chmod($dest);
                 $ret = true;
             } else {
                 zmgError::throwError(T_('Unable to move file.'));
             }
         } else {
             if (is_writeable($baseDir) && move_uploaded_file($src, $dest)) { // Short circuit to prevent file permission errors
-                if (zmgFileHelper::chmod($dest, 0777)) {
+                if (zmgFileHelper::chmod($dest)) {
                     $ret = true;
                 } else {
                     zmgError::throwError(T_('Unable to change file permissions.'));
@@ -433,17 +380,13 @@ class zmgFileHelper
         if (is_dir($path)) {
             return true;
         }
+        
+        $zoom = & zmgFactory::getZoom();
 
-        // Check for safe mode NOT SUPPORTED BY ZMG (yet)
-        if (false) {//''$FTPOptions['enabled'] == 1) {
-            // Connect the FTP client
-            jimport('joomla.client.ftp');
-            $ftp = & JFTP::getInstance($FTPOptions['host'], $FTPOptions['port'], null, $FTPOptions['user'], $FTPOptions['pass']);
-
-            // Translate path to FTP path
-            $path = zmgFileHelper::cleanPath(str_replace(zmgEnv::getRootPath(), $FTPOptions['root'], $path), '/');
-            $ret = $ftp->mkdir($path);
-            $ftp->chmod($path, $mode);
+        // Check for safe mode
+        if ($zoom->getConfig('plugins/safemode/general/enable') == 1) {
+            $ret = $zoom->fireEvent('ondircreate', $path);
+            zmgFileHelper::chmod($path);
         } else {
             // We need to get and explode the open_basedir paths
             $obd = ini_get('open_basedir');
@@ -493,36 +436,37 @@ class zmgFileHelper
     
     /**
      * remove a gallery completely including sub-directories.
-     * @param string $dir
+     * @param string $path
      * @return boolean
      */
-    function deleteDir($dir) {
+    function deleteDir($path) {
         // Sanity check
-        if (!$dir) {
+        if (!$path) {
             // Bad programmer! Bad Bad programmer!
             zmgError::throwError('zmgFileHelper: ' . _('Attempt to delete base directory'));
             return false;
         }
         
-        if (false) {//$this->_CONFIG['safemodeON']) {    
-           //$dir = substr($dir,strlen($mosConfig_absolute_path));
-           $ftp_dirtoremove = $this->_CONFIG['ftp_hostdir'].$dir;
-           //remove directory
-           $result = $this->ftp_rmAll($ftp_dirtoremove); //do it recursively with helper function
-           return $result;
-        } else {
-            $current_dir = opendir($dir);
-            while ($entryname = readdir($current_dir)) {
-                if (is_dir($dir.DS.$entryname) && ($entryname != "." && $entryname != "..")) {
-                    zmgFileHelper::deleteDir("${dir}/${entryname}");
-                } else if ($entryname != "." && $entryname != "..") {
-                    zmgFileHelper::delete($dir.DS.$entryname);
-                }
+        $res  = true;
+        $zoom = & zmgFactory::getZoom();
+
+        $current_dir = opendir($path);
+        while ($entryname = readdir($current_dir)) {
+            if (is_dir($path . DS . $entryname) && ($entryname != "." && $entryname != "..")) {
+                $res = zmgFileHelper::deleteDir($path . DS . $entryname);
+            } else if ($entryname != "." && $entryname != "..") {
+                $res = zmgFileHelper::delete($path . DS . $entryname);
             }
-            closedir($current_dir);
-            rmdir("${dir}");
-            return true;
         }
+        closedir($current_dir);
+
+        if ($zoom->getConfig('plugins/safemode/general/enable') == 1) {
+            $res = $zoom->fireEvent('ondirdelete', $path);
+        } else {
+            $res = rmdir($path);
+        }
+        
+        return $res;
     }
     
     /**
@@ -568,31 +512,43 @@ class zmgFileHelper
      * @param dirmode Integer value to chmod directories. NULL = dont chmod directories.
      * @return TRUE=all succeeded FALSE=one or more chmods failed
      */
-    function chmodRecursive($path, $filemode = "0644", $dirmode = "0777") {
+    function chmodRecursive($path, $filemode = 0644, $dirmode = 0777) {
         $ret = true;
+
         if (is_dir($path)) {
             $dh = opendir($path);
             while ($file = readdir($dh)) {
                 if ($file != '.' && $file != '..') {
-                    $fullpath = $path.'/'.$file;
+                    $fullpath = $path . DS . $file;
                     if (is_dir($fullpath)) {
-                        if (!zmgFileHelper::chmodRecursive($fullpath, $filemode, $dirmode))
-                            $ret = false;
+                        $ret = zmgFileHelper::chmodRecursive($fullpath, $filemode, $dirmode);
                     } else {
-                        if (isset($filemode))
-                            if (!@chmod($fullpath, octdec($filemode)))
-                                $ret = false;
-                    } // if
-                } // if
-            } // while
+                        if (isset($filemode)) {
+                            if ($zoom->getConfig('plugins/safemode/general/enable') == 1) {
+                                $ret = $zoom->fireEvent('onchmod', $fullpath, $filemode);
+                            } else {
+                                $ret = (bool) @chmod($fullpath, $filemode);
+                            }
+                        }
+                    }
+                }
+            }
             closedir($dh);
-            if (isset($dirmode))
-                if (!@chmod($path, octdec($dirmode)))
-                    $ret = false;
-        } else {
-            if (isset($filemode))
-                $ret = @chmod($path, octdec($filemode));
-        } // if
+            if (isset($dirmode)) {
+                if ($zoom->getConfig('plugins/safemode/general/enable') == 1) {
+                    $ret = $zoom->fireEvent('onchmod', $path, $dirmode);
+                } else {
+                    $ret = (bool) @chmod($path, $dirmode);
+                }
+            }
+        } else if (isset($filemode)) {
+            if ($zoom->getConfig('plugins/safemode/general/enable') == 1) {
+                $ret = $zoom->fireEvent('onchmod', $path, $filemode);
+            } else {
+                $ret = (bool) @chmod($path, $filemode);
+            }
+        }
+
         return $ret;
     }
     
@@ -603,10 +559,13 @@ class zmgFileHelper
      */
     function chmod($path) {
         $zoom = & zmgFactory::getZoom();
-        $fileperms = $zoom->getConfig('filesystem/fileperms');
-        $dirperms  = $zoom->getConfig('filesystem/dirperms');
-        if (isset($filemode) || isset($dirmode))
+        $fileperms = octdec($zoom->getConfig('filesystem/fileperms'));
+        $dirperms  = octdec($zoom->getConfig('filesystem/dirperms'));
+
+        if (isset($fileperms) || isset($dirperms)) {
             return zmgFileHelper::chmodRecursive($path, $fileperms, $dirperms);
+        }
+
         return true;
     }
 }

@@ -111,4 +111,13 @@ $zoom_config['plugins']['toolbox']['ffmpeg']['override'] = "0";
 $zoom_config['plugins']['jpeg_metadata'] = array();
 $zoom_config['plugins']['jpeg_metadata']['general'] = array();
 $zoom_config['plugins']['jpeg_metadata']['general']['readwrite'] = "1";
+$zoom_config['plugins']['safemode'] = array();
+$zoom_config['plugins']['safemode']['general'] = array();
+$zoom_config['plugins']['safemode']['general']['enable'] = "0";
+$zoom_config['plugins']['safemode']['credentials'] = array();
+$zoom_config['plugins']['safemode']['credentials']['host'] = "127.0.0.1";
+$zoom_config['plugins']['safemode']['credentials']['port'] = "21";
+$zoom_config['plugins']['safemode']['credentials']['username'] = "";
+$zoom_config['plugins']['safemode']['credentials']['password'] = "";
+$zoom_config['plugins']['safemode']['credentials']['root'] = "";
 ?>
