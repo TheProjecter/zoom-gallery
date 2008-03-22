@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings plugin="Safemode: FTP layer">
+    <category name="general">
+        <setting name="enable" type="select" default="0" label="Enable FTP" description="">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </setting>
+    </category>
+    <category name="credentials">
+        <setting name="host" type="text" size="50" default="127.0.0.1" label="FTP Host" description="Address of your hosts' server (usually '127.0.0.1')" />
+        <setting name="port" type="text" size="10" default="21" label="FTP Port" description="Port number where the FTP server is listening to" />
+        <setting name="username" type="text" size="50" default="" label="FTP Username" description="" />
+        <setting name="password" type="password" size="50" default="" label="FTP Password" description="" />
+        <setting name="root" type="text" size="50" default="" label="FTP Root" description="Directory from the FTP root to your CMS installation" />
+    </category>
+</settings>

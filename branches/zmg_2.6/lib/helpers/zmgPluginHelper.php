@@ -267,8 +267,9 @@ class zmgPluginHelper {
                                  . $this->_buildSelectInput($input_name, $options, $setting_value) . "</td>\n";
                                 break;
                             case "text":
+                            case "password":
                                 $out .= "\t\t<td width=\"250\">" . T_($data['label']) . "</td><td>"
-                                 . $this->_buildTextInput($input_name, $setting_value, $data['size']) . "</td>\n";
+                                 . $this->_buildTextInput($input_name, $setting_value, $data['type'], $data['size']) . "</td>\n";
                                 break;
                         }
                         $out .= "</tr>\n";
@@ -307,8 +308,8 @@ class zmgPluginHelper {
         return $html . '</select>';
     }
     
-    function _buildTextInput($name, $value, $size = 50, $disabled = false, $readonly = false) {
-        return '<input type="text" name="' . $name . '" size="' . $size . '" value="'
+    function _buildTextInput($name, $value, $type = 'text', $size = 50, $disabled = false, $readonly = false) {
+        return '<input type="' . $type . '" name="' . $name . '" size="' . $size . '" value="'
           . $value . '"' . ($disabled ? ' disabled="disabled"' : '')
           . ($readonly ? ' readonly="readonly"' : '') . '/>';
     }

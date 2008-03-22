@@ -11,6 +11,11 @@
 
 defined('_ZMG_EXEC') or die('Restricted access');
 
+/** boolean True if a Windows based host */
+define('ZMG_ISWIN', (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'));
+/** boolean True if a Mac based host */
+define('ZMG_ISMAC', (strtoupper(substr(PHP_OS, 0, 3)) === 'MAC'));
+
 if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
 
 define('ZMG_SAFEMODE_ON', (bool)ini_get('safe_mode'));
