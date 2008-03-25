@@ -418,6 +418,7 @@ ZMG.ServerEvents = (function() {
                     window.setTimeout(function() {
                         new Accordion('h3.zmg_accordion_start', 'div.zmg_accordion_start', {
                             opacity: false,
+                            duration: 150, //animations: be fast, otherwise they get annoying instead of useful
                             onActive: function(toggler, element){
                                 toggler.setStyle('color', '#0b55c4');
                             },
@@ -425,6 +426,20 @@ ZMG.ServerEvents = (function() {
                                 toggler.setStyle('color', '#666');
                             }
                         }, $('zmg_plugins_accordion'));
+                    }, 20); //timeout needed, to make this work in edge cases too :-S
+                } else if(view == "admin:settings:layout") {
+                    //first, setup the accordion tab control:
+                    window.setTimeout(function() {
+                        new Accordion('h3.zmg_accordion_start', 'div.zmg_accordion_start', {
+                            opacity: false,
+                            duration: 150, //animations: be fast, otherwise they get annoying instead of useful
+                            onActive: function(toggler, element){
+                                toggler.setStyle('color', '#0b55c4');
+                            },
+                            onBackground: function(toggler, element){
+                                toggler.setStyle('color', '#666');
+                            }
+                        }, $('zmg_settings_layout'));
                     }, 20); //timeout needed, to make this work in edge cases too :-S
                 }
             }
