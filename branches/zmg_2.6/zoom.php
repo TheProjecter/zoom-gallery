@@ -18,9 +18,7 @@ require(ZMG_ABS_PATH . '/lib/initzoom.php');
 
 $zoom = & zmgFactory::getZoom($zoom_config);
 
-$zoom->view->set();
-
-$zoom->view->run();
+$zoom->view->setAndRun();
 
 $zoom->fireEvent('onfinish');
 ?>

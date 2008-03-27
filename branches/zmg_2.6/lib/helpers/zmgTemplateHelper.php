@@ -24,6 +24,8 @@ class zmgTemplateHelper extends Smarty {
     
     var $_template_name = null;
     
+    var $_template_preview = null;
+    
     var $_secret = null;
     
     var $_constants = null;
@@ -31,23 +33,23 @@ class zmgTemplateHelper extends Smarty {
     /**
      * The class constructor.
      */
-    function zmgTemplateHelper(&$config, $secret) {
+    function zmgTemplateHelper(&$config, $secret = '', $forceConfig = false) {
         //Smarty options:
-        $this->template_dir = $config['template_dir'];
-        $this->compile_dir  = $config['compile_dir'];
-        $this->cache_dir    = $config['cache_dir'];
-        $this->config_dir   = $config['config_dir'];
+        $this->template_dir = $config['templatedir'];
+        $this->compile_dir  = $config['compiledir'];
+        $this->cache_dir    = $config['cachedir'];
+        $this->config_dir   = $config['configdir'];
         
         //Helper options:
-        if (ZMG_ADMIN) {
+        if (ZMG_ADMIN && !$forceConfig) {
             $this->_active_template = "admin";
         } else {
-            $this->_active_template = $config['active_template'];
+            $this->_active_template = $config['activetemplate'];
         }
         $this->_type      = "html"; //default type
         $this->_secret    = $secret;
         $this->_constants = array();
-        
+
         $this->_loadManifest();
     }
     
@@ -106,7 +108,7 @@ class zmgTemplateHelper extends Smarty {
     
     function _prepareAjax() {
         $lifetime = (zmgEnv::getSessionLifetime() * 60000); //in milliseconds
-        $refreshTime =  ( $lifetime <= 60000 ) ? 30000 : $lifetime - 60000;
+        $refreshTime =  ($lifetime <= 60000) ? 30000 : $lifetime - 60000;
         //refresh time is 1 minute less than the lifetime assigned in the CMS configuration
         
         $ret = ("<script language=\"javascript\" type=\"text/javascript\">\n"
@@ -138,23 +140,26 @@ class zmgTemplateHelper extends Smarty {
     }
     
     function _buildAdminToolbar() {
-        if (!ZMG_ADMIN)
+        if (!ZMG_ADMIN) {
             return $this->throwError('Function may only be called in admin mode.');
+        }
             
         $assets = zmgEnv::getToolbarAssets();
         $zoom   = & zmgFactory::getZoom();
-        eval($assets['classHelper'].'::'.$assets['commands']['title'].'("'
-         . $zoom->getConfig('meta/title').'");');
-        eval($assets['classHelper'].'::'.$assets['commands']['back'].'();');
-        eval($assets['classHelper'].'::'.$assets['commands']['spacer'].'();');
+
+        zmgCallAbstract($assets['classHelper'], $assets['commands']['title'],
+          $zoom->getConfig('meta/title'));
+        zmgCallAbstract($assets['classHelper'], $assets['commands']['back']);
+        zmgCallAbstract($assets['classHelper'], $assets['commands']['spacer']);
         
         $this->appendConstant('toolbar_node', '"'.$assets['node'].'"');
         $this->appendConstant('toolbar_buttonclass', '"'.$assets['classButton'].'"');
     }
     
     function _getInfo() {
-        if (empty($this->_manifest))
+        if (empty($this->_manifest)) {
             return $this->throwError('Template manifest not loaded yet.');
+        }
             
         $els = & $this->_manifest->getElementsByTagName('template');
         if ($els->getLength() < 1)
@@ -171,8 +176,9 @@ class zmgTemplateHelper extends Smarty {
     }
     
     function getTemplateName() {
-        if (empty($this->_manifest))
+        if (empty($this->_manifest)) {
             return $this->throwError('Template manifest not loaded yet.');
+        }
         
         if (empty($this->_template_name)) {
             $els = & $this->_manifest->getElementsByTagName('template');
@@ -186,13 +192,36 @@ class zmgTemplateHelper extends Smarty {
         return $this->_template_name;
     }
     
-    function &_getView($name, $tpl_inherits) {
-        if (empty($this->_manifest))
+    function getTemplatePreview() {
+        if (empty($this->_manifest)) {
             return $this->throwError('Template manifest not loaded yet.');
+        }
+        
+        if (empty($this->_template_preview)) {
+            $preview = & $this->_getResource('preview');
+            
+            if ($preview) {
+                $els = & $preview->getElementsByTagName('file');
+                if ($els->getLength() > 0) {
+                    $el  = $els->item(0);
+
+                    $this->_template_preview = trim($preview->getAttribute('xml:base')) . trim($el->getAttribute('href'));
+                }
+            }
+        }
+        
+        return $this->_template_preview;
+    }
+    
+    function &_getView($name, $tpl_inherits) {
+        if (empty($this->_manifest)) {
+            return $this->throwError('Template manifest not loaded yet.');
+        }
         
         $els = & $this->_manifest->getElementsByTagName('view');
-        if ($els->getLength() <= 0)
+        if ($els->getLength() <= 0) {
             return $this->throwError('Invalid manifest; no view(s) defined.');
+        }
         
         $view_tokens      = split(':', $name);
         $view_token_count = count($view_tokens);
@@ -230,12 +259,12 @@ class zmgTemplateHelper extends Smarty {
                                 //(nothing is returned...yet)
                             } else {
                                 break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+                            }//if
+                        }//for
+                    }//foreach
+                }//if
+            }//if
+        }//for
         
         $tpl_tokens  = split(':', $tpl_inherits);
         $tpl_token_count = count($tpl_tokens);
@@ -265,8 +294,9 @@ class zmgTemplateHelper extends Smarty {
     }
     
     function &_getResource($name, $view = null, $type = 'html') {
-        if (empty($this->_manifest))
+        if (empty($this->_manifest)) {
             return $this->throwError('Template manifest not loaded yet.');
+        }
 
         $els = & $this->_manifest->getElementsByTagName('resource');
         if ($name == "html_head") {
@@ -360,7 +390,7 @@ class zmgTemplateHelper extends Smarty {
             if (!file_exists($tpl_file))
                 return $this->throwError('Template manifest not found ('.$tpl_file.').');
 
-            require_once(ZMG_ABS_PATH . DS.'lib'.DS.'domit'.DS.'xml_domit_lite_include.php');
+            zmgimport('org.zoomfactory.lib.domit.xml_domit_lite_include');
             $this->_manifest = & new DOMIT_Lite_Document();
             $this->_manifest->resolveErrors(true);
             
@@ -400,6 +430,42 @@ class zmgTemplateHelper extends Smarty {
         } else {
             return Zoom::sendHeaders($this->_type, true, $message);
         }
+    }
+    
+    function toJSON() {
+        //TODO
+    }
+    
+    /***************************************************************************
+    * Start of abstract functions 
+    ***************************************************************************/
+    
+    function getTemplates() {
+        if (isset($this) && is_a($this, 'zmgTemplateHelper')) {
+            return $this->throwError('This function may only be called statically!');
+        }
+        
+        $basePath = ZMG_ABS_PATH . DS.'var'.DS.'www'.DS.'templates';
+        $zoom = & zmgFactory::getZoom();
+        $baseConfig = & $zoom->getConfig('smarty');
+        
+        
+        zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
+        $dirs = zmgFileHelper::readDir($basePath, '[^index\.html]');
+        
+        $tpls = array();
+        
+        foreach($dirs as $dir) {
+            if ($dir == "shared" || $dir == "admin") {
+                continue; //TODO: catch this inside the regex above ('[^index\.html]')...
+            }
+            
+            if (is_dir($basePath . DS.$dir) && zmgFileHelper::exists($basePath .DS.$dir.DS.'manifest.xml')) {
+                $baseConfig['activetemplate'] = $dir;
+                $tpls[] = new zmgTemplateHelper($baseConfig, '', true);
+            }
+        }
+        return $tpls;
     }
 }
 ?>

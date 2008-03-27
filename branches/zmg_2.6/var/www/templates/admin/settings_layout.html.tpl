@@ -8,7 +8,32 @@
 </table>
 
 <div id="zmg_settings_layout" class="zmg_halfsize">
+
   <div class="zmg_accordion_panel"> 
+  <h3 class="zmg_accordion_toggler zmg_accordion_start">{t}Template & theme{/t}</h3>
+  <div class="zmg_accordion_element zmg_accordion_start">
+    <table width="85%" border="0" class="adminform">
+    <tr>
+      <td>
+        <label for="zmg_layout_template_list">{t}Active Template{/t}</label>
+      </td>
+      <td>
+        <select name="zmg_smarty_active_template" id="zmg_smarty_active_template">
+          {foreach name=tpl_iterator item=tpl from=$zmgAPI->getTemplates()}
+             <option value="{$tpl->getActiveTemplate()}" rel="{$tpl->getTemplatePreview()}">{$tpl->getTemplateName()}</option>
+          {foreachelse}
+              <option value="0">{t}No templates yet, please install a new one{/t}</option>
+          {/foreach}
+          </option>
+        </select>
+        <br />
+        <img src="" height="64" border="0" alt="{t}Preview{/t}" title="{t}Preview{/t}" />
+      </td>
+    </tr>
+    </table>
+  </div></div>
+  
+  <div class="zmg_accordion_panel">
   <h3 class="zmg_accordion_toggler zmg_accordion_start">{t}General settings{/t}</h3>
   <div class="zmg_accordion_element zmg_accordion_start">
     <table width="85%" border="0" class="adminform">

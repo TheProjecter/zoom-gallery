@@ -111,6 +111,10 @@ class zmgAPIHelper {
         return $zoom->plugins->embedHTML();
     }
     
+    function getTemplates() {
+        return zmgTemplateHelper::getTemplates();
+    }
+    
     function getGallery($gid, $ret_type = 'object') {
         $zoom = & zmgFactory::getZoom();
         

@@ -241,6 +241,12 @@ class zmgViewHelper {
           $this->_viewtype);
     }
     
+    function setAndRun() {
+        $this->set();
+
+        $this->run();
+    }
+    
     function throwError($message) {
         if (true) {//!zmgEnv::isRPC()) {
             return zmgError::throwError($message);
