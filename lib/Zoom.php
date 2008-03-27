@@ -311,7 +311,6 @@ class Zoom extends zmgError {
             }
             return $gallery;
         }
-        return null;
     }
     function getMedium($mid, $ret_type = 'object') {
         $mid = intval($mid);

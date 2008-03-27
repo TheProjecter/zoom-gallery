@@ -18,7 +18,7 @@ ZMG.ServerEvents = (function() {
         var o = Json.evaluate(text);
 
         if (o.result == ZMG.CONST.result_ok) {
-            var medium, el, oImages = ZMG.cacheElement('zmg_images');
+            var medium, el, oImages = ZMG.cacheElement('zmg_mediumlist');
             oImages.innerHTML = "";
 
             for (var i = 0; i < o.data.length; i++) {
@@ -26,12 +26,13 @@ ZMG.ServerEvents = (function() {
                 el = new Element('img', {
                     src: medium.url,
                     longdesc: '#medium:' + medium.mid,
-                    alt: medium.name
+                    alt: medium.name,
+                    'class': 'medium_thumb'
                 }).inject(oImages);
             }
         }
         
-        ZMG.ImageFlow.refresh(true);
+        //ZMG.ImageFlow.refresh(true);
     }
     
     function onError() {
