@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings plugin="Audio/ Video Metadata">
+    <category name="general">
+        <setting name="readshow" type="select" default="1" label="Read and Show Metadata" description="">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </setting>
+    </category>
+</settings>

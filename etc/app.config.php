@@ -120,4 +120,7 @@ $zoom_config['plugins']['safemode']['credentials']['port'] = "21";
 $zoom_config['plugins']['safemode']['credentials']['username'] = "";
 $zoom_config['plugins']['safemode']['credentials']['password'] = "";
 $zoom_config['plugins']['safemode']['credentials']['root'] = "";
+$zoom_config['plugins']['getid3'] = array();
+$zoom_config['plugins']['getid3']['general'] = array();
+$zoom_config['plugins']['getid3']['general']['readshow'] = "1";
 ?>

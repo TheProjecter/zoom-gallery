@@ -42,6 +42,28 @@ Array.extend({
     }
 });
 
+String.extend({
+   toQueryParams: function(separator) {
+     var match = this.clean().match(/([^?#]*)(#.*)?$/);
+     if (!match) return {};
+
+     return match[1].split(separator || '&').inject({}, function(hash, pair) {
+       if ((pair = pair.split('='))[0]) {
+         var name = decodeURIComponent(pair[0]);
+         var value = pair[1] ? decodeURIComponent(pair[1]) : undefined;
+
+         if (hash[name] !== undefined) {
+           if (hash[name].constructor != Array)
+             hash[name] = [hash[name]];
+           if (value) hash[name].push(value);
+         } else
+           hash[name] = value;
+       }
+       return hash;
+    });
+  } 
+});
+
 /**
  * The following code has been derived from work done by the Prototype js team
  * (Sam Stephenson et al.).

@@ -11,6 +11,8 @@
 
 defined('_ZMG_EXEC') or die('Restricted access');
 
+define('ZMG_JMT_VERSION', '1.11');
+
 /**
  * The zmgJpeg_metadataPlugin class
  */
@@ -56,8 +58,9 @@ class zmgJpeg_metadataPlugin {
         if ($zoom->getConfig('plugins/jpeg_metadata/general/readwrite')
           && ($ext == "jpg" || $ext == "jpeg") && !ZMG_SAFEMODE_ON) {
         	//import libs first (duh ;) )
-            zmgimport('org.zoomfactory.var.plugins.jpeg_metadata.v1_11.EXIF'); //takes care of some deferred loading as well
-            zmgimport('org.zoomfactory.var.plugins.jpeg_metadata.v1_11.Photoshop_File_Info');
+            $jmt_dir = "v".str_replace('.', '_', ZMG_JMT_VERSION);
+            zmgimport('org.zoomfactory.var.plugins.jpeg_metadata.'.$jmt_dir.'.EXIF'); //takes care of some deferred loading as well
+            zmgimport('org.zoomfactory.var.plugins.jpeg_metadata.'.$jmt_dir.'.Photoshop_File_Info');
             
             // Retreive the EXIF, XMP and Photoshop IRB information from
             // the existing file, so that it can be updated later on...

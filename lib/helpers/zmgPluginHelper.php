@@ -139,6 +139,11 @@ class zmgPluginHelper {
         $zoom = & zmgFactory::getZoom();
         
         $plugin['settings'] = array();
+        if ($xmldoc->documentElement->hasAttribute('plugin')) {
+            $plugin['settings_name'] = $xmldoc->documentElement->getAttribute('plugin');
+        } else {
+            $plugin['settings_name'] = $this->prettifyName($plugin['name']);
+        }
         
         $els = & $xmldoc->getElementsByTagName('category');
         for ($i = 0; $i < $els->getLength(); $i++) {
@@ -224,7 +229,7 @@ class zmgPluginHelper {
         $out  = "<div id=\"zmg_plugins_accordion\" class=\"zmg_halfsize\">\n";
         
         foreach ($this->_plugins as $plugin) {
-            $name      = $this->prettifyName($plugin['name']);
+            $name      = $plugin['settings_name'];
             $settings  = $plugin['settings'];
             if (is_array($settings)) {
                 $out .= "<div class=\"zmg_accordion_panel\">\n" 

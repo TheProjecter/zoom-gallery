@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<settings plugin="toolbox">
+<settings plugin="Toolbox">
     <category name="general">
         <setting name="imagesizemax" type="text" size="50" default="600" label="Image max. size (px)" description="" />
         <setting name="imagesizethumbnail" type="text" size="50" default="100" label="Thumbnail size (px)" description="" />

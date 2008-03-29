@@ -36,6 +36,10 @@ class zmgGalleryStore {
         if ($isNew) {
             $data['dir'] = zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_edit_gallery_dir', ''));
         }
+        //do some additional validation of strings
+        $data['name']     = $zoom->fireEvent('onvalidate', $data['name'])     || $data['name'];
+        $data['descr']    = $zoom->fireEvent('onvalidate', $data['descr'])    || $data['descr'];
+        $data['keywords'] = $zoom->fireEvent('onvalidate', $data['keywords']) || $data['keywords'];
         
         $res = true;
 

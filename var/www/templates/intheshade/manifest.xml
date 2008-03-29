@@ -9,18 +9,17 @@
     </template>
     <views>
         <view name="gallery:overview" />
-        <view name="gallery:get" inherits="gallery:get:*" />
+        <view name="gallery:show" inherits="gallery:show:*" />
         <view name="gallery:search" />
         <view name="gallery:special" />
-        <view name="gallery:lightbox" />
-        <view name="gallery:thumbnails" inherits="gallery:thumbnails:*" />
-        <view name="gallery:thumbnails:medium" />
-        <view name="gallery:thumbnails:medium:edit" />
-        <view name="gallery:thumbnails:medium:delete" />
-        <view name="gallery:thumbnails:medium:lightbox" />
+        <view name="gallery:lightbox" inherits="gallery:lightbox:*" />
+        <view name="medium:show" inherits="medium:show:*" />
+        <view name="medium:edit" inherits="medium:edit:*" />
+        <view name="medium:delete" inherits="medium:delete:*" />
+        <view name="medium:lightbox" inherits="medium:lightbox:*" />
         <view name="messagecenter" inherits="messagecenter:*" />
         <view name="useradmin" />
-        <view name="singlepage" inherits="gallery:*,useradmin" />
+        <view name="singlepage" inherits="gallery:*,medium:*,useradmin" />
     </views>
     <resources xml:base="intheshade/">
         <resource name="stylesheet" xml:base="css/">
@@ -28,6 +27,12 @@
         </resource>
         <resource name="stylesheet" xml:base="css/">
             <file href="shadowbox.css" />
+        </resource>
+        <resource name="javascript" xml:base="../../shared/">
+            <file href="ajaxqueue.js" />
+        </resource>
+        <resource name="javascript" xml:base="../../shared/">
+            <file href="zmg_shared.js" />
         </resource>
         <resource name="javascript" xml:base="js/">
             <file href="zmg_intheshade.js" />
@@ -53,11 +58,14 @@
         <resource name="template" type="json" view="messagecenter" xml:base="">
             <file href="messagecenter.json.tpl"/>
         </resource>
-        <resource name="template" type="json" view="gallery:get" xml:base="">
-            <file href="gallery_get.json.tpl" />
+        <resource name="template" type="json" view="gallery:show:home" xml:base="">
+            <file href="galleryhome.json.tpl" />
         </resource>
-        <resource name="template" type="json" view="gallery:thumbnails" xml:base="">
-            <file href="thumbnails.json.tpl" />
+        <resource name="template" type="json" view="gallery:show" xml:base="">
+            <file href="galleryshow.json.tpl" />
+        </resource>
+        <resource name="template" type="json" view="medium:show" xml:base="">
+            <file href="mediumshow.json.tpl" />
         </resource>
         <resource name="preview" xml:base="images/">
             <file href="intheshade_preview.png" />

@@ -6,17 +6,25 @@ ZMG.ServerEvents = (function() {
         console.log('Server#onview: ', view);
         ZMG.Dispatches.lastRequest = null;
         
-        //TODO
-        if (view == "admin:gallerymanager") {
-            onGalleryManager(text);
+        if (view == "gallery:show:home") {
+            o = Json.evaluate(text);
+            onMediaList(o);
+            isJSON = true;
+        }
+        
+        ZMG.ClientEvents.onHideLoader();
+        
+        if (isJSON) { //TODO: needs to be implemented still!
+            //check if there are any messages we need to display:
+            if (o.messagecenter && o.messagecenter.messages.length) {
+                for (var i = 0; i < o.messagecenter.messages.length; i++)
+                    ZMG.ClientEvents.onShowMessage(o.messagecenter.messages[i].title,
+                      o.messagecenter.messages[i].descr);
+            }
         }
     }
     
-    function onMediaList(text, xml) {
-        ZMG.ClientEvents.onHideLoader();
-        
-        var o = Json.evaluate(text);
-
+    function onMediaList(o) {
         if (o.result == ZMG.CONST.result_ok) {
             var medium, el, oImages = ZMG.cacheElement('zmg_mediumlist');
             oImages.innerHTML = "";
@@ -42,7 +50,6 @@ ZMG.ServerEvents = (function() {
     //publish to the world:
     return {
         onView: onView,
-        onMediaList: onMediaList,
         onError: onError
     };
 })();

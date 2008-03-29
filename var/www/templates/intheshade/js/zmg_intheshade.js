@@ -6,7 +6,9 @@ ZMG.ClientEvents = (function() {
     }
     
     function onLoadMedia() {
-        ZMG.Dispatches.getMedia();
+        //ZMG.Dispatches.getMedia();
+        var params = document.location.search.toQueryParams();
+        ZMG.Dispatches.selectView(params['view'] || 'gallery:show:home');
     }
     
     function onShowLoader() {
@@ -15,6 +17,10 @@ ZMG.ClientEvents = (function() {
     
     function onHideLoader() {
         ZMG.cacheElement('zmg_loader').setStyle('display', 'none');
+    }
+    
+    function onShowMessage(sTitle, sDescr) {
+        //TODO
     }
     
     //publish methods to the world:
