@@ -14,13 +14,6 @@ ZMG.Dispatches = {
         }, 20); // allowing a small delay for the browser to draw the loader-icon.
     },
     
-    getMedia: function() {
-        this.stdDispatch({
-            url: ZMG.CONST.req_uri + '&view=gallery:thumbnails',
-            onSuccess: ZMG.ServerEvents.onMediaList
-        });
-    },
-    
     selectView: function(view, forcetype) {
         view = view || ZMG.CONST.active_view;
         if (!view) return;

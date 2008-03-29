@@ -87,6 +87,9 @@ class zmgUploadTool {
               'gid'       => $gallery->gid
             );
             $obj->setGalleryDir($gallery->dir); //saves a SQL query later on...
+            //do some additional validation of strings
+            $data['name']     = $zoom->fireEvent('onvalidate', $data['name'])  || $data['name'];
+            $data['descr']    = $zoom->fireEvent('onvalidate', $data['descr']) || $data['descr'];
             
             if (!$obj->bind($data)) {
                 zmgToolboxPlugin::registerError(T_('Upload media'), T_('Medium could not be saved') . ': ' . $obj->getError());
