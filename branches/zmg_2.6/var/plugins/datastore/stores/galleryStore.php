@@ -66,5 +66,9 @@ class zmgGalleryStore {
             $zoom->messages->append(T_('Gallery could not be saved') . ': ' . $gid);
         }
     }
+    
+    function delete() {
+        
+    }
 }
 ?>

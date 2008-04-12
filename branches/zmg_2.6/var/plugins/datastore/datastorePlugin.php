@@ -13,7 +13,7 @@ defined('_ZMG_EXEC') or die('Restricted access');
 
 /**
  * The zmgDataStorePlugin class handles all the view requests that need specific
- * action. It delegates each view requests to an appropriate store
+ * action. It delegates each view request to an appropriate store
  * ('save gallery' -> 'galleryStore', 'upload' -> 'toolbox plugin', etc.).
  */
 class zmgDatastorePlugin {
@@ -66,6 +66,11 @@ class zmgDatastorePlugin {
                 zmgimport('org.zoomfactory.var.plugins.datastore.stores.galleryStore');
                 
                 zmgGalleryStore::process($zoom);
+                break;
+            case "admin:galleryedit:delete":
+                zmgimport('org.zoomfactory.var.plugins.datastore.stores.galleryStore');
+                
+                zmgGalleryStore::delete($zoom);
                 break;
             case "admin:mediumedit:store":
                 break;

@@ -258,7 +258,9 @@ ZMG.ClientEvents = (function() {
     };
     
     function onPing() {
+        clearTimeout(ZMG.pingTimer);
         onViewSelect('ping');
+        ZMG.pingTimer = window.setTimeout(onPing, ZMG.CONST.refreshtime);
     };
     
     function onShowLoader() {
@@ -308,4 +310,4 @@ ZMG.ClientEvents = (function() {
     };
 })();
 
-ZMG.ClientEvents.onPing.periodical(ZMG.CONST.refreshtime);
+ZMG.pingTimer = window.setTimeout(ZMG.ClientEvents.onPing, ZMG.CONST.refreshtime);

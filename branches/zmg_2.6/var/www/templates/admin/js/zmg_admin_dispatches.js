@@ -36,6 +36,12 @@ if (!window.ZMG) window.ZMG = {};
                 data: sData
             });
         },
+        deleteGallery:  function(sData) {
+            return this.stdDispatch({
+                url: ZMG.CONST.req_uri + "&view=admin:galleryedit:delete",
+                data: sData
+            });
+        },
         mediaCount:   function(gid) {
             if (isNaN(gid)) gid = 0;
             
