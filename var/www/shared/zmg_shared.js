@@ -30,6 +30,18 @@ ZMG.Shared = {
                 return null;
         }
         return this.nodeCache[elname || id] || null;
+    },
+
+    purgeNodeCache: function() {
+        var newCache = {};
+        for (var i in this.nodeCache) {
+            if (!this.nodeCache[i]) {
+                this.nodeCache[i] = null;
+                delete this.nodeCache[i];
+            } else
+                newCache[i] = this.nodeCache[i];
+        }
+        this.nodeCache = newCache;
     }
 };
 

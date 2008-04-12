@@ -99,8 +99,10 @@ ZMG.ServerEvents = (function() {
                     return content;
                 }
             });
+            
+            oGM.setStyle('display', 'none');
         }
-        onActivateView('zmg_view_gm');
+        //onActivateView('zmg_view_gm');
     };
     
     function onLoadGalleryData(node) {
@@ -448,6 +450,8 @@ ZMG.ServerEvents = (function() {
         oSettingsTabs.select(idx);
     };
     
+    var sActiveView = null;
+    
     function onActivateView(el) {
         if (!ZMG.Shared.cacheElement(el)) return;
         var oParent = ZMG.Shared.cacheElement('zmg_view_content');
@@ -455,6 +459,7 @@ ZMG.ServerEvents = (function() {
             if (oParent.childNodes[i].nodeType == 1)
                 oParent.childNodes[i].setStyle('display', 'none');
         
+        sActiveView = el;
         var oActiveView = ZMG.Shared.cacheElement(el);
         oActiveView.setStyle('display', '');
         ZMG.Shared.register('activeView', oActiveView);

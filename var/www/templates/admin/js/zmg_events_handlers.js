@@ -70,7 +70,7 @@ if (!window.ZMG) window.ZMG = {};
         },
         
         onGalleryDeleteClick: function(e) {
-            alert('clickie!');
+            ZMG.Dispatches.deleteGallery($('zmg_edit_gallery_gid').value);
         }
     };
 })();
