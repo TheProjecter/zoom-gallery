@@ -13,7 +13,8 @@ defined('_ZMG_EXEC') or die('Restricted access');
 
 /**
  * Class that is used to provide an API between the Zoom Core and templates.
- * Its primary use is to serve as a proxy between the Zoom object and the outside world.
+ * Its primary use is to serve as a proxy between the Zoom object(s) and the
+ * evil outside world.
  * @package zmg
  */
 class zmgAPIHelper {
@@ -83,8 +84,12 @@ class zmgAPIHelper {
         return zmgCallAbstract($klass, $func, $args);
     }
     
-    function getParamInt($name, $default = 0) {
+    function getRequestParamInt($name, $default = 0) {
         return intval(zmgGetParam($_REQUEST, $name, $default));
+    }
+    
+    function getRequestParamFloat($name, $default = 0) {
+        return floatval(zmgGetParam($_REQUEST, $name, $default));
     }
     
     function jsonHelper($input, $type = 'encode') {
