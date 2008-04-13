@@ -75,9 +75,13 @@ ZMG.ServerEvents = (function() {
         ZMG.ClientEvents.onHideLoader();
     };
     
+    var oNewClick;
+    
     function onGalleryManager(html) {
+        var oGM;
+
         if (!ZMG.Shared.cacheElement('zmg_view_gm')) {
-            var oGM = new Element('div', { id: 'zmg_view_gm' });
+            oGM = new Element('div', { id: 'zmg_view_gm' });
             ZMG.Shared.cacheElement('zmg_view_content').adopt(oGM);
             
             oGM.innerHTML = html;
@@ -100,14 +104,21 @@ ZMG.ServerEvents = (function() {
                 }
             });
             
-            oGM.setStyle('display', 'none');
+            oNewClick = $('zmg_gallerymanager_newclick');
         }
-        //onActivateView('zmg_view_gm');
+        
+        oGM = onActivateView('zmg_view_gm');
+        oGM.firstChild.setStyle('display', 'none');
+        
+        if (oNewClick) oNewClick.setStyle('display', '');
     };
     
     function onLoadGalleryData(node) {
         if (node.result == ZMG.CONST.result_ok) {
-            onActivateView('zmg_view_gm');
+            if (oNewClick) oNewClick.setStyle('display', 'none');
+            
+            var oGM = onActivateView('zmg_view_gm');
+            oGM.firstChild.setStyle('display', '');
             
             var data = node.data.gallery;
             var oForm = ZMG.Shared.cacheElement('zmg_form_edit_gallery');
@@ -466,6 +477,8 @@ ZMG.ServerEvents = (function() {
         
         window.setTimeout("ZMG.ClientEvents.onViewSelect('admin:toolbar:"
           + el + "');", 100);
+          
+        return oActiveView;
     };
     
     function onGetSettingsKey(view) {
