@@ -19,7 +19,7 @@ class packagerUtils {
      * @param boolean Recurse search into sub-directories
      * @param boolean True if to prepend the full path to the file name
      */
-    function readDir($path, $filter='.', $recurse=false, $fullpath=false) {
+    function readDir($path, $filter='.', $recurse=false, $fullpath=false, $filesonly=false) {
         $arr = array();
         if (!@is_dir( $path )) {
             return $arr;
@@ -30,7 +30,7 @@ class packagerUtils {
             $dir   = $path.DS.$file;
             $isDir = is_dir($dir);
             if (($file != ".") && ($file != "..") && ($file != ".svn")) {
-                if (preg_match( "/$filter/", $file )) {
+                if (preg_match( "/$filter/", $file ) && !($isDir && $filesonly)) {
                     if ($fullpath) {
                         $arr[] = trim($path.DS.$file);
                     } else {
@@ -38,7 +38,7 @@ class packagerUtils {
                     }
                 }
                 if ($recurse && $isDir) {
-                    $arr2 = packagerUtils::readDir($dir, $filter, $recurse, $fullpath);
+                    $arr2 = packagerUtils::readDir($dir, $filter, $recurse, $fullpath, $filesonly);
                     $arr  = array_merge($arr, $arr2);
                 }
             }

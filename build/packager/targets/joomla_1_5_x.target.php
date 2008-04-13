@@ -13,7 +13,7 @@ defined('_ZMG_EXEC') or die('Restricted access');
 
 class joomla_1_5_x_Target {
     function createHeader() {
-        return "<?xml version=\"1.0\" ?>\n"
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
          . "<install type=\"component\" version=\"1.5.0\">\n";
     }
     
@@ -39,7 +39,7 @@ class joomla_1_5_x_Target {
     function _createAdminFilelist($files) {
         if (count($files) === 0) return "";
         
-        $out = "    <files folder=\"admin\">\n";
+        $out = "    <files>\n";
         
         foreach ($files as $file) {
             $out .= "      <filename>" . $file . "</filename>\n";
@@ -49,15 +49,13 @@ class joomla_1_5_x_Target {
     }
     
     function createMiscBlock($data) {
-        return "  <media folder=\"images\" destination=\"zoom\">\n"
-         . "    <filename>index.html</filename>\n"
-         . "  </media>\n";
+        return "  <media folder=\"images\" destination=\"zoom\" />\n";
     }
     
     function createFileListBlock($files) {
         if (count($files) === 0) return "";
         
-        $out = "  <files folder=\"site\">\n";
+        $out = "  <files>\n";
         
         foreach ($files as $file) {
             if ($file) {

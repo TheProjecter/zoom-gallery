@@ -26,7 +26,7 @@ include(ZMG_ABS_PATH . '/utils.php');
 $klass = str_replace('.', '_', strtolower($_REQUEST['label'])) . "_Target";
 include(ZMG_ABS_PATH . '/targets/' . str_replace('_Target', '.target', $klass) . '.php');
 
-$sPath = ZMG_ABS_PATH . DS.'..'.DS.'application'.DS.$_REQUEST['label'];
+$sPath = ZMG_ABS_PATH . DS.'..'.DS.'application'.DS.$_REQUEST['label'].DS.'com_'.$_REQUEST['name'];
 
 $aDetails = array(
   'name'        => $_REQUEST['name'],
@@ -60,7 +60,7 @@ $sAdminBlock = call_user_func_array(array($klass, 'createAdminBlock'), array($aD
 
 $sMiscBlock = call_user_func_array(array($klass, 'createMiscBlock'), array($aDetails));
 
-$aFiles = packagerUtils::readDir($sPath, '.', true, true);
+$aFiles = packagerUtils::readDir($sPath, '.', true, true, true);
 for ($i = 0; $i < count($aFiles); $i++) {
     $aFiles[$i] = str_replace($sPath.DS, '', $aFiles[$i]);
     //TODO: move this check up with a reqular expression for readDir()
@@ -83,5 +83,5 @@ $sXML = $sHeader . $sMetaBlock . $sAdminBlock . $sFileListBlock . $sMiscBlock
  . $sInstallBlock . $sUnInstallBlock . $sFooter;
 
 file_put_contents(ZMG_ABS_PATH . DS.'..'.DS.'application'.DS.$_REQUEST['label']
- .DS.'install.'.$_REQUEST['name'].'.xml', $sXML);
+ .DS.'com_'.$_REQUEST['name'].DS.'install.'.$_REQUEST['name'].'.xml', $sXML);
 ?>
