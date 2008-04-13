@@ -484,12 +484,12 @@ class zmgFileHelper
         $handle = opendir($path);
     
         while ($file = readdir($handle)) {
-            $dir   = zmgFileHelper::cleanPath( $path.'/'.$file, false );
+            $dir   = zmgFileHelper::cleanPath($path.DS.$file, false);
             $isDir = is_dir( $dir );
             if (($file != ".") && ($file != "..") && ($file != ".svn")) {
                 if (preg_match( "/$filter/", $file )) {
                     if ($fullpath) {
-                        $arr[] = trim(zmgFileHelper::cleanPath( $path.'/'.$file, false ));
+                        $arr[] = trim(zmgFileHelper::cleanPath($path.DS.$file, false));
                     } else {
                         $arr[] = trim($file);
                     }
