@@ -57,7 +57,7 @@
 	</target>
 
 	<target name="copy.all">
-		<copy todir="application/${build.label}">
+		<copy todir="application/${build.label}/com_${app.name}">
 			<fileset dir="..">
 				<include name="docs/**" />
 				<include name="etc/**" />
@@ -72,21 +72,22 @@
 			</fileset>
 		</copy>
 		
-		<copy todir="application/${build.label}">
+		<copy todir="application/${build.label}/com_${app.name}">
             <fileset dir="../administrator">
                 <include name="images/**" />
                 <include name="*.html" />
-                <include name="*.xml" />
                 <include name="*.php" />
+            	<include name="*.sql" />
+            	<include name="*.xml" />
             </fileset>
         </copy>
 		
-		<delete dir="application/${build.label}/etc/_old" />
-		<delete dir="application/${build.label}/etc/compiled" />
-		<mkdir dir="application/${build.label}/etc/compiled" />
-		<delete dir="application/${build.label}/lib/_old" />
-		<delete dir="application/${build.label}/var/www/_old" />
-		<delete dir="application/${build.label}/locale/_old" />
+		<delete dir="application/${build.label}/com_${app.name}/etc/_old" />
+		<delete dir="application/${build.label}/com_${app.name}/etc/compiled" />
+		<mkdir dir="application/${build.label}/com_${app.name}/etc/compiled" />
+		<delete dir="application/${build.label}/com_${app.name}/lib/_old" />
+		<delete dir="application/${build.label}/com_${app.name}/var/www/_old" />
+		<delete dir="application/${build.label}/com_${app.name}/locale/_old" />
 	</target>
 
 	<target name="compress.all">
@@ -127,6 +128,7 @@
 		<exec executable="php">
             <arg line=" -n packager/packager.php label='${build.label}' name='${app.name}' fullname='${app.fullname}' descr='${app.descr}' author='${app.author}' authoremail='${app.author.email}' authorurl='${app.author.url}' copy='${app.copyright}' license='${app.license}' version='${app.version}'" />
         </exec>
+		<zip destfile="packages/${app.name}_${build.label}.zip" basedir="application/${build.label}" />
 	</target>
 
 	<target name="deploy">
