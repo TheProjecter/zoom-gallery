@@ -72,6 +72,24 @@
     z-index: 20000;
 }
 
+#zmg_gallerymanager_newclick
+{
+	position: absolute;
+	background: transparent url(../images/toolbar/icon-32-new.png) no-repeat top left;
+	top: 32px;
+	left: 32px;
+	width: 245px;
+	height: 24px;
+	overflow: hidden;
+	padding: 8px 0 0 0;
+	z-index: 10000;
+}
+
+#zmg_gallerymanager_newclick a
+{
+	padding: 0 0 0 40px;
+}
+
 .zmg_tb_disabled a
 {
     color: #ccc !important;
