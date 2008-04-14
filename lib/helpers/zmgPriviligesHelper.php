@@ -11,7 +11,7 @@
 
 defined('_ZMG_EXEC') or die('Restricted access');
 
-class zmgPriviligesHelper extends zmgError {
+class zmgPriviligesHelper {
     function zmgPriviligesHelper() {
         
     }

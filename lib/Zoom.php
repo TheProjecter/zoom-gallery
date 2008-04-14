@@ -63,7 +63,7 @@ class zmgFactory {
  * Main application class
  * @package zmg
  */
-class Zoom extends zmgError {
+class Zoom {
 	/**
      * Internal variable for the configuration array.
      *

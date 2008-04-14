@@ -1,5 +1,6 @@
 <?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+defined('_ZMG_EXEC') or die('Restricted access');
 
 /**
  * Converts to and from JSON format.
@@ -112,7 +113,7 @@ define('JSON_SUPPRESS_ERRORS', 32);
  * $value = $json->decode($input);
  * </code>
  */
-class zmgJSON extends zmgError
+class zmgJSON
 {
    /**
     * Object behavior flag
@@ -785,7 +786,7 @@ class zmgJSON extends zmgError
 
     function isError($data, $code = null)
     {
-        return parent::isError($data);
+        return zmgError::isError($data);
     }
 }
     
