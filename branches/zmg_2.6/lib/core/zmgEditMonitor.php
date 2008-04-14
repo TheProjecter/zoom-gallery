@@ -18,7 +18,7 @@ defined('_ZMG_EXEC') or die('Restricted access');
  *
  * @access public
  */
-class zmgEditMonitor extends zmgError {
+class zmgEditMonitor {
     /**
      * Register that a user has performed an action which may not be repeated
      * (specified by the admin).

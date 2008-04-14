@@ -15,7 +15,7 @@ defined('_ZMG_EXEC') or die('Restricted access');
  * Class that assists Zoom in retrieving and storing application settings
  * @package zmg
  */
-class zmgConfigurationHelper extends zmgError {
+class zmgConfigurationHelper {
     /**
      * Internal variable for the configuration array.
      *
