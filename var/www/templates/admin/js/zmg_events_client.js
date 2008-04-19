@@ -3,7 +3,7 @@ if (!window.ZMG) window.ZMG = {};
 ZMG.ClientEvents = (function() {
     var requestQueue = null;
     var lastRequest = null;
-    var requestingTabs = false;
+    var requestingInitView = false;
     var tabsTimeout = null;
     
     var tooltips = [];
@@ -171,9 +171,9 @@ ZMG.ClientEvents = (function() {
     }
     
     function onViewSelect(view, forcetype) {
-        if (!ZMG.Shared.get('settingsTabs') && !requestingTabs) {
-            requestingTabs = true;
-            onViewSelect('admin:settings:overview');
+        if (!ZMG.Shared.cacheElement('zmg_view_gm') && !requestingInitView) {
+            requestingInitView = true;
+            onViewSelect('admin:gallerymanager', 'html');
         }
         view = view || ZMG.CONST.active_view;
         if (!view) return;

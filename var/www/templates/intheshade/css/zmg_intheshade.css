@@ -212,3 +212,44 @@
 {
     visibility: hidden;
 }
+
+
+.rabidRating {  
+    cursor: pointer;
+    background: #ccc;
+}
+
+.rabidRating,.rabidRating span {
+    display: block;
+    width: 110px;
+    height: 25px;
+}
+
+.rabidRating span {
+    position: relative;
+    top: 0;
+    left: 0;
+    text-indent: -999em;
+}
+
+.rabidRating .ratingStars {
+    display: block;
+    background: url('../images/hearts.png') no-repeat center;
+}
+
+.rabidRating .ratingFill {
+    background: #ff0000;
+    width: 50px;
+}
+
+.rabidRating.ratingVoted {
+    cursor: default;
+}
+
+.ratingActiveFillColor {
+    background: #ffee00;
+}
+
+.ratingVotedFillColor {
+    background: #0069ff;
+}

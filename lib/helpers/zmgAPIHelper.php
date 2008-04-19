@@ -76,7 +76,7 @@ class zmgAPIHelper {
      * Note: particularly useful within templates.
      * @see zmgCallAbstract
      */
-    function callAbstract($klass, $func, $args) {
+    function callAbstract($klass, $func, $args = array(0)) {
         if (!in_array($klass, $this->abstract_whitelist)) {
             return zmgError::throwError('zmgAPIHelper::callAbstract: illegal call.');
         }

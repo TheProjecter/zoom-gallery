@@ -63,37 +63,37 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>{t}Name{/t}</td>
+                    <td><label for="zmg_edit_name">{t}Name{/t}</label></td>
                     <td>
                         <input type="text" name="zmg_edit_name" id="zmg_edit_name" value="" size="50" maxlength="50" class="inputbox" />
                     </td>
                 </tr>
                 <tr>
-                    <td>{t}Keywords{/t}</td>
+                    <td><label for="zmg_edit_keywords">{t}Keywords{/t}</label></td>
                     <td valign="middle">
                       <input type="text" name="zmg_edit_keywords" id="zmg_edit_keywords" size="50" value="" class="inputbox" />
                     </td>
                 </tr>
                 <tr>
-                    <td>{t}Set as Gallery Image{/t}</td>
+                    <td><label for="zmg_edit_gimg">{t}Set as Gallery Image{/t}</label></td>
                     <td align="left" valign="top">
                         <input type="checkbox" name="zmg_edit_gimg" id="zmg_edit_gimg" value="1"/>
                     </td>
                 </tr>
                 <tr>
-                    <td>{t}Set as Gallery Image of PARENT gallery{/t}</td>
+                    <td><label for="zmg_edit_pimg">{t}Set as Gallery Image of PARENT gallery{/t}</label></td>
                     <td>          
                         <input type="checkbox" name="zmg_edit_pimg" id="zmg_edit_pimg" value="1"/>
                     </td>
                 </tr>
                 <tr>
-                    <td>{t}Published{/t}</td>
+                    <td><label for="zmg_edit_published">{t}Published{/t}</label></td>
                     <td>
                         <input type="checkbox" name="zmg_edit_published" id="zmg_edit_published" value="1"/>
                     </td>
                 </tr>
                 <tr>
-                    <td valign="top">{t}Description{/t}</td>
+                    <td valign="top"><label for="zmg_edit_descr">{t}Description{/t}</label></td>
                     <td>
                        <textarea cols="50" rows="5" name="zmg_edit_descr" id="zmg_edit_descr" class="inputbox"></textarea>
                     </td>
@@ -102,10 +102,11 @@
             </div>
             <div class="tab-container" rel="permissions">
                 <!-- new tab should start here... 'Permissions' -->
-                <table border="0" width="300">
+                <table border="0" width="400" class="adminform">
                 <tr>
+                    <td valign="top" width="20%">{t}Please select a group that you grant permission to view this medium{/t}</td>
                     <td>
-                    <!-- List of members put here... -->
+                        {$zmgAPI->callAbstract('zmgHTML', 'groupsACLSelect')}
                     </td>
                 </tr>
                 </table>

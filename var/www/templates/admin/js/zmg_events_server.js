@@ -237,7 +237,7 @@ ZMG.ServerEvents = (function() {
                 entrySelector: 'li a',
                 onShow: function(toggle, container, idx) {
                     toggle.addClass('tab-selected');
-                    container.effect('opacity').start(0, 1); // 1) first start the effect
+                    //container.effect('opacity').start(0, 1); // 1) first start the effect
                     container.setStyle('display', ''); // 2) then show the element, to prevent flickering
                 },
                 getContent: function(el) {
