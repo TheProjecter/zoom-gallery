@@ -1,8 +1,8 @@
 <table width="85%" border="0" class="adminform">
 <tr>
   <th colspan="3">
-    {t}Here you are able to change layout settings for your gallery that will determine
-    the look and feel of it.{/t} 
+    {t}Here you are able to change layout settings that will determine
+    the look and feel of your gallery.{/t} 
   </th>
 </tr>
 </table>

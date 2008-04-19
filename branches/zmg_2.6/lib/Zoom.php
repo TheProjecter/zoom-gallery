@@ -234,7 +234,7 @@ class Zoom {
      * @param string $ident2
      * @return void
      */
-    function &getGalleryList($parent = 0, $indent_l1 = '->', $indent_l2 = '->') {
+    function &getGalleryList($parent = 0, $indent_l1 = '.', $indent_l2 = '.') {
         if (!is_array($this->_gallerylist)) {
             $db   = & zmgDatabase::getDBO();
             $db->setQuery("SELECT gid FROM #__zmg_galleries WHERE sub_gid=$parent ORDER BY pos, "
@@ -247,10 +247,10 @@ class Zoom {
                     $ret[]   = $gallery;
                     $this->_gallerylist[] = array(
                       'object' => $gallery,
-                      'path_name' => $indent_l1 . $gallery->name,
+                      'path_name' => $indent_l1 . " - " . $gallery->name,
                       'path_virtual' => $indent_l2 . $gallery->name);
-                    $this->getGalleryList($gallery->gid, $indent_l1 . '->',
-                      $indent_l2 . $gallery->name . '->');
+                    $this->getGalleryList($gallery->gid, $indent_l1 . '    ',
+                      $indent_l2 . $gallery->name . '    ');
                 }
             }
         }

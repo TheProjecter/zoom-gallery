@@ -2,7 +2,7 @@
 <tr>
   <th colspan="2">
     {t}Here you are able to change application settings for your gallery. You may
-    turn certain features on and off.{/t} 
+    turn certain features on or off.{/t} 
   </th>
 </tr>
 <tr>
