@@ -22,12 +22,11 @@ class zmgHTML {
      * @return string
      */
     function galleriesSelect($onchange = 0, $sel_name = "gid", $sel = 0, $exclude = 0) {
-        if ($onchange === 0) {
-            $html = "<select name=\"$sel_name\" id=\"$sel_name\" class=\"inputbox\">";
-        } else {
-            $html = "<select name=\"$sel_name\" class=\"inputbox\" onchange=\"$onchange\">";
+        $html = "<select name=\"$sel_name\" id=\"$sel_name\" class=\"inputbox\"";
+        if ($onchange !== 0) {
+            $html .= " onchange=\"$onchange\"";
         }
-        $html .= "<option value=\"0\">---&nbsp;".T_('Select a Gallery')."&nbsp;---</option>";
+        $html .= ">\n\t<option value=\"0\">---&nbsp;".T_('Select a Gallery')."&nbsp;---</option>\n";
 
         $zoom      = & zmgFactory::getZoom();
         $galleries = & $zoom->getGalleryList();
@@ -36,13 +35,35 @@ class zmgHTML {
             foreach ($galleries as $set) {
                 $gallery = $set['object'];
                 if ($gallery->gid != $exclude || $exclude == 0) {
-                    $html .= "<option value=\"".$gallery->gid."\""
+                    $html .= "\t<option value=\"".$gallery->gid."\""
                      . ($sel == $gallery->gid ? " selected": "").">".$set['path_name']
                      . "</option>\n";
                 }
             }
         }
-        echo $html."</select>";
+
+        echo $html."</select>\n";
+    }
+    
+    function groupsACLSelect($onchange = 0, $sel_name = "acl_gid", $sel = 0, $exclude = 0) {
+        $html = "<select name=\"$sel_name\" id=\"$sel_name\" size=\"14\" class=\"inputbox\"";
+        if ($onchange !== 0) {
+            $html .= " onchange=\"$onchange\"";
+        }
+        $html .= " style=\"width: 200px;\">\n"
+         . "\t<optgroup label=\"----- " . T_('Global') . " -----\">\n"
+         . "\t<option value=\"1\">" . T_('Public Access') . "</option>\n"
+         . "\t<option value=\"2\">" . T_('Registered Users Only') . "</option>\n"
+         . "\t</optgroup>\n"
+         . "\t<optgroup label=\"----- " . T_('Specific Group') . " -----\"";
+        
+        $list = zmgACL::getGroupList();
+        
+        foreach ($list as $group) {
+            $html .= "\t<option value=\"" . $group->value . "\">" . $group->text . "</option>\n";
+        }
+        
+        echo $html."</optgroup>\n</select>\n";
     }
 }
 ?>
