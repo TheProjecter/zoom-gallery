@@ -92,6 +92,10 @@ class zmgAPIHelper {
         return floatval(zmgGetParam($_REQUEST, $name, $default));
     }
     
+    function constructArray() {
+        return func_get_args();
+    }
+    
     function jsonHelper($input, $type = 'encode') {
         $zoom = & zmgFactory::getZoom();
         

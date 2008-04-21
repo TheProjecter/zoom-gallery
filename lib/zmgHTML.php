@@ -52,8 +52,8 @@ class zmgHTML {
         }
         $html .= " style=\"width: 200px;\">\n"
          . "\t<optgroup label=\"----- " . T_('Global') . " -----\">\n"
-         . "\t<option value=\"1\">" . T_('Public Access') . "</option>\n"
-         . "\t<option value=\"2\">" . T_('Registered Users Only') . "</option>\n"
+         . "\t<option value=\"0\">" . T_('Public Access') . "</option>\n"
+         . "\t<option value=\"1\">" . T_('Registered Users Only') . "</option>\n"
          . "\t</optgroup>\n"
          . "\t<optgroup label=\"----- " . T_('Specific Group') . " -----\"";
         

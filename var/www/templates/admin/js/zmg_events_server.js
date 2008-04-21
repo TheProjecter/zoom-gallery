@@ -150,6 +150,8 @@ ZMG.ServerEvents = (function() {
             FancyForm[(oShared.checked ? 'select' : 'deselect')](oShared.parentNode);
             
             oForm.elements['zmg_edit_gallery_descr'].value = data.descr;
+            
+            setACLSelect(data.uid, 'zmg_edit_gallery_acl_gid');
         }
     };
     
@@ -344,8 +346,18 @@ ZMG.ServerEvents = (function() {
             FancyForm[(oPublish.checked ? 'select' : 'deselect')](oPublish.parentNode);
             
             ZMG.Shared.cacheElement('zmg_edit_descr').value = data.descr;
+            
+            setACLSelect(data.uid, 'zmg_edit_acl_gid');
         }
     };
+    
+    function setACLSelect(uid, mSelect) {
+        uid = parseInt(uid) || 0; //default: public access '0'
+        var oSelect = (typeof mSelect == "string") ? $(mSelect) : mSelect;
+
+        for (var i = 0; i < oSelect.options.length; i++)
+            oSelect.options[i].selected = (parseInt(oSelect.options[i].value) === uid);
+    }
     
     function onToolbar(node) {
         var name = node.toolbar.shift();

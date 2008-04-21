@@ -23,7 +23,7 @@ class zmgHtmlawedPlugin {
     
     function htmLawed($event) {
         $in = $event->getArgument('input');
-        
+
         zmgimport('org.zoomfactory.var.plugins.htmlawed.htmLawed');
         return htmLawed($in, 1, array());
     }

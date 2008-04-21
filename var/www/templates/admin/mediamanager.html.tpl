@@ -106,7 +106,7 @@
                 <tr>
                     <td valign="top" width="20%">{t}Please select a group that you grant permission to view this medium{/t}</td>
                     <td>
-                        {$zmgAPI->callAbstract('zmgHTML', 'groupsACLSelect')}
+                        {$zmgAPI->callAbstract('zmgHTML', 'groupsACLSelect', $zmgAPI->constructArray(0, 'zmg_edit_acl_gid'))}
                     </td>
                 </tr>
                 </table>
