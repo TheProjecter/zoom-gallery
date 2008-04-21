@@ -14,33 +14,34 @@ defined('_ZMG_EXEC') or die('Restricted access');
 class zmgGalleryStore {
     function process(&$zoom) {
     	$gid     = zmgGetParam($_REQUEST, 'zmg_edit_gallery_gid', 0);
-        
+
         $isNew = false;
         if ($gid === "new") {
             $isNew = true;
             $gid = 0;
         }
-        
+
         $gid     = intval($gid);
-        
+
         $gallery = new zmgGallery(zmgDatabase::getDBO());
-        
+
         $data    = array(
           'name'      => zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_edit_gallery_name', $gallery->name)),
           'descr'     => zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_edit_gallery_descr', $gallery->descr)),
           'keywords'  => zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_edit_gallery_keywords', $gallery->keywords)),
           'hide_msg'  => intval(zmgGetParam($_REQUEST, 'zmg_edit_gallery_hidenm', $gallery->hide_msg)),
           'shared'    => intval(zmgGetParam($_REQUEST, 'zmg_edit_gallery_shared', $gallery->shared)),
-          'published' => intval(zmgGetParam($_REQUEST, 'zmg_edit_gallery_published', $gallery->published))
+          'published' => intval(zmgGetParam($_REQUEST, 'zmg_edit_gallery_published', $gallery->published)),
+          'uid'       => intval(zmgGetParam($_REQUEST, 'zmg_edit_gallery_acl_gid', $gallery->uid))
         );
         if ($isNew) {
             $data['dir'] = zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_edit_gallery_dir', ''));
         }
         //do some additional validation of strings
-        $data['name']     = $zoom->fireEvent('onvalidate', $data['name'])     || $data['name'];
-        $data['descr']    = $zoom->fireEvent('onvalidate', $data['descr'])    || $data['descr'];
-        $data['keywords'] = $zoom->fireEvent('onvalidate', $data['keywords']) || $data['keywords'];
-        
+        $data['name']     = $zoom->fireEvent('onvalidate', false, $data['name']);
+        $data['descr']    = $zoom->fireEvent('onvalidate', false, $data['descr']);
+        $data['keywords'] = $zoom->fireEvent('onvalidate', false, $data['keywords']);
+
         $res = true;
 
         if ($gid > 0) {
@@ -48,7 +49,7 @@ class zmgGalleryStore {
                 $zoom->messages->append(T_('Gallery could not be saved') . ': ' . $gallery->getError());
             }
         }
-        
+
         if (($res && $gid > 0) || $isNew) {
             if (!$gallery->bind($data)) {
                 $zoom->messages->append(T_('Gallery could not be saved') . ': ' . $gallery->getError());
