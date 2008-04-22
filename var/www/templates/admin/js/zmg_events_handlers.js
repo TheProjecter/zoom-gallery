@@ -42,10 +42,6 @@ if (!window.ZMG) window.ZMG = {};
                 livegrid.scroller.style.height = (oEditSize.y + 16) + "px";
         },
         
-        onGalleryNewClick: function(e) {
-            ZMG.ClientEvents.onViewSelect('admin:gallerymanager:get:new');
-        },
-        
         onMmUploadStartClick: function() {
             if (!ZMG.ClientEvents.getActiveFilter()) {
                 return ZMG.ClientEvents.onShowMessage('Medium Upload',
@@ -63,6 +59,10 @@ if (!window.ZMG) window.ZMG = {};
         
         onMmUploadCompleted: function() {
             ZMG.Dispatches.saveMedia('fancyupload', FormSerializer.serialize($('zmg_fancyupload_data')));
+        },
+        
+        onGalleryNewClick: function(e) {
+            ZMG.ClientEvents.onViewSelect('admin:gallerymanager:get:new');
         },
         
         onGallerySaveClick: function(e) {
