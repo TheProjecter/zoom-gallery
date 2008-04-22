@@ -73,6 +73,9 @@ class zmgDatastorePlugin {
                 zmgGalleryStore::delete($zoom);
                 break;
             case "admin:mediumedit:store":
+                zmgimport('org.zoomfactory.var.plugins.datastore.stores.mediumStore');
+                
+                zmgMediumStore::process($zoom);
                 break;
             case stristr($view, "admin:mediaupload:store"):
                 //SWFUpload needs HTTP headers to signal the user...

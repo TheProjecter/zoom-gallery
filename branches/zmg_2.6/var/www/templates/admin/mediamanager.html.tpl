@@ -123,7 +123,7 @@
             </div>
             <!-- 'Actions' tab will move to the toolbar -->
 
-		    <input type="hidden" name="mid" value="" />
+		    <input type="hidden" name="zmg_edit_mid" value="" />
 		    </form>
         </div>
     </div>

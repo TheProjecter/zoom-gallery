@@ -161,6 +161,10 @@ class zmgMedium extends zmgTable {
         $this->_gallery_dir = $dir;
     }
     
+    function setAsGalleryImage($ofParent = false) {
+        return true;//TODO;
+    }
+    
     function getExtension() {
     	if (!$this->filename) {
             zmgError::throwError('zmgMedium: medium data not loaded yet');

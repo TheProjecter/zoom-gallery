@@ -336,16 +336,17 @@ ZMG.ServerEvents = (function() {
             var oImg = ZMG.Shared.cacheElement('zmg_edit_medium_thumbnail');
             oImg.src = data.url;
             oImg.onload = ZMG.EventHandlers.onMediumCorrectPanel;
+            oForm.elements['zmg_edit_mid'].value = data.mid
             ZMG.Shared.cacheElement('zmg_edit_filename').innerHTML = data.filename;
-            ZMG.Shared.cacheElement('zmg_edit_name').value = data.name;
-            ZMG.Shared.cacheElement('zmg_edit_keywords').value = data.keywords;
+            oForm.elements['zmg_edit_name'].value = data.name;
+            oForm.elements['zmg_edit_keywords'].value = data.keywords;
             //ZMG.Shared.cacheElement('zmg_edit_gimg');
             //ZMG.Shared.cacheElement('zmg_edit_pimg');
             var oPublish = ZMG.Shared.cacheElement('zmg_edit_published');
             oPublish.checked = (data.published);
             FancyForm[(oPublish.checked ? 'select' : 'deselect')](oPublish.parentNode);
             
-            ZMG.Shared.cacheElement('zmg_edit_descr').value = data.descr;
+            oForm.elements['zmg_edit_descr'].value = data.descr;
             
             setACLSelect(data.uid, 'zmg_edit_acl_gid');
         }
