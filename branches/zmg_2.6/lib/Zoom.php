@@ -33,6 +33,8 @@ class zmgFactory {
         static $instance_json;
         
         if (!is_object($instance_json)) {
+            zmgimport('org.zoomfactory.lib.zmgJson');
+            
             $instance_json = new zmgJSON();
         }
 

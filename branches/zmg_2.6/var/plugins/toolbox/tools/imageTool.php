@@ -16,8 +16,9 @@ class zmgImageTool {
     	$ok = true; //innocent, until proven guilty ;)
         
         $zoom      = & zmgFactory::getZoom();
+        $imagetools = & zmgToolboxConstants::getImageTools();
         $toolkey   = intval($zoom->getConfig('plugins/toolbox/general/conversiontool'));
-        $imagetool = $GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'][$toolkey - 1];
+        $imagetool = $imagetools[$toolkey - 1];
         
         zmgimport('org.zoomfactory.var.plugins.toolbox.tools.'.$imagetool.'Tool');
         $klass = 'zmg' . ucfirst($imagetool) . 'Tool';

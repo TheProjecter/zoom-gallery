@@ -12,6 +12,22 @@
 defined('_ZMG_EXEC') or die('Restricted access');
 
 class zmgHTML {
+    function buildConstScript($constants) {
+        $ret = ("<script language=\"javascript\" type=\"text/javascript\">\n"
+         . "<!--\n"
+         . "\tif (!window.ZMG) window.ZMG = {};\n"
+         . "\tZMG.CONST = {};\n");
+        
+        if (count($constants)) {
+            foreach ($constants as $name => $value) {
+                $ret .= "\tZMG.CONST.$name = $value;\n";
+            }
+        }
+        
+        return $ret . ("//-->\n"
+         . "</script>\n");
+    }
+    
     /**
      * Create a HTML dropdown form element which contains a list of galleries
      * (ordered and indented).
@@ -19,7 +35,7 @@ class zmgHTML {
      * @param string $sel_name
      * @param int $sel
      * @param int $exclude
-     * @return string
+     * @return void
      */
     function galleriesSelect($onchange = 0, $sel_name = "gid", $sel = 0, $exclude = 0) {
         $html = "<select name=\"$sel_name\" id=\"$sel_name\" class=\"inputbox\"";
