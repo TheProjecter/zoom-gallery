@@ -26,9 +26,8 @@ define('ZMG_ERROR_DIE',        8);
 define('ZMG_ERROR_CALLBACK',  16);
 define('ZMG_ERROR_EXCEPTION', 32);
 
-
-$GLOBALS['_ZMG_default_error_mode']    = ZMG_ERROR_CALLBACK;
-$GLOBALS['_ZMG_default_error_options'] = 'zmgErrorCallback';
+define('ZMG_DEFAULT_ERROR_MODE', ZMG_ERROR_CALLBACK);
+define('ZMG_DEFAULT_ERROR_OPTIONS', 'zmgErrorCallback');
 
 @ini_set('track_errors', true);
 
@@ -65,10 +64,10 @@ class zmgError {
      */
     function zmgError($mode = null, $options = null) {
         if ($mode === null) {
-            $mode = $GLOBALS['_ZMG_default_error_mode'];
+            $mode = ZMG_DEFAULT_ERROR_MODE;
         }
         if ($options === null) {
-            $options = $GLOBALS['_ZMG_default_error_options'];
+            $options = ZMG_DEFAULT_ERROR_OPTIONS;
         }
         $this->setErrorHandling($mode, $options);
     }
@@ -101,11 +100,11 @@ class zmgError {
      */
     function setErrorHandling($mode = null, $options = null) {
         if (isset($this) && is_subclass_of($this, 'zmgError')) {
-            $setmode     = &$this->_default_error_mode;
-            $setoptions  = &$this->_default_error_options;
+            $setmode     = $this->_default_error_mode;
+            $setoptions  = $this->_default_error_options;
         } else {
-            $setmode     = &$GLOBALS['_ZMG_default_error_mode'];
-            $setoptions  = &$GLOBALS['_ZMG_default_error_options'];
+            $setmode     = ZMG_DEFAULT_ERROR_MODE;
+            $setoptions  = ZMG_DEFAULT_ERROR_OPTIONS;
         }
 
         switch ($mode) {
@@ -145,11 +144,11 @@ class zmgError {
      *                  to define these if you want to use codes)
      */
     function throwError($message = null, $code = null) {
-        $mode    = $GLOBALS['_ZMG_default_error_mode'];
-        $options = $GLOBALS['_ZMG_default_error_options'];
+        $mode    = ZMG_DEFAULT_ERROR_MODE;
+        $options = ZMG_DEFAULT_ERROR_OPTIONS;
         if (isset($this) && is_subclass_of($this, 'zmgError')) {
             return $this->raiseError($message, $code,
-              $GLOBALS['_ZMG_default_error_mode'], $GLOBALS['_ZMG_default_error_options']);
+              ZMG_DEFAULT_ERROR_MODE, ZMG_DEFAULT_ERROR_OPTIONS);
         } else {
             return zmgError::raiseError($message, $code, $mode, $options);
         }

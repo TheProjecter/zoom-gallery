@@ -11,7 +11,46 @@
 
 defined('_ZMG_EXEC') or die('Restricted access');
 
-
+//TODO: convert these to defines
+class zmgToolboxConstants {
+    function &getTools() {
+        static $tools;
+        
+        if (!$tools) {
+            $tools = array(
+                'document',
+                'image',
+                'gd1x',
+                'gd2x',
+                'imagemagick',
+                'mime',
+                'audio',
+                'netpbm',
+                'upload',
+                'video',
+                'watermark'
+            );
+        }
+        
+        return $tools;
+    }
+    
+    function &getImageTools() {
+        static $imagetools;
+        
+        if (!$imagetools) {
+            $imagetools = array(
+                'imagemagick',
+                'netpbm',
+                'gd1x',
+                'gd2x'
+            );
+        }
+        
+        return $imagetools;
+    }
+    
+}
 $GLOBALS['_ZMG_TOOLBOX_TOOLS'] = array(
     'document',
     'image',
@@ -54,21 +93,7 @@ class zmgToolboxPlugin extends zmgError {
     
     function embed() {
         $zoom = & zmgFactory::getZoom();
-        /*$imagetools_loaded = false;
-        foreach ($GLOBALS['_ZMG_TOOLBOX_TOOLS'] as $tool) {
-            if (in_array($tool, $GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'])) {
-                if (!$imagetools_loaded) {
-                    $imagetools_loaded = true;
-                    $imagetool = intval($zoom->getConfig('plugins/toolbox/general/conversiontool'));
-                    zmgimport('org.zoomfactory.var.plugins.toolbox.tools.'
-                     . $GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'][$imagetool - 1] . 'Tool');
-                }
-            } else {
-                zmgimport('org.zoomfactory.var.plugins.toolbox.tools.'
-                 . $tool . 'Tool');
-            }
-        }
-        */
+
         $settings_file = ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS.'toolbox'.DS.'settings.xml';
         if (file_exists($settings_file)) {
             $plugin = & $zoom->plugins->get('toolbox');
@@ -95,16 +120,19 @@ class zmgToolboxPlugin extends zmgError {
         if (!is_array($selection)) {
         	$selection = "all";
         }
+
+        $zoom       = & zmgFactory::getZoom();
+        $tools      = & zmgToolboxConstants::getTools();
+        $imagetools = & zmgToolboxConstants::getImageTools();
         
         $getall  = false;
         if (!is_array($selection) && $selection == "all") {
             $getall = true;
-            $selection = $GLOBALS['_ZMG_TOOLBOX_TOOLS'];
+            $selection = $tools;
         }
-        $zoom = & zmgFactory::getZoom();
 
         $toolkey   = intval($zoom->getConfig('plugins/toolbox/general/conversiontool'));
-        $imagetool = $GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'][$toolkey - 1];
+        $imagetool = $imagetools[$toolkey - 1];
         if ($getall) {
             //auto-detect currently selected imagetool first
             zmgimport('org.zoomfactory.var.plugins.toolbox.tools.'.$imagetool.'Tool');
@@ -113,7 +141,7 @@ class zmgToolboxPlugin extends zmgError {
         
         //auto-detect other tools as well
         foreach ($selection as $tool) {
-            if (!in_array($tool, $GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'])) {
+            if (!in_array($tool, $imagetools)) {
                 zmgimport('org.zoomfactory.var.plugins.toolbox.tools.'.$tool.'Tool');
                 zmgCallAbstract('zmg'.ucfirst($tool).'Tool', 'autoDetect');
             } else if (!$getall) {

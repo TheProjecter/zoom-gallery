@@ -48,7 +48,16 @@ class zmgTemplateHelper extends Smarty {
         }
         $this->_type      = "html"; //default type
         $this->_secret    = $secret;
-        $this->_constants = array();
+        
+        $json = & zmgFactory::getJSON();
+        $this->_constants = array(
+            "id"          => $json->encode(md5($this->_secret)),
+            "result_ok"   => $json->encode(_ZMG_RPC_RESULT_OK),
+            "result_ko"   => $json->encode(_ZMG_RPC_RESULT_KO),
+            "active_view" => "''",//$this->_active_view,
+            "is_admin"    => ((ZMG_ADMIN) ? "true" : "false"),
+            "site_uri"    => "document.location.protocol + '//' + document.location.host + document.location.pathname.replace(/\/(administrator\/)?index(2)?\.php$/i, '')"
+        );
 
         $this->_loadManifest();
     }
@@ -65,7 +74,22 @@ class zmgTemplateHelper extends Smarty {
                 $this->_buildAdminToolbar();
             }
             zmgEnv::includeMootools();
-            zmgEnv::appendPageHeader($this->_prepareAjax());
+            
+            $json = & zmgFactory::getJSON();
+            
+            $lifetime = (zmgEnv::getSessionLifetime() * 60000); //in milliseconds
+            //refresh time is 1 minute less than the lifetime assigned in the CMS configuration
+            $refreshTime =  ($lifetime <= 60000) ? 30000 : $lifetime - 60000;
+            $this->_constants = array_merge($this->_constants, array(
+                "req_uri"     => "ZMG.CONST.site_uri + '".zmgEnv::getAjaxURL()."'",
+                "res_path"    => "ZMG.CONST.site_uri + '/components/com_zoom/var/www/templates/"
+                  . $this->_active_template."'",
+                "base_path"   => "'".zmgGetBasePath()."'",
+                "refreshtime" => $refreshTime,
+                "sessionid"   => $json->encode(zmgEnv::getSessionID()),
+                "sessionname" => $json->encode(zmgEnv::getSessionName())
+            ));
+            zmgEnv::appendPageHeader(zmgHTML::buildConstScript($this->_constants));
         }
 
         //put the HTML headers in the head section of the parent (hosting) document
@@ -104,39 +128,6 @@ class zmgTemplateHelper extends Smarty {
             return $this->throwError('No value specified for constant ' . $name);
         }
         $this->_constants[trim($name)] = is_string($value) ? trim($value) : intval($value);
-    }
-    
-    function _prepareAjax() {
-        $lifetime = (zmgEnv::getSessionLifetime() * 60000); //in milliseconds
-        $refreshTime =  ($lifetime <= 60000) ? 30000 : $lifetime - 60000;
-        //refresh time is 1 minute less than the lifetime assigned in the CMS configuration
-        
-        $ret = ("<script language=\"javascript\" type=\"text/javascript\">\n"
-         . "<!--\n"
-         . "\tif (!window.ZMG) window.ZMG = {};\n"
-         . "\tZMG.CONST = {};\n"
-         . "\tZMG.CONST.id          = '".md5($this->_secret)."';\n"
-         . "\tZMG.CONST.result_ok   = '"._ZMG_RPC_RESULT_OK."';\n"
-         . "\tZMG.CONST.result_ko   = '"._ZMG_RPC_RESULT_KO."';\n"
-         . "\tZMG.CONST.active_view = '".$this->_active_view."';\n"
-         . "\tZMG.CONST.is_admin    = ".((ZMG_ADMIN) ? "true" : "false").";\n"
-         . "\tZMG.CONST.site_uri    = document.location.protocol + '//' + document.location.host + document.location.pathname.replace(/\/(administrator\/)?index(2)?\.php$/i, '');\n"
-         . "\tZMG.CONST.req_uri     = ZMG.CONST.site_uri + '".zmgEnv::getAjaxURL()."';\n"
-         . "\tZMG.CONST.res_path    = ZMG.CONST.site_uri + '/components/com_zoom/var/www/templates/"
-         . $this->_active_template."';\n"
-         . "\tZMG.CONST.base_path   = '".zmgGetBasePath()."';\n"
-         . "\tZMG.CONST.refreshtime = ".$refreshTime.";\n"
-         . "\tZMG.CONST.sessionid   = '".zmgEnv::getSessionID()."';\n"
-         . "\tZMG.CONST.sessionname = '".zmgEnv::getSessionName()."';\n");
-        
-        if (count($this->_constants)) {
-            foreach ($this->_constants as $name => $value) {
-                $ret .= "\tZMG.CONST.$name = $value;\n";
-            }
-        }
-        
-        return $ret . ("//-->\n"
-         . "</script>\n");
     }
     
     function _buildAdminToolbar() {
