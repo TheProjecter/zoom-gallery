@@ -79,15 +79,24 @@
 	top: 32px;
 	left: 32px;
 	width: 245px;
-	height: 24px;
-	overflow: hidden;
-	padding: 8px 0 0 0;
+	height: 32px;
+	overflow: visible;
+	padding: 0;
 	z-index: 10000;
 }
 
 #zmg_gallerymanager_newclick a
 {
-	padding: 0 0 0 40px;
+	padding: 16px 4px 16px 40px;
+	height: 32px;
+	line-height: 32px;
+	vertical-align: middle;
+}
+
+#zmg_gallerymanager_newclick a:hover
+{
+	border-right: 1px solid #d0d0d0;
+	border-bottom: 1px solid #d0d0d0;
 }
 
 .zmg_tb_disabled a
