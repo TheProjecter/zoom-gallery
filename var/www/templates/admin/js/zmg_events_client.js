@@ -16,10 +16,9 @@ ZMG.ClientEvents = (function() {
     ZMG.Shared.register('filterSelects', []);
     
     function onStart() {
-        ZMG.Shared.register('toolbar', new ZMG.Toolbar());
-//        this.tooltip = new ZMG.Tooltip(null, {
-//            parentElement: ZMG.Admin.cacheElement('zmg_admin_messagecenter')
-//        });
+        ZMG.Shared.register('toolbar', new ZMG.Toolbar())
+          .setTitleImage(ZMG.CONST.res_path + "/../../shared/zoom_logo_medium.gif");
+
         window.addEvent('resize', onWindowResize.bind(this));
         
         var el = ZMG.Shared.cacheElement('zmg_tree_toolpin');

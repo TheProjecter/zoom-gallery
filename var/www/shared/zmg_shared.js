@@ -5,6 +5,8 @@ ZMG.Shared = {
         if (!name) return;
         
         this[name] = value;
+        
+        return this[name];
     },
     
     get: function(name) {

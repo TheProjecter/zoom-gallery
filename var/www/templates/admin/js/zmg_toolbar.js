@@ -15,6 +15,18 @@ ZMG.Toolbar = new Class({
         }
         this.selectSource();
     },
+    setTitleImage: function(sImg) {
+        var oM = $('toolbar');
+        if (oM.parentNode) {
+            var aDivs = oM.parentNode.getElementsByTagName('div');
+            for (var i = 0; i < aDivs.length; i++)
+                if (aDivs[i].className.indexOf('header') === 0) {
+                    aDivs[i].style.backgroundImage = "url(" + sImg + ")";
+                    aDivs[i].innerHTML = "&nbsp;";
+                    break;
+                }
+        }
+    },
     selectSource: function() {
         if (this.mode == 0) {
             this.buttonSource = this.node.getElement('.' + this.classButton);
