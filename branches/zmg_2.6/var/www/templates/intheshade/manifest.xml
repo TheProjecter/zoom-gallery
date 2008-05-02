@@ -41,7 +41,10 @@
             <file href="zmg_dispatches.js" />
         </resource>
         <resource name="javascript" xml:base="js/">
-            <file href="zmg_serverevents.js" />
+            <file href="zmg_events_handlers.js" />
+        </resource>
+        <resource name="javascript" xml:base="js/">
+            <file href="zmg_events_server.js" />
         </resource>
         <resource name="javascript" xml:base="js/">
             <file href="shadowbox-mootools.js" />

@@ -176,11 +176,14 @@ FormSerializer.Serializers = {
     
 };
 
-var console = window.console || {
-    log:function() { },
-    info:function() { },
-    warn:function() { },
-    group:function() { },
-    groupEnd:function() { },
-    dir:function() { }
+if (!window.console) {
+    var fK = function(){};
+    window.console = {
+        log:      fK,
+        info:     fK,
+        warn:     fK,
+        group:    fK,
+        groupEnd: fK,
+        dir:      fK
 };
+}

@@ -32,6 +32,8 @@ ZMG.ServerEvents = (function() {
         var out = [];
         for (var i = 0; i < o.data.length; i++) {
             gallery = o.data[i].gallery;
+            if (!gallery.cover_img)
+                gallery.cover_img = ZMG.CONST.res_path + "/images/mimetypes/small/unknown.png";
             out.push('<div id="zmg_gallery_', gallery.gid, '" class="zmg_gallery">\
               <img src="', gallery.cover_img, '" alt="', gallery.name, '" title="',
                 gallery.name, '"/>\
@@ -40,10 +42,20 @@ ZMG.ServerEvents = (function() {
               '</span>\
               <span class="zmg_gallery_descr">',
                 gallery.descr,
-              '</span>');
+              '</span>\
+            </div>');
         }
         
         oGalleries.innerHTML = out.join('');
+        
+        //grab references and attach event handlers to the galleries
+        for (var i = 0; i < oGalleries.childNodes.length; i++)
+            if (oGalleries.childNodes[i].nodeName == "DIV"
+              && oGalleries.childNodes[i].id.indexOf('zmg_gallery_') > -1) {
+                oGalleries.childNodes[i].onclick = ZMG.EventHandlers.onGalleryClick;
+                oGalleries.childNodes[i].onmouseover = ZMG.EventHandlers.onGalleryEnter;
+                oGalleries.childNodes[i].onmouseout  = ZMG.EventHandlers.onGalleryLeave;
+            }
     };
     
     function onMediaList(o) {
@@ -61,8 +73,6 @@ ZMG.ServerEvents = (function() {
                 'class': 'medium_thumb'
             }).inject(oImages);
         }
-        
-        //ZMG.ImageFlow.refresh(true);
     };
     
     function onError() {
