@@ -34,6 +34,9 @@
         <resource name="javascript" xml:base="../../shared/">
             <file href="zmg_shared.js" />
         </resource>
+        <resource name="javascript" xml:base="../../shared/">
+            <file href="zmg_tooltip.js" />
+        </resource>
         <resource name="javascript" xml:base="js/">
             <file href="zmg_intheshade.js" />
         </resource>
