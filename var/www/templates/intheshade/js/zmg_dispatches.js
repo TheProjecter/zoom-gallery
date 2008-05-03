@@ -14,6 +14,15 @@ ZMG.Dispatches = {
         }, 20); // allowing a small delay for the browser to draw the loader-icon.
     },
     
+    getI18n: function() {
+        return this.stdDispatch({
+            url: ZMG.CONST.req_uri + "&view=zmg:get:i18n",
+            onSuccess: function(text) {
+                Json.evaluate(text);
+            }
+        });
+    },
+    
     selectView: function(view, forcetype) {
         view = view || ZMG.CONST.active_view;
         if (!view) return;

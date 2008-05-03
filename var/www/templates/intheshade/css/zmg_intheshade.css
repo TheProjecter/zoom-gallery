@@ -135,8 +135,7 @@
 
 .zmg-tip
 {
-    position: relative;
-    float: left;
+    position: absolute;
     margin-bottom: 4px;
     visibility: hidden;
     z-index: 20000;
@@ -237,6 +236,19 @@
 .zmg-tip-draggable .zmg-tip-header-text
 {
     cursor:move;
+}
+
+.zmg-tip .zmg_gallery_descr,
+.zmg-tip .zmg_gallery_
+{
+	color: #333;
+	font-size: .8em;
+	display: block;
+}
+
+.zmg-tip .zmg_gallery_descr
+{
+	font-style: italic;
 }
 
 

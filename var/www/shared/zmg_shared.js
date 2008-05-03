@@ -176,6 +176,12 @@ FormSerializer.Serializers = {
     
 };
 
+function _(s) {
+    if (ZMG && ZMG.CONST && ZMG.CONST.i18n && ZMG.CONST.i18n[s])
+        return ZMG.CONST.i18n[s];
+    return s;
+};
+
 if (!window.console) {
     var fK = function(){};
     window.console = {
