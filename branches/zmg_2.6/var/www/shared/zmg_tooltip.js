@@ -1,3 +1,5 @@
+if (!window.ZMG) window.ZMG = {};
+
 ZMG.Tooltip = new Class({
     options: {
         classTip: 'zmg-tip',

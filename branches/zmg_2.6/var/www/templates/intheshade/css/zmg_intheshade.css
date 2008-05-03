@@ -8,6 +8,10 @@
  * @license http://www.gnu.org/copyleft/gpl.html GPL
  */
 
+/******************************************************************************
+ * General styles (mainly positioning of the gallery containers)
+ *****************************************************************************/
+
 .zmg_clear
 {
     clear: both;
@@ -70,6 +74,23 @@
     z-index: 50;
 }
 
+.zmg_footer
+{
+    display: inline;
+    float: right;
+    text-align: right !important;
+    font-size: 0.8em;
+    margin: 10px 0pt;
+    padding-top: 20px;
+    text-align: right;
+    width: 100%;
+}
+
+
+/******************************************************************************
+ * Gallery styles
+ *****************************************************************************/
+
 .zmg_gallery
 {
     position: relative;
@@ -107,17 +128,121 @@
 	background-color: #fefefe;
 }
 
-.zmg_footer
+
+/******************************************************************************
+ * Tooltip styles
+ *****************************************************************************/
+
+.zmg-tip
 {
-	display: inline;
-	float: right;
-	text-align: right !important;
-	font-size: 0.8em;
-	margin: 10px 0pt;
-	padding-top: 20px;
-	text-align: right;
-	width: 100%;
+    position: relative;
+    float: left;
+    margin-bottom: 4px;
+    visibility: hidden;
+    z-index: 20000;
+    border: 0 none;
 }
+.zmg-tip .zmg-tip-close
+{
+    background-image: url(../images/tip/close.gif);
+    height: 15px;
+    float: right;
+    width: 15px;
+    margin: 0 0 2px 2px;
+    cursor: pointer;
+    display: none;
+}
+.zmg-tip .zmg-tip-tc
+{
+    background: transparent url(../images/tip/tip-sprite.gif) no-repeat 0 -62px;
+    padding-top: 3px;
+    overflow: hidden;
+    zoom: 1;
+}
+.zmg-tip .zmg-tip-tl
+{
+    background: transparent url(../images/tip/tip-sprite.gif) no-repeat 0 0;
+    padding-left: 6px;
+    overflow: hidden;
+    zoom: 1;
+}
+.zmg-tip .zmg-tip-tr
+{
+    background: transparent url(../images/tip/tip-sprite.gif) no-repeat right 0;
+    padding-right: 6px;
+    overflow: hidden;
+    zoom: 1;
+}
+.zmg-tip .zmg-tip-bc
+{
+    background: transparent url(../images/tip/tip-sprite.gif) no-repeat 0 -121px;
+    height: 3px;
+    overflow: hidden;
+}
+.zmg-tip .zmg-tip-bl
+{
+    background: transparent url(../images/tip/tip-sprite.gif) no-repeat 0 -59px;
+    padding-left: 6px;
+    zoom: 1;
+}
+.zmg-tip .zmg-tip-br
+{
+    background: transparent url(../images/tip/tip-sprite.gif) no-repeat right -59px;
+    padding-right: 6px;
+    zoom: 1;
+}
+.zmg-tip .zmg-tip-mc
+{
+    border: 0 none;
+    font: normal 11px tahoma,arial,helvetica,sans-serif;
+}
+.zmg-tip .zmg-tip-ml
+{
+    background: #fff url(../images/tip/tip-sprite.gif) no-repeat 0 -124px;
+    padding-left: 6px;
+    zoom: 1;
+}
+.zmg-tip .zmg-tip-mr
+{
+    background: transparent url(../images/tip/tip-sprite.gif) no-repeat right -124px;
+    padding-right: 6px;
+    zoom: 1;
+}
+.ext-ie .zmg-tip .zmg-tip-header,
+.ext-ie .zmg-tip .zmg-tip-tc
+{
+    font-size: 0;
+    line-height: 0;
+}
+.zmg-tip .zmg-tip-header-text
+{
+    font: bold 11px tahoma,arial,helvetica,sans-serif;
+    padding: 0;
+    margin: 0 0 2px 0;
+    color: #444;
+}
+.zmg-tip .zmg-tip-body
+{
+    font: normal 11px tahoma,arial,helvetica,sans-serif;
+    margin: 0!important;
+    line-height: 14px;
+    color: #444;
+    padding: 0;
+}
+.zmg-tip .zmg-tip-body .loading-indicator
+{
+    margin: 0;
+}
+.zmg-tip-draggable .zmg-tip-header,
+.zmg-tip-draggable .zmg-tip-header-text
+{
+    cursor:move;
+}
+
+
+/******************************************************************************
+ * Rating styles (by Rabid)
+ *****************************************************************************/
 
 .rabidRating {  
     cursor: pointer;

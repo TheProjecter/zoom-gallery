@@ -1,3 +1,5 @@
+if (!window.ZMG) window.ZMG = {};
+
 ZMG.Toolbar = new Class({
     initialize: function() {
         this.cache = {};
