@@ -110,9 +110,14 @@ class zmgGallery extends zmgTable {
     var $ordering = null;
     /**
      * @var array
-     * @access public
+     * @access private
      */
     var $_media = null;
+    /**
+     * @var int
+     * @access private
+     */
+    var $_media_count = null;
     
     function zmgGallery(&$db) {
         $this->zmgTable('#__zmg_galleries', 'gid', $db);
@@ -149,6 +154,17 @@ class zmgGallery extends zmgTable {
         }
         //TODO: display an 'empty gallery' image...or let the client handle this?
         return "";
+    }
+    
+    function getMediumCount() {
+        if ($this->_medium_count === null) {
+            $db = & zmgDatabase::getDBO();
+            $db->setQuery("SELECT COUNT(mid) FROM #__zmg_media WHERE gid = " . $this->gid
+             . " LIMIT 1");
+            $this->_medium_count = intval($db->loadResult());
+        }
+        
+        return $this->_medium_count;
     }
     
     /**
@@ -217,20 +233,21 @@ class zmgGallery extends zmgTable {
     function toJSON() {
         $json = new zmgJSON();
         return ("'gallery': {
-            'gid'      : $this->gid,
-            'name'     : ".$json->encode($this->name).",
-            'descr'    : ".$json->encode($this->descr).",
-            'cover_img': ".$json->encode($this->getCoverImage()).",
-            'dir'      : ".$json->encode($this->dir).",
-            'keywords' : ".$json->encode($this->keywords).",
-            'sub_gid'  : $this->sub_gid,
-            'pos'      : $this->pos,
-            'hide_msg' : $this->hide_msg,
-            'shared'   : $this->shared,
-            'published': $this->published,
-            'uid'      : $this->uid,
-            'ordering' : $this->ordering,
-            'members'  : ".$json->encode($this->members)."
+            'gid'         : $this->gid,
+            'name'        : ".$json->encode($this->name).",
+            'descr'       : ".$json->encode($this->descr).",
+            'cover_img'   : ".$json->encode($this->getCoverImage()).",
+            'dir'         : ".$json->encode($this->dir).",
+            'keywords'    : ".$json->encode($this->keywords).",
+            'sub_gid'     : $this->sub_gid,
+            'pos'         : $this->pos,
+            'hide_msg'    : $this->hide_msg,
+            'shared'      : $this->shared,
+            'published'   : $this->published,
+            'uid'         : $this->uid,
+            'ordering'    : $this->ordering,
+            'medium_count': ".$this->getMediumCount().",
+            'members'     : ".$json->encode($this->members)."
         }");
     }
 }

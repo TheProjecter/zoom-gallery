@@ -10,6 +10,9 @@ ZMG.ServerEvents = (function() {
             o = Json.evaluate(text);
             onGalleryList(o);
             isJSON = true;
+        } else  if (view == "zmg:get:i18n") {
+            Json.evaluate(text);
+            isJSON = true;
         }
         
         ZMG.ClientEvents.onHideLoader();
@@ -31,12 +34,12 @@ ZMG.ServerEvents = (function() {
         
         var out = [];
         for (var i = 0; i < o.data.length; i++) {
-            gallery = o.data[i].gallery;
+            gallery = ZMG.Shared.register('gallery:' + o.data[i].gallery.gid, o.data[i].gallery); //keep a cache of galleries
+
             if (!gallery.cover_img)
                 gallery.cover_img = ZMG.CONST.res_path + "/images/mimetypes/small/unknown.png";
             out.push('<div id="zmg_gallery_', gallery.gid, '" class="zmg_gallery">\
-              <img src="', gallery.cover_img, '" alt="', gallery.name, '" title="',
-                gallery.name, '"/>\
+              <img src="', gallery.cover_img, '" alt="" title=""/>\
               <span class="zmg_gallery_name">',
                 gallery.name,
               '</span>\
@@ -51,8 +54,8 @@ ZMG.ServerEvents = (function() {
         //grab references and attach event handlers to the galleries
         for (var i = 0; i < oGalleries.childNodes.length; i++)
             if (oGalleries.childNodes[i].nodeName == "DIV"
-              && oGalleries.childNodes[i].id.indexOf('zmg_gallery_') > -1) {
-                oGalleries.childNodes[i].onclick = ZMG.EventHandlers.onGalleryClick;
+              &&  oGalleries.childNodes[i].id.indexOf('zmg_gallery_') > -1) {
+                oGalleries.childNodes[i].onclick     = ZMG.EventHandlers.onGalleryClick;
                 oGalleries.childNodes[i].onmouseover = ZMG.EventHandlers.onGalleryEnter;
                 oGalleries.childNodes[i].onmouseout  = ZMG.EventHandlers.onGalleryLeave;
             }
