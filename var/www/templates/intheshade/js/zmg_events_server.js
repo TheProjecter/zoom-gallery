@@ -6,6 +6,7 @@ ZMG.ServerEvents = (function() {
         console.log('Server#onview: ', view);
         ZMG.Dispatches.lastRequest = null;
         
+        ZMG.CONST.active_view = view || "";
         if (view == "gallery:show:home") {
             o = Json.evaluate(text);
             onGalleryList(o);
@@ -38,7 +39,7 @@ ZMG.ServerEvents = (function() {
 
             if (!gallery.cover_img)
                 gallery.cover_img = ZMG.CONST.res_path + "/images/mimetypes/small/unknown.png";
-            out.push('<div id="zmg_gallery_', gallery.gid, '" class="zmg_gallery">\
+            out.push('<a href="#gallery:show:', gallery.gid, '" id="zmg_gallery_', gallery.gid, '" class="zmg_gallery">\
               <img src="', gallery.cover_img, '" alt="" title=""/>\
               <span class="zmg_gallery_name">',
                 gallery.name,
@@ -46,14 +47,14 @@ ZMG.ServerEvents = (function() {
               <span class="zmg_gallery_descr">',
                 gallery.descr,
               '</span>\
-            </div>');
+            </a>');
         }
         
         oGalleries.innerHTML = out.join('');
         
         //grab references and attach event handlers to the galleries
         for (var i = 0; i < oGalleries.childNodes.length; i++)
-            if (oGalleries.childNodes[i].nodeName == "DIV"
+            if (oGalleries.childNodes[i].nodeName == "A"
               &&  oGalleries.childNodes[i].id.indexOf('zmg_gallery_') > -1) {
                 oGalleries.childNodes[i].onclick     = ZMG.EventHandlers.onGalleryClick;
                 oGalleries.childNodes[i].onmouseover = ZMG.EventHandlers.onGalleryEnter;

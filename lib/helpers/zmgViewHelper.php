@@ -50,7 +50,7 @@ class zmgViewHelper {
     }
 
     function set() {
-        $view = trim(zmgGetParam($_REQUEST, 'view', ZMG_ADMIN ? 'admin:home' : 'gallery'));
+        $view = trim(zmgGetParam($_REQUEST, 'view', ZMG_ADMIN ? 'admin:home' : 'gallery:show:home'));
         if (empty($view)) {
             $view = ZMG_ADMIN ? "admin:dispatchresult" : "dispatchresult";
             $this->throwError('No view specified.');

@@ -10,6 +10,7 @@ if (!window.ZMG) window.ZMG = {};
         onGalleryClick: function() {
             var iId = getGalleryId(this.id);
             console.log('gallery selected: ', iId);
+            ZMG.ClientEvents.onCheckLocation();
         },
         onGalleryEnter: function(e) {
             $(this).addClass('zmg_hover');

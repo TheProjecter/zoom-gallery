@@ -4,12 +4,21 @@ ZMG.ClientEvents = (function() {
     function onStart() {
         ZMG.Dispatches.getI18n();
         
-        onLoadHome();
+        onCheckLocation();
     };
     
-    function onLoadHome() {
-        var params = document.location.search.toQueryParams();
-        ZMG.Dispatches.selectView(params['view'] || 'gallery:show:home');
+    var tPollTimer = null, iPollTimeout = 2000;
+    function onCheckLocation() {
+        $clear(tPollTimer);
+
+        if (!document.location.hash)
+            window.location.hash = "gallery:show:home";
+
+        var hash = document.location.hash.replace(/#/, '');
+        if (hash != ZMG.CONST.active_view)
+            ZMG.Dispatches.selectView(hash);
+            
+        window.setTimeout(onCheckLocation, iPollTimeout);
     };
     
     function onShowLoader() {
@@ -41,12 +50,12 @@ ZMG.ClientEvents = (function() {
         
         if (gId === activeGallery) {
             var pos = (e && e.page) ? e.page : initPos;
-            oTooltip.setContent(oGallery.name, buildTooltipContent(oGallery))
-             .locate(pos.x + iOffset, pos.y + iOffset).show();
+            oTooltip.locate(pos.x + iOffset, pos.y + iOffset).show();
         } else {
             //register this event, to for the mouse movement threshold
             initPos = e.page;
             activeGallery = gId;
+            oTooltip.setContent(oGallery.name, buildTooltipContent(oGallery));
             tShowTimer = setTimeout(function() { onGalleryTooltip(gId); }, iThreshold);
         }
     };
@@ -59,6 +68,7 @@ ZMG.ClientEvents = (function() {
     //publish methods to the world:
     return {
         onStart: onStart,
+        onCheckLocation: onCheckLocation,
         onHideLoader: onHideLoader,
         onShowLoader: onShowLoader,
         onGalleryTooltip: onGalleryTooltip,
@@ -74,7 +84,7 @@ ZMG.ClientEvents = (function() {
  * @param {String} elname Optional.
  * @type DOMElement
  */
-ZMG.nodeCache    = [];
+ZMG.nodeCache    = {};
 ZMG.cacheElement = function(id, elname) {
     if (!this.nodeCache[id] && !this.nodeCache[elname]) {
         var el = $(id);
