@@ -8,6 +8,7 @@ ZMG.Dispatches = {
         ZMG.ClientEvents.onShowLoader();
         window.setTimeout(function() {
             new XHR({
+                async: options.async || true,
                 onSuccess: options.onSuccess || ZMG.ServerEvents.onDispatchResult,
                 onFailure: options.onFailure || ZMG.ServerEvents.onError
             }).send(options.url, options.data || '');
@@ -17,6 +18,7 @@ ZMG.Dispatches = {
     getI18n: function() {
         return this.stdDispatch({
             url: ZMG.CONST.req_uri + "&view=zmg:get:i18n",
+            async: false,
             onSuccess: function(text) {
                 Json.evaluate(text);
             }

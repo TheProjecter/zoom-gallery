@@ -108,6 +108,7 @@ class zmgTemplateHelper extends Smarty {
 
             zmgimport('org.zoomfactory.lib.helpers.zmgAPIHelper');
             $api = new zmgAPIHelper($zoom);
+
             $api->setParam('subview', $subview);
             
             $this->assign('zmgAPI', $api); //the API is accessible for all Smarty templates

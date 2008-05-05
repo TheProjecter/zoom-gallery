@@ -33,36 +33,58 @@ ZMG.ClientEvents = (function() {
         //TODO
     };
     
-    var oTooltip, activeGallery, initPos;
+    var oTooltip, activeMedium, initPos;
     var tShowTimer, iThreshold = 1200, iOffset = 8; //milliseconds to wait before tooltip will show
 
-    function buildTooltipContent(oGallery) {
-        return ['<span class="zmg_gallery_descr">', oGallery.descr, '</span>\
-          <span class="zmg_gallery_mediumcount">', oGallery.medium_count, ' ', _('media'), '</span>'].join('');
+    function buildTooltipContent(obj, bIsMedium) {
+        if (!bIsMedium)
+            return ['<span class="zmg_gallery_descr">', obj.descr, '</span>\
+              <span class="zmg_gallery_mediumcount">', obj.medium_count, ' ', _('media'), '</span>'].join('');
+
+        return ['<span class="zmg_medium_descr">', obj.descr, '</span>'].join('');
     };
     
-    function onGalleryTooltip(gId, e) {
+    function onMediumTooltip(iId, bIsMedium, e) {
         $clear(tShowTimer);
-        if (!oTooltip) oTooltip = new ZMG.Tooltip('zmg_gallery_info');
-
-        var oGallery = ZMG.Shared.get('gallery:' + gId);
-        if (!oGallery) return;
+        bIsMedium = (bIsMedium) ? true : false;
         
-        if (gId === activeGallery) {
+        if (!oTooltip) oTooltip = new ZMG.Tooltip('zmg_medium_info');
+
+        var obj = bIsMedium ? ZMG.Shared.get('medium:' + iId) : ZMG.Shared.get('gallery:' + iId);
+        if (!obj) return;
+        
+        if (iId === activeMedium) {
             var pos = (e && e.page) ? e.page : initPos;
             oTooltip.locate(pos.x + iOffset, pos.y + iOffset).show();
         } else {
             //register this event, to for the mouse movement threshold
             initPos = e.page;
-            activeGallery = gId;
-            oTooltip.setContent(oGallery.name, buildTooltipContent(oGallery));
-            tShowTimer = setTimeout(function() { onGalleryTooltip(gId); }, iThreshold);
+            activeMedium = iId;
+            oTooltip.setContent(obj.name, buildTooltipContent(obj, bIsMedium));
+            tShowTimer = setTimeout(function() { onMediumTooltip(iId); }, iThreshold);
         }
     };
     
-    function onCancelGalleryTooltip() {
+    function onCancelMediumTooltip() {
         $clear(tShowTimer);
         oTooltip.hide();
+    };
+    
+    var sActiveView = null;
+    
+    function onActivateView(el) {
+        if (!ZMG.Shared.cacheElement(el)) return;
+        var oParent = ZMG.Shared.cacheElement('zmg_view_content');
+        for (var i = 0; i < oParent.childNodes.length; i++)
+            if (oParent.childNodes[i].nodeType == 1)
+                oParent.childNodes[i].setStyle('display', 'none');
+        
+        sActiveView = el;
+        var oActiveView = ZMG.Shared.cacheElement(el);
+        oActiveView.setStyle('display', '');
+        ZMG.Shared.register('activeView', oActiveView);
+          
+        return oActiveView;
     };
     
     //publish methods to the world:
@@ -71,8 +93,9 @@ ZMG.ClientEvents = (function() {
         onCheckLocation: onCheckLocation,
         onHideLoader: onHideLoader,
         onShowLoader: onShowLoader,
-        onGalleryTooltip: onGalleryTooltip,
-        onCancelGalleryTooltip: onCancelGalleryTooltip
+        onMediumTooltip: onMediumTooltip,
+        onCancelMediumTooltip: onCancelMediumTooltip,
+        onActivateView: onActivateView
     };
 })();
 

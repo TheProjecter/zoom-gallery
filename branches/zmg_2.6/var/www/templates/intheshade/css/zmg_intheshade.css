@@ -128,6 +128,53 @@
 	background-color: #fefefe;
 }
 
+/******************************************************************************
+ * Medium Thumbnail styles
+ *****************************************************************************/
+
+.zmg_medium_thumb_cont
+{
+	position: relative;
+	float: left;
+	display: inline;
+}
+
+.zmg_medium_thumb_cont .zmg_medium_thumb
+{
+  float: left;
+  background: url(../images/shadowAlpha.png) no-repeat bottom right !important;
+  background: url(../images/shadow.gif) no-repeat bottom right;
+  margin: 10px 0 0 10px !important;
+  margin: 10px 0 0 5px;
+  display: block;
+}
+
+.zmg_medium_thumb_cont .zmg_medium_thumb img
+{
+  display: block;
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #a9a9a9;
+  margin: -6px 6px 6px -6px;
+  padding: 3px;
+}
+
+.zmg_medium_thumb_cont .zmg_medium_name
+{
+	font-weight: 600;
+	color: #333;
+	font-size: .8em;
+	display: block;
+}
+
+.zmg_medium_thumb_cont .zmg_medium_hits
+{
+    font-style: italic;
+    color: #333;
+    font-size: .8em;
+    display: block;
+}
+
 
 /******************************************************************************
  * Tooltip styles
