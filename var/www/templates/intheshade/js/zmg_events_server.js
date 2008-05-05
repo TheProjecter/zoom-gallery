@@ -11,7 +11,11 @@ ZMG.ServerEvents = (function() {
             o = Json.evaluate(text);
             onGalleryList(o);
             isJSON = true;
-        } else  if (view == "zmg:get:i18n") {
+        } else if (view.indexOf('gallery:show:') > -1) {
+            o = Json.evaluate(text);
+            onGalleryContent(o);
+            isJSON = true;
+        } else if (view == "zmg:get:i18n") {
             Json.evaluate(text);
             isJSON = true;
         }
@@ -31,7 +35,7 @@ ZMG.ServerEvents = (function() {
     function onGalleryList(o) {
         if (o.result !== ZMG.CONST.result_ok) return;
         
-        var gallery, oGalleries = ZMG.cacheElement('zmg_gallerylist');
+        var gallery, oGalleries = ZMG.cacheElement('zmg_gallery_list');
         
         var out = [];
         for (var i = 0; i < o.data.length; i++) {
@@ -60,6 +64,68 @@ ZMG.ServerEvents = (function() {
                 oGalleries.childNodes[i].onmouseover = ZMG.EventHandlers.onGalleryEnter;
                 oGalleries.childNodes[i].onmouseout  = ZMG.EventHandlers.onGalleryLeave;
             }
+
+        ZMG.ClientEvents.onActivateView('zmg_gallery_list');
+    };
+    
+    function onGalleryContent(o) {
+        if (o.result !== ZMG.CONST.result_ok) return;
+        
+        oList = ZMG.cacheElement('zmg_gallery_content');
+        oList.innerHTML = "";
+        
+        var obj, out = [];
+        for (var i = 0; i < o.data.length; i++) {
+            var isGallery = o.data[i].gallery ? true : false;
+            obj = isGallery ? o.data[i].gallery : o.data[i].medium;
+
+            if (isGallery)
+                obj = ZMG.Shared.register('gallery:' + o.data[i].gallery.gid, o.data[i].gallery); //keep a cache of galleries
+            else
+                obj = ZMG.Shared.register('medium:' + o.data[i].medium.mid, o.data[i].medium); //keep a cache of media
+
+            out.push(isGallery ? buildGalleryDiv(obj) : buildMediumDiv(obj));
+        }
+        oList.innerHTML = out.join('');
+        
+        //grab references and attach event handlers to the galleries
+        for (var i = 0; i < oList.childNodes.length; i++)
+            if (oList.childNodes[i].nodeName == "DIV"
+              &&  oList.childNodes[i].className.indexOf('zmg_medium_thumb_') > -1) {
+                oList.childNodes[i].onclick     = ZMG.EventHandlers.onMediumClick;
+                oList.childNodes[i].onmouseover = ZMG.EventHandlers.onMediumEnter;
+                oList.childNodes[i].onmouseout  = ZMG.EventHandlers.onMediumLeave;
+            }
+        
+        ZMG.ClientEvents.onActivateView('zmg_gallery_content');
+    };
+    
+    function buildGalleryDiv(gallery) {
+        if (!gallery.cover_img)
+            gallery.cover_img = ZMG.CONST.res_path + "/images/mimetypes/small/unknown.png";
+        return ['<a href="#gallery:show:', gallery.gid, '" id="zmg_gallery_', gallery.gid, '" class="zmg_gallery">\
+          <img src="', gallery.cover_img, '" alt="" title=""/>\
+          <span class="zmg_gallery_name">',
+            gallery.name,
+          '</span>\
+          <span class="zmg_gallery_descr">',
+            gallery.descr,
+          '</span>\
+        </a>'].join('');
+    };
+    
+    function buildMediumDiv(medium) {
+        return ['<div class="zmg_medium_thumb_cont">\
+          <a href="#medium:show:', medium.mid, '" id="zmg_medium_', medium.mid, '" class="zmg_medium_thumb">\
+              <img src="', medium.url, '" alt="" title=""/>\
+          </a>\
+          <span class="zmg_medium_name">',
+            medium.name,
+          '</span>\
+          <span class="zmg_medium_hits">',
+            medium.hits, ' ', ZMG.CONST.i18n.hits,
+          '</span>\
+        </div>'].join('');
     };
     
     function onMediaList(o) {

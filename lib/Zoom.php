@@ -263,7 +263,7 @@ class Zoom {
         if ($filter > 0) {
             $gid = $filter;
         }
-        
+        $gid = intval($gid);
         $ret  = array();
 
         $db   = & zmgDatabase::getDBO();

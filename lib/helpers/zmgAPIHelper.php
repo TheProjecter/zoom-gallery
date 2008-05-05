@@ -144,8 +144,29 @@ class zmgAPIHelper {
     
     function getMedia($gid = 0, $offset = 0, $length = 0, $filter = 0) {
         $zoom = & zmgFactory::getZoom();
-        
         return $zoom->getMedia($gid, $offset, $length, $filter);
+    }
+    
+    function getViewToken($which = 'last') {
+        $zoom = & zmgFactory::getZoom();
+        $tokens = $zoom->view->getViewTokens();
+        
+        if (count($tokens) == 0) {
+            return zmgError::throwError('No tokens available.');
+        }
+        
+        $token = "";
+        switch($which) {
+            case 'first':
+                $token = $tokens[0];
+                break;
+            default:
+            case 'last':
+                $token = $tokens[count($tokens) - 1];
+                break;
+        }
+        
+        return $token;
     }
     
     function getActiveTemplate() {
