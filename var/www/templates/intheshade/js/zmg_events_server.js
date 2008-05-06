@@ -15,6 +15,10 @@ ZMG.ServerEvents = (function() {
             o = Json.evaluate(text);
             onGalleryContent(o);
             isJSON = true;
+        } else if (view.indexOf('medium:show:') > -1) {
+            o = Json.evaluate(text);
+            onMediumContent(o);
+            isJSON = true;
         } else if (view == "zmg:get:i18n") {
             Json.evaluate(text);
             isJSON = true;
@@ -117,7 +121,7 @@ ZMG.ServerEvents = (function() {
     function buildMediumDiv(medium) {
         return ['<div class="zmg_medium_thumb_cont">\
           <a href="#medium:show:', medium.mid, '" id="zmg_medium_', medium.mid, '" class="zmg_medium_thumb">\
-              <img src="', medium.url, '" alt="" title=""/>\
+              <img src="', medium.url_thumb, '" alt="" title=""/>\
           </a>\
           <span class="zmg_medium_name">',
             medium.name,
@@ -128,21 +132,18 @@ ZMG.ServerEvents = (function() {
         </div>'].join('');
     };
     
-    function onMediaList(o) {
+    function onMediumContent(o) {
         if (o.result !== ZMG.CONST.result_ok) return;
         
-        var medium, el, oImages = ZMG.cacheElement('zmg_mediumlist');
-        oImages.innerHTML = "";
-
-        for (var i = 0; i < o.data.length; i++) {
-            medium = o.data[i].medium;
-            el = new Element('img', {
-                src: medium.url,
-                longdesc: '#medium:' + medium.mid,
-                alt: medium.name,
-                'class': 'medium_thumb'
-            }).inject(oImages);
-        }
+        var medium = o.data.medium;
+        var gallery = ZMG.Shared.get('gallery:' + medium.gid);
+        console.log('lala', medium.url_view);
+        Shadowbox.open({
+            title:      medium.name,
+            type:       'img',
+            content:    medium.url_view,
+            gallery:    gallery ? gallery.name : null,
+        });
     };
     
     function onError() {

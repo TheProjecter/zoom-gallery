@@ -20,7 +20,7 @@
  * @author      Michael J. I. Jackson <mjijackson@gmail.com>
  * @copyright   2007 Michael J. I. Jackson
  * @license     http://www.gnu.org/licenses/lgpl-3.0.txt GNU LGPL 3.0
- * @version     SVN: $Id: shadowbox-mootools.js 48 2008-01-26 09:58:25Z mjijackson $
+ * @version     SVN: $Id: shadowbox-mootools.js 73 2008-02-21 10:04:27Z mjijackson $
  */
 
 /**
@@ -116,7 +116,7 @@ Shadowbox.lib = {
      * @public
      */
     preventDefault: function(e){
-        e.preventDefault();
+        new Event(e).preventDefault();
     },
 
     /**
@@ -173,15 +173,33 @@ Shadowbox.lib = {
         var anim = new Fx.Styles(el, config);
         var o = {};
         for(var p in obj){
-            switch(p){
-                case 'opacity':
-                    o.opacity = String(obj.opacity.to);
-                break;
-                default:
-                    o[p] = String(obj[p].to) + 'px';
-            }
+            o[p] = String(obj[p].to);
+            if(p != 'opacity') o[p] += 'px';
         }
         anim.start(o);
     }
 
 };
+
+Element.extend({
+
+    /**
+     * Fix MooTools' setOpacity implementation to set an element's opacity, not
+     * its visibility.
+     *
+     * @param   {Number}    opacity
+     * @return  void
+     * @public
+     */
+    setOpacity: function(opacity){
+        var s = this.style;
+        if(window.ie){
+            s.zoom = 1;
+            s.filter = (s.filter || '').replace(/alpha\([^\)]*\)/gi,"") +
+                       (opacity == 1 ? "" : " alpha(opacity=" + opacity * 100 + ")");
+        }else{
+            s.opacity = opacity;
+        }
+    }
+
+});

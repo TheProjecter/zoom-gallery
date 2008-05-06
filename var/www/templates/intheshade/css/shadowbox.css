@@ -27,7 +27,6 @@
   visibility: hidden;
   position: absolute;
   display: block;
-  width: 100%;
   margin: 0;
   padding: 0;
   top: 0;
@@ -39,20 +38,23 @@
 #shadowbox_container {
   position: fixed;
   height: 0px;
+  width: 100%;
   margin: 0;
   padding: 0;
-  width: 100%;
   top: 0;
   left: 0;
   z-index: 999;
+  text-align: center; /* centers in quirks and IE */
 }
 
 /*_______________________________________________________________  Shadowbox  */
 #shadowbox {
+  display: none;
   visibility: hidden;
   margin: 0 auto;
   position: relative;
   font-family: 'Lucida Grande', Tahoma, sans-serif;
+  text-align: left; /* reset left alignment */
 }
 
 /*___________________________________________________________________  Title  */
@@ -72,7 +74,6 @@ HTML snapshot:
   font-size: 16px;
   line-height: 16px;
   white-space: nowrap;
-  overflow: hidden;
   padding: 5px 0 4px 8px;
   color: #fff;
 }
@@ -123,6 +124,12 @@ HTML snapsnot:
 #shadowbox_loading span a:link,
 #shadowbox_loading span a:visited {
   color: #fff;
+}
+
+#shadowbox_content.html { /* make html content scrollable */
+  height: 100%;
+  width: 100%;
+  overflow: auto;
 }
 
 /*_________________________________________________________________  Toolbar  */
@@ -195,7 +202,8 @@ div.shadowbox_message {
   text-align: center;
   padding: 10px;
 }
-div.shadowbox_message a {
+div.shadowbox_message a:link,
+div.shadowbox_message a:visited {
   text-decoration: none;
   color: #bed333;
 }

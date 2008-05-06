@@ -91,55 +91,79 @@ class zmgMedium extends zmgTable {
         }
         
         //TODO: add hotlinking protection
-        //'DS' constant is not used here, because this is an URL --> '/'
-        $path = zmgEnv::getSiteURL() . "/" . $mediapath
+        //'DS' constant is not used here, because this is a URL --> '/'
+        $gallery_path = zmgEnv::getSiteURL() . "/" . $mediapath
          . $this->getGalleryDir() . "/";
-         
-        $filename = $this->filename;
-        
-        if ($type & ZMG_MEDIUM_ORIGINAL) {
-        	$path .= "";
-        } else if ($type & ZMG_MEDIUM_VIEWSIZE) {
-        	$path .= "viewsize";
-        } else if ($type & ZMG_MEDIUM_THUMBNAIL) {
-        	$path .= "thumbs";
-            
-            $template_path = zmgEnv::getSiteURL() . "/components/com_zoom/var/www/templates/"
-              . $zoom->view->getActiveTemplate() . "/images/mimetypes";
-            if ($smallthumb) {
-            	$template_path .= "/small";
-            }
-              
-            $ext = $this->getExtension();
-            zmgimport('org.zoomfactory.lib.mime.zmgMimeHelper');
-            if (!zmgMimeHelper::isImage($ext)) {
-            	if (zmgMimeHelper::isDocument($ext)) {
-            		$path = $template_path;
-                    if (strstr($ext, 'pdf')) {
-                        $filename = "pdf.png";
-            		} else {
-            			$filename = "doc.png";
-            		}
-            	} else if (zmgMimeHelper::isVideo($ext)) {
-            		if (zmgMimeHelper::isThumbnailable($ext)) {
-            			zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
-                        $filename = ereg_replace("(.*)\.([^\.]*)$", "\\1", $this->filename).".jpg";
-                        if (!zmgFileHelper::exists(str_replace($this->filename, $filename, $this->getAbsPath(ZMG_MEDIUM_THUMBNAIL)))) {
-                        	$filename = null;
-                        }
-            		}
-                    if (!$filename) {
-            			$path = $template_path;
-                        $filename = (strstr('flv', $ext)) ? "flv.png" : "video.png";
-            		}
-            	} else if (zmgMimeHelper::isAudio($ext)) {
-            		$path = $template_path;
-                    $filename = "audio.png";
-            	}
-            }
+
+        $file = array(
+            'path' => $gallery_path,
+            'name' => $this->filename
+        );
+
+        $ext = $this->getExtension();
+        zmgimport('org.zoomfactory.lib.mime.zmgMimeHelper');
+        if (!zmgMimeHelper::isImage($ext)) {
+            $file = $this->getViewableFile($gallery_path, $smallthumb);
         }
         
-        return $path . "/" . $filename;
+        if ($type & ZMG_MEDIUM_ORIGINAL) {
+        	$file['path'] = $gallery_path; //back to the original
+            $file['name'] = $this->filename;
+        } else if ($type & ZMG_MEDIUM_VIEWSIZE) {
+        	if ($file['path'] == $gallery_path) {
+                //$file['path'] .= "viewsize"; //TODO: more case coverage
+            }
+        } else if ($type & ZMG_MEDIUM_THUMBNAIL) {
+        	if ($file['path'] == $gallery_path) {
+        	    $file['path'] .= "thumbs";
+        	}
+        }
+
+        return implode('/', $file);
+    }
+    
+    function getViewableFile($gallery_path, $smallthumb = false) {
+        $file = array(
+            'path' => $gallery_path,
+            'name' => null
+        );
+        
+        $zoom = & zmgFactory::getZoom();
+        
+        $template_path = zmgEnv::getSiteURL() . "/components/com_zoom/var/www/templates/"
+          . $zoom->view->getActiveTemplate() . "/images/mimetypes";
+        if ($smallthumb) {
+            $template_path .= "/small";
+        }
+        
+        $ext = $this->getExtension();
+        zmgimport('org.zoomfactory.lib.mime.zmgMimeHelper');
+        
+        if (zmgMimeHelper::isDocument($ext)) {
+            $file['path'] = $template_path;
+            if (strstr($ext, 'pdf')) {
+                $file['name'] = "pdf.png";
+            } else {
+                $file['name'] = "doc.png";
+            }
+        } else if (zmgMimeHelper::isVideo($ext)) {
+            if (zmgMimeHelper::isThumbnailable($ext)) {
+                zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
+                $filename = ereg_replace("(.*)\.([^\.]*)$", "\\1", $this->filename).".jpg";
+                if (zmgFileHelper::exists(str_replace($this->filename, $filename, $this->getAbsPath(ZMG_MEDIUM_THUMBNAIL)))) {
+                    $file['name'] = $filename;
+                }
+            }
+            if (!$file['name']) {
+                $file['path'] = $template_path;
+                $file['name'] = (strstr('flv', $ext)) ? "flv.png" : "video.png";
+            }
+        } else if (zmgMimeHelper::isAudio($ext)) {
+            $file['path'] = $template_path;
+            $file['name'] = "audio.png";
+        }
+        
+        return $file;
     }
     
     function getGalleryDir() {
@@ -230,7 +254,8 @@ class zmgMedium extends zmgTable {
             'descr'    : ".$json->encode($this->descr).",
             'keywords' : ".$json->encode($this->keywords).",
             'date_add' : ".$json->encode($this->date_add).",
-            'url'      : ".$json->encode($this->getRelPath(ZMG_MEDIUM_THUMBNAIL, '', false)).",
+            'url_thumb': ".$json->encode($this->getRelPath(ZMG_MEDIUM_THUMBNAIL, '', false)).",
+            'url_view' : ".$json->encode($this->getRelPath(ZMG_MEDIUM_VIEWSIZE)).",
             'hits'     : $this->hits,
             'votenum'  : $this->votenum,
             'votesum'  : $this->votesum,

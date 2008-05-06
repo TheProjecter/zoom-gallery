@@ -5,6 +5,11 @@ ZMG.ClientEvents = (function() {
         ZMG.Dispatches.getI18n();
         
         onCheckLocation();
+        
+        Shadowbox.init({
+            skipSetup: true,
+            assetURL: ZMG.CONST.res_path + "/"
+        });
     };
     
     var tPollTimer = null, iPollTimeout = 2000;
