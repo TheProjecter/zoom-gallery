@@ -334,7 +334,7 @@ ZMG.ServerEvents = (function() {
             oForm.reset();
             
             var oImg = ZMG.Shared.cacheElement('zmg_edit_medium_thumbnail');
-            oImg.src = data.url;
+            oImg.src = data.url_thumb;
             oImg.onload = ZMG.EventHandlers.onMediumCorrectPanel;
             oForm.elements['zmg_edit_mid'].value = data.mid
             ZMG.Shared.cacheElement('zmg_edit_filename').innerHTML = data.filename;

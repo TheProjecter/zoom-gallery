@@ -27,7 +27,6 @@
   visibility: hidden;
   position: absolute;
   display: block;
-  width: 100%;
   margin: 0;
   padding: 0;
   top: 0;
@@ -39,20 +38,24 @@
 #shadowbox_container {
   position: fixed;
   height: 0px;
+  width: 100%;
   margin: 0;
   padding: 0;
-  width: 100%;
   top: 0;
   left: 0;
   z-index: 999;
+  text-align: center; /* centers in quirks and IE */
 }
 
 /*_______________________________________________________________  Shadowbox  */
 #shadowbox {
+  display: none;
   visibility: hidden;
   margin: 0 auto;
   position: relative;
   font-family: 'Lucida Grande', Tahoma, sans-serif;
+  text-align: left; /* reset left alignment */
+  color: #888;
 }
 
 /*___________________________________________________________________  Title  */
@@ -72,9 +75,7 @@ HTML snapshot:
   font-size: 16px;
   line-height: 16px;
   white-space: nowrap;
-  overflow: hidden;
   padding: 10px 0 4px 10px;
-  color: #888;
   background-color: #fff;
 }
 
@@ -97,7 +98,7 @@ HTML snapsnot:
   margin: 0;
   padding: 0;
   border: 10px solid #fff;
-  background-color: #000;
+  background-color: #eee;
 }
 #shadowbox_body_inner {
   position: relative;
@@ -107,9 +108,9 @@ HTML snapsnot:
   position: absolute;
   top: 0;
   left: 0;
-  height: 100%;
+  height: 10000px; /* overflow:hidden will clip this */
   width: 100%;
-  background-color: #222;
+  background-color: #ccc;
 }
 #shadowbox_loading img {
   float: left;
@@ -124,6 +125,11 @@ HTML snapsnot:
 #shadowbox_loading span a:link,
 #shadowbox_loading span a:visited {
   color: #fff;
+}
+#shadowbox_content.html { /* make html content scrollable */
+  height: 100%;
+  width: 100%;
+  overflow: auto;
 }
 
 /*_________________________________________________________________  Toolbar  */
@@ -156,7 +162,6 @@ HTML snapshot:
 }
 #shadowbox_toolbar_inner {
   height: 26px;
-  color: #888;
   background-color: #fff;
 }
 #shadowbox_toolbar_inner div {
@@ -196,7 +201,8 @@ div.shadowbox_message {
   text-align: center;
   padding: 10px;
 }
-div.shadowbox_message a {
+div.shadowbox_message a:link,
+div.shadowbox_message a:visited {
   text-decoration: none;
   color: #bed333;
 }
