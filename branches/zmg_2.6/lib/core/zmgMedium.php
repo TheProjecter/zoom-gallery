@@ -23,6 +23,8 @@ class zmgMedium extends zmgTable {
     
     var $filename = null;
     
+    var $_extension = null;
+    
     var $descr = null;
     
     var $keywords = null;
@@ -112,6 +114,9 @@ class zmgMedium extends zmgTable {
         } else if ($type & ZMG_MEDIUM_VIEWSIZE) {
         	if ($file['path'] == $gallery_path) {
                 //$file['path'] .= "viewsize"; //TODO: more case coverage
+                if (zmgMimeHelper::isAudio($ext) || zmgMimeHelper::isVideo($ext)) {
+                    $file['name'] = $this->filename;
+                }
             }
         } else if ($type & ZMG_MEDIUM_THUMBNAIL) {
         	if ($file['path'] == $gallery_path) {
@@ -194,8 +199,12 @@ class zmgMedium extends zmgTable {
             zmgError::throwError('zmgMedium: medium data not loaded yet');
         }
         
-        $dot = strrpos($this->filename, '.') + 1;
-        return substr($this->filename, $dot);
+        if (empty($this->_extension)) {
+            $dot = strrpos($this->filename, '.') + 1;
+            $this->_extension = substr($this->filename, $dot);
+        }
+        
+        return $this->_extension;
     }
     
     function getMimeType() {
@@ -255,7 +264,8 @@ class zmgMedium extends zmgTable {
             'keywords' : ".$json->encode($this->keywords).",
             'date_add' : ".$json->encode($this->date_add).",
             'url_thumb': ".$json->encode($this->getRelPath(ZMG_MEDIUM_THUMBNAIL, '', false)).",
-            'url_view' : ".$json->encode($this->getRelPath(ZMG_MEDIUM_VIEWSIZE)).",
+            'url_view' : ".$json->encode($this->getRelPath(ZMG_MEDIUM_VIEWSIZE, '', false)).",
+            'type'     : ".$json->encode($this->getExtension()).",
             'hits'     : $this->hits,
             'votenum'  : $this->votenum,
             'votesum'  : $this->votesum,

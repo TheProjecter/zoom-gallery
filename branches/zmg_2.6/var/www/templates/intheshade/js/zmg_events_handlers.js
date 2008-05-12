@@ -26,7 +26,18 @@ if (!window.ZMG) window.ZMG = {};
         onMediumClick: function() {
             var iId = getObjectId(this.getElementsByTagName('a')[0].id);
             console.log('medium selected: ', iId);
-            ZMG.ClientEvents.onCheckLocation();
+            if (o.result !== ZMG.CONST.result_ok) return;
+            
+            var medium = o.data.medium;
+            var gallery = ZMG.Shared.get('gallery:' + medium.gid);
+            console.log('lala', medium.url_view);
+            Shadowbox.open({
+                title:      medium.name,
+                type:       'img',
+                content:    medium.url_view,
+                gallery:    gallery ? gallery.name : null,
+            });
+            //ZMG.ClientEvents.onCheckLocation();
         },
         onMediumEnter: function(e) {
             $(this).addClass('zmg_hover');

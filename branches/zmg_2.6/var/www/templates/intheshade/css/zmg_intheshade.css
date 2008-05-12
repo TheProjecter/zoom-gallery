@@ -54,7 +54,7 @@
 #zmg_gallery_content
 {
     position: relative;
-    float: right;
+    float: left;
     display: inline;
 }
 

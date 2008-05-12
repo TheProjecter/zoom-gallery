@@ -45,17 +45,7 @@ ZMG.ServerEvents = (function() {
         for (var i = 0; i < o.data.length; i++) {
             gallery = ZMG.Shared.register('gallery:' + o.data[i].gallery.gid, o.data[i].gallery); //keep a cache of galleries
 
-            if (!gallery.cover_img)
-                gallery.cover_img = ZMG.CONST.res_path + "/images/mimetypes/small/unknown.png";
-            out.push('<a href="#gallery:show:', gallery.gid, '" id="zmg_gallery_', gallery.gid, '" class="zmg_gallery">\
-              <img src="', gallery.cover_img, '" alt="" title=""/>\
-              <span class="zmg_gallery_name">',
-                gallery.name,
-              '</span>\
-              <span class="zmg_gallery_descr">',
-                gallery.descr,
-              '</span>\
-            </a>');
+            out.push(ZMG.GUI.buildGalleryDiv(gallery));
         }
         
         oGalleries.innerHTML = out.join('');
@@ -79,16 +69,23 @@ ZMG.ServerEvents = (function() {
         oList.innerHTML = "";
         
         var obj, out = [];
+        var iGid = 0;
+        
+        var oGallery = o.data.shift().gallery;
+        ZMG.Shared.register('gallery:' + oGallery.gid, oGallery); //keep this Gallery in cache!
+        
         for (var i = 0; i < o.data.length; i++) {
             var isGallery = o.data[i].gallery ? true : false;
             obj = isGallery ? o.data[i].gallery : o.data[i].medium;
 
             if (isGallery)
                 obj = ZMG.Shared.register('gallery:' + o.data[i].gallery.gid, o.data[i].gallery); //keep a cache of galleries
-            else
+            else {
                 obj = ZMG.Shared.register('medium:' + o.data[i].medium.mid, o.data[i].medium); //keep a cache of media
+                if (!iGid) iGid = obj.gid;
+            }
 
-            out.push(isGallery ? buildGalleryDiv(obj) : buildMediumDiv(obj));
+            out.push(isGallery ? ZMG.GUI.buildGalleryDiv(obj) : ZMG.GUI.buildMediumDiv(obj));
         }
         oList.innerHTML = out.join('');
         
@@ -96,40 +93,18 @@ ZMG.ServerEvents = (function() {
         for (var i = 0; i < oList.childNodes.length; i++)
             if (oList.childNodes[i].nodeName == "DIV"
               &&  oList.childNodes[i].className.indexOf('zmg_medium_thumb_') > -1) {
-                oList.childNodes[i].onclick     = ZMG.EventHandlers.onMediumClick;
+                //oList.childNodes[i].onclick     = ZMG.EventHandlers.onMediumClick;
                 oList.childNodes[i].onmouseover = ZMG.EventHandlers.onMediumEnter;
                 oList.childNodes[i].onmouseout  = ZMG.EventHandlers.onMediumLeave;
             }
         
+        if (oGallery && o.data.length > 0) {
+            Shadowbox.setup($$('a.zmg_medium_thumb'), {
+                gallery: oGallery.name
+            });
+        }
+        
         ZMG.ClientEvents.onActivateView('zmg_gallery_content');
-    };
-    
-    function buildGalleryDiv(gallery) {
-        if (!gallery.cover_img)
-            gallery.cover_img = ZMG.CONST.res_path + "/images/mimetypes/small/unknown.png";
-        return ['<a href="#gallery:show:', gallery.gid, '" id="zmg_gallery_', gallery.gid, '" class="zmg_gallery">\
-          <img src="', gallery.cover_img, '" alt="" title=""/>\
-          <span class="zmg_gallery_name">',
-            gallery.name,
-          '</span>\
-          <span class="zmg_gallery_descr">',
-            gallery.descr,
-          '</span>\
-        </a>'].join('');
-    };
-    
-    function buildMediumDiv(medium) {
-        return ['<div class="zmg_medium_thumb_cont">\
-          <a href="#medium:show:', medium.mid, '" id="zmg_medium_', medium.mid, '" class="zmg_medium_thumb">\
-              <img src="', medium.url_thumb, '" alt="" title=""/>\
-          </a>\
-          <span class="zmg_medium_name">',
-            medium.name,
-          '</span>\
-          <span class="zmg_medium_hits">',
-            medium.hits, ' ', ZMG.CONST.i18n.hits,
-          '</span>\
-        </div>'].join('');
     };
     
     function onMediumContent(o) {

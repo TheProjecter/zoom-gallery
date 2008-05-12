@@ -39,10 +39,10 @@
         <resource name="javascript" xml:base="js/">
             <file href="zmg_admin.js"/>
         </resource>
-        <resource name="javascript" xml:base="../../shared/">
+        <resource name="javascript" xml:base="../../shared/js/">
             <file href="zmg_shared.js"/>
         </resource>
-        <resource name="javascript" xml:base="../../shared/">
+        <resource name="javascript" xml:base="../../shared/js/">
             <file href="zmg_tooltip.js"/>
         </resource>
         <resource name="javascript" xml:base="js/">
@@ -60,10 +60,10 @@
         <resource name="javascript" xml:base="js/">
             <file href="zmg_toolbar.js"/>
         </resource>
-        <resource name="javascript" xml:base="../../shared/">
+        <resource name="javascript" xml:base="../../shared/js/">
             <file href="ajaxqueue.js"/>
         </resource>
-        <resource name="javascript" xml:base="../../shared/">
+        <resource name="javascript" xml:base="../../shared/js/">
             <file href="livegrid.js"/>
         </resource>
         <resource name="javascript" xml:base="js/">

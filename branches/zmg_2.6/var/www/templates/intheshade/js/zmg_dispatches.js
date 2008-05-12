@@ -6,21 +6,19 @@ ZMG.Dispatches = {
     
     stdDispatch: function(options) {
         ZMG.ClientEvents.onShowLoader();
-        window.setTimeout(function() {
-            new XHR({
-                async: options.async || true,
-                onSuccess: options.onSuccess || ZMG.ServerEvents.onDispatchResult,
-                onFailure: options.onFailure || ZMG.ServerEvents.onError
-            }).send(options.url, options.data || '');
-        }, 20); // allowing a small delay for the browser to draw the loader-icon.
+        new XHR({
+            async: options.async || true,
+            onSuccess: options.onSuccess || ZMG.ServerEvents.onDispatchResult,
+            onFailure: options.onFailure || ZMG.ServerEvents.onError
+        }).send(options.url, options.data || '');
     },
     
     getI18n: function() {
         return this.stdDispatch({
             url: ZMG.CONST.req_uri + "&view=zmg:get:i18n",
-            async: false,
             onSuccess: function(text) {
                 Json.evaluate(text);
+                ZMG.ClientEvents.onI18nAvailable();
             }
         });
     },
@@ -53,6 +51,7 @@ ZMG.Dispatches = {
         
         if (valid) {
             this.lastRequest = vars.view;
+            Shadowbox.close();
             ZMG.ClientEvents.onShowLoader();
             
             var self = this;
