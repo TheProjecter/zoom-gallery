@@ -17,7 +17,7 @@ ZMG.ClientEvents = (function() {
     
     function onStart() {
         ZMG.Shared.register('toolbar', new ZMG.Toolbar())
-          .setTitleImage(ZMG.CONST.res_path + "/../../shared/zoom_logo_medium.gif");
+          .setTitleImage(ZMG.CONST.res_path + "/../../shared/images/zoom_logo_medium.gif");
 
         window.addEvent('resize', onWindowResize.bind(this));
         

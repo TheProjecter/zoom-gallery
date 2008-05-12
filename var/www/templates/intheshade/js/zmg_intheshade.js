@@ -10,7 +10,7 @@ ZMG.ClientEvents = (function() {
         
         Shadowbox.init({
             skipSetup: true,
-            assetURL: ZMG.CONST.res_path + "/../shared/",
+            assetURL: ZMG.CONST.res_path + "/../../shared/",
             text: {
                 cancel:  _('cancel'),
                 loading: _('loading'),
