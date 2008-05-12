@@ -3,16 +3,25 @@ if (!window.ZMG) window.ZMG = {};
 ZMG.ClientEvents = (function() {
     function onStart() {
         ZMG.Dispatches.getI18n();
-        
+    };
+    
+    function onI18nAvailable() {
         onCheckLocation();
         
         Shadowbox.init({
             skipSetup: true,
-            assetURL: ZMG.CONST.res_path + "/"
+            assetURL: ZMG.CONST.res_path + "/../shared/",
+            text: {
+                cancel:  _('cancel'),
+                loading: _('loading'),
+                close:   _('close'),
+                next:    _('next'),
+                prev:    _('previous'),
+            }
         });
     };
     
-    var tPollTimer = null, iPollTimeout = 2000;
+    var tPollTimer = null, iPollTimeout = 1000;
     function onCheckLocation() {
         $clear(tPollTimer);
 
@@ -40,14 +49,6 @@ ZMG.ClientEvents = (function() {
     
     var oTooltip, activeMedium, initPos;
     var tShowTimer, iThreshold = 1200, iOffset = 8; //milliseconds to wait before tooltip will show
-
-    function buildTooltipContent(obj, bIsMedium) {
-        if (!bIsMedium)
-            return ['<span class="zmg_gallery_descr">', obj.descr, '</span>\
-              <span class="zmg_gallery_mediumcount">', obj.medium_count, ' ', _('media'), '</span>'].join('');
-
-        return ['<span class="zmg_medium_descr">', obj.descr, '</span>'].join('');
-    };
     
     function onMediumTooltip(iId, bIsMedium, e) {
         $clear(tShowTimer);
@@ -65,7 +66,7 @@ ZMG.ClientEvents = (function() {
             //register this event, to for the mouse movement threshold
             initPos = e.page;
             activeMedium = iId;
-            oTooltip.setContent(obj.name, buildTooltipContent(obj, bIsMedium));
+            oTooltip.setContent(obj.name, ZMG.GUI.buildTooltipContent(obj, bIsMedium));
             tShowTimer = setTimeout(function() { onMediumTooltip(iId); }, iThreshold);
         }
     };
@@ -88,13 +89,14 @@ ZMG.ClientEvents = (function() {
         var oActiveView = ZMG.Shared.cacheElement(el);
         oActiveView.setStyle('display', '');
         ZMG.Shared.register('activeView', oActiveView);
-          
+        
         return oActiveView;
     };
     
     //publish methods to the world:
     return {
         onStart: onStart,
+        onI18nAvailable: onI18nAvailable,
         onCheckLocation: onCheckLocation,
         onHideLoader: onHideLoader,
         onShowLoader: onShowLoader,

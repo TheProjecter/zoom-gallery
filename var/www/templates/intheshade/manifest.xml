@@ -29,13 +29,13 @@
         <resource name="stylesheet" xml:base="css/">
             <file href="shadowbox.css" />
         </resource>
-        <resource name="javascript" xml:base="../../shared/">
+        <resource name="javascript" xml:base="../../shared/js/">
             <file href="ajaxqueue.js" />
         </resource>
-        <resource name="javascript" xml:base="../../shared/">
+        <resource name="javascript" xml:base="../../shared/js/">
             <file href="zmg_shared.js" />
         </resource>
-        <resource name="javascript" xml:base="../../shared/">
+        <resource name="javascript" xml:base="../../shared/js/">
             <file href="zmg_tooltip.js" />
         </resource>
         <resource name="javascript" xml:base="js/">
@@ -49,6 +49,9 @@
         </resource>
         <resource name="javascript" xml:base="js/">
             <file href="zmg_events_server.js" />
+        </resource>
+        <resource name="javascript" xml:base="js/">
+            <file href="zmg_gui.js" />
         </resource>
         <resource name="javascript" xml:base="js/">
             <file href="shadowbox-mootools.js" />

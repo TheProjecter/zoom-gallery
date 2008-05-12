@@ -1,7 +1,14 @@
 {literal}
 {
-    'result': '{/literal}{$zmgAPI->getParam('result_ok')}{literal}',
+{/literal}
+    'result': '{$zmgAPI->getParam('result_ok')}',
     'data': [
+        {literal}
+        {
+        {/literal}
+        {$zmgAPI->getGallery($zmgAPI->getViewToken('last'), 'json')}
+        {literal}
+        },
         {/literal}
         {foreach name=mediaiterator item=medium from=$zmgAPI->getMedia($zmgAPI->getViewToken('last'))}
             {literal}{{/literal}
