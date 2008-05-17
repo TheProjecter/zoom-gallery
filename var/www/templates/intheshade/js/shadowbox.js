@@ -99,6 +99,13 @@ if(typeof Shadowbox == 'undefined'){
          * @var     {String}    flvPlayer
          */
         flvPlayer:          'flvplayer.swf',
+        
+        /**
+         * The path to zoomplayer.swf.
+         *
+         * @var     {String}    mp3Player
+         */
+        mp3Player:          'zoomplayer.swf',
 
         /**
          * The background color and opacity of the overlay. Note: When viewing
@@ -456,6 +463,7 @@ if(typeof Shadowbox == 'undefined'){
         overlay:        /(img|iframe|html|inline)/, // content types to not use an overlay image for on FF Mac
         swf:            /\.swf\s*$/i, // swf file extension
         flv:            /\.flv\s*$/i, // flv file extension
+        mp3:            /\.mp3\s*$/i, // mp3 file extension
         domain:         /:\/\/(.*?)[:\/]/, // domain prefix
         inline:         /#(.+)$/, // inline element id
         rel:            /^(light|shadow)box/i, // rel attribute format
@@ -937,6 +945,7 @@ if(typeof Shadowbox == 'undefined'){
         if(q_index > -1) url = url.substring(0, q_index); // strip query string for player detection purposes
         if(RE.swf.test(url)) return plugins.fla ? 'swf' : 'unsupported-swf';
         if(RE.flv.test(url)) return plugins.fla ? 'flv' : 'unsupported-flv';
+        if(RE.mp3.test(url)) return plugins.fla ? 'mp3' : 'unsupported-mp3';
         if(RE.qt.test(url)) return plugins.qt ? 'qt' : 'unsupported-qt';
         if(RE.wmp.test(url)){
             if(plugins.wmp){
@@ -1050,7 +1059,7 @@ if(typeof Shadowbox == 'undefined'){
                                 options.errors.f4m.url, options.errors.f4m.name);
                         break;
                         default:
-                            if(match[1] == 'swf' || match[1] == 'flv') match[1] = 'fla';
+                            if(match[1] == 'swf' || match[1] == 'flv' || match[1] == 'mp3') match[1] = 'fla';
                             m = String.format(options.text.errors.single,
                                 options.errors[match[1]].url, options.errors[match[1]].name);
                     }
@@ -1337,6 +1346,7 @@ if(typeof Shadowbox == 'undefined'){
             case 'flv':
             case 'qt':
             case 'wmp':
+            case 'mp3'://ZMG!
                 var markup = Shadowbox.movieMarkup(obj);
                 resizeContent(markup.height, markup.width, function(){
                     showBars(function(){
@@ -2352,6 +2362,24 @@ if(typeof Shadowbox == 'undefined'){
                 ];
                 markup.type = 'application/x-shockwave-flash';
                 markup.data = options.assetURL + options.flvPlayer;
+                markup.children = [
+                    { tag: 'param', name: 'movie', value: options.assetURL + options.flvPlayer },
+                    { tag: 'param', name: 'flashvars', value: flashvars.join('&amp;') },
+                    { tag: 'param', name: 'allowfullscreen', value: 'true' }
+                ];
+            break;
+            case 'mp3':
+                autoplay = autoplay ? 'true' : 'false';
+                h = 300;
+                w = 20;
+                var flashvars = [
+                    'file=' + obj.content,
+                    'height=300',
+                    'width=300',
+                    'autostart=' + autoplay,
+                ];
+                markup.type = 'application/x-shockwave-flash';
+                markup.data = options.assetURL + options.mp3Player;
                 markup.children = [
                     { tag: 'param', name: 'movie', value: options.assetURL + options.flvPlayer },
                     { tag: 'param', name: 'flashvars', value: flashvars.join('&amp;') },

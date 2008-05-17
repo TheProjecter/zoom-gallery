@@ -70,6 +70,9 @@ class zmgUploadTool {
         //now we got the gallery and its data, retrieve the uploaded media
         $session = & zmgFactory::getSession();
         $media = $session->get('uploadtool.fancyfiles');
+        if (!is_array($media) || count($media) == 0) {
+            return zmgToolboxPlugin::registerError(T_('Upload media'), T_('No media have been uploaded; nothing to do.'));
+        }
 
         zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
         $zoom      = & zmgFactory::getZoom();
@@ -104,9 +107,9 @@ class zmgUploadTool {
         	}
             //delete medium from session data: fourth parameter as TRUE 
             $session->update('uploadtool.fancyfiles', $medium, ZMG_DATATYPE_ARRAY, true);
-            
-            zmgToolboxPlugin::throwErrors();
         }
+        
+        zmgToolboxPlugin::throwErrors();
     }
     
     function autoDetect() {

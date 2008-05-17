@@ -35,25 +35,11 @@ ZMG.ClientEvents = (function() {
     }
     
     function onShowMessage(title, msg, posTop, posLeft) {
-        var mc  = ZMG.Shared.cacheElement('zmg_admin_messagecenter');
-        mc.setStyle('display', '');
-        var oToolbar = ZMG.Shared.get('toolbar');
-        if (!posTop && !posLeft && oToolbar) {
-            var pos = oToolbar.node.getCoordinates();
-            posTop  = pos.top + 12;
-            posLeft = pos.left - 250;
-        }
+        var oTooltip = ZMG.GUI.displayTooltip(title, msg, posTop, posLeft);
         
-        mc.setStyle('top',  posTop  + "px");
-        mc.setStyle('left', posLeft + "px");
+        window.setTimeout(onHideMessages.pass(oTooltip, this), 7500);
         
-        var tooltip = new ZMG.Tooltip(false, {
-            parentNode: mc
-        }).setContent(title, msg).show();
-        
-        window.setTimeout(onHideMessages.pass(tooltip, this), 7500);
-        
-        tooltips.push(tooltip);
+        tooltips.push(oTooltip);
     };
     
     function onHideMessages(tooltip) {
@@ -67,7 +53,7 @@ ZMG.ClientEvents = (function() {
             }
         }
         if (!tooltips.length)
-            ZMG.Shared.cacheElement('zmg_admin_messagecenter').setStyle('display', 'none');
+            ZMG.GUI.hideMessageCenter();
     };
     
     function onLiveGridPager(oPager) {
@@ -85,72 +71,27 @@ ZMG.ClientEvents = (function() {
         bodySlide.slideOut();
         editSlide.slideOut();
         
-        ZMG.Shared.cacheElement('zmg_lgrid_pagination').setStyle('visibility', 'hidden');
-        livegrid.scroller.setStyle('overflow-y', 'hidden');
+        ZMG.GUI.lGridHideBody(livegrid);
         
         livegrid.scrollComplete(-1);
         
-        var oToolbar = ZMG.Shared.get('toolbar');
-        if (oToolbar) oToolbar.show('mediumedit');
+        ZMG.GUI.updateToolbar('mediumedit');
     };
     
     function onLiveGridEditSlide() {
-        oLiveGrid = ZMG.Shared.get('liveGrid');
-        if (oLiveGrid && bodySlide) {
-            oLiveGrid.scroller.setStyle('overflow-y', 'visible');
+        oLivegrid = ZMG.Shared.get('liveGrid');
+        if (oLivegrid && bodySlide) {
             bodySlide.slideIn();
             editSlide.slideIn();
             
-            ZMG.Shared.cacheElement('zmg_lgrid_pagination').setStyle('visibility', 'visible');
+            ZMG.GUI.lGridShowBody(oLivegrid);
             
-            var oToolbar = ZMG.Shared.get('toolbar');
-            if (oToolbar) oToolbar.show('zmg_view_mm');
+            ZMG.GUI.updateToolbar('zmg_view_mm');
         }
     };
     
     function onLoadNavigation() {
-        var oMenuTree = new MooTreeControl({
-            div     : ZMG.Shared.cacheElement('zmg_tree_body'),
-            mode    : 'files',
-            grid    : true,
-            theme   : ZMG.CONST.res_path + '/images/mootree.gif',
-            loader  : {
-                icon  : ZMG.CONST.res_path + '/images/spinner_small.gif',
-                text  : 'Loading...',
-                color : '#a0a0a0'
-            },
-            onSelect: function(node, state) {
-                if (!node.id) return;
-                if (state) {
-                    var forcetype = "";
-                    if (node.data.extra && node.data.extra.forcetype)
-                        forcetype = node.data.extra.forcetype;
-                    
-                    var load = true;
-                    var oTabs = ZMG.Shared.get('settingsTabs');
-                    if (oTabs && node.id.indexOf('settings:') > -1) {
-                        var key = ZMG.ServerEvents.onGetSettingsKey(node.id);
-                        if (oTabs.entries[key].loaded) {
-                            oTabs.select(key);
-                            load = false;
-                        }
-                    }
-                    if (load)
-                        onViewSelect(node.id, forcetype);
-                    else
-                        ZMG.ServerEvents.onLoadSettingsTab(
-                          ZMG.ServerEvents.onGetSettingsKey(node.id, null));
-                }
-            },
-            onExpand: function(node, state) {
-                if (node && node.id)
-                    this.onSelect(node, state);
-            }
-        }, {
-            text: 'Menu',
-            open: true
-        });
-        ZMG.Shared.register('menuTree', oMenuTree);
+        var oMenuTree = ZMG.GUI.buildMenuTree();
         
         oMenuTree.root.load(ZMG.CONST.req_uri + '&view=admin:treemenu');
     };
@@ -204,7 +145,7 @@ ZMG.ClientEvents = (function() {
         
         if (valid) {
             lastRequest = vars.view;
-            onShowLoader();
+            ZMG.GUI.showLoader();
             // allowing a small delay for the browser to draw the loader-icon.
             window.setTimeout(function() {
                 requestQueue.request(vars || '');
@@ -262,24 +203,8 @@ ZMG.ClientEvents = (function() {
         ZMG.pingTimer = window.setTimeout(onPing, ZMG.CONST.refreshtime);
     };
     
-    function onShowLoader() {
-        ZMG.Shared.cacheElement('zmg_admin_loader').setStyle('display', '');
-    };
-    
-    function onHideLoader() {
-        ZMG.Shared.cacheElement('zmg_admin_loader').setStyle('display', 'none');
-    };
-    
     function onWindowResize() {
-        var width = ZMG.Shared.cacheElement('zmg_admin_cont').offsetWidth;
-        ZMG.Shared.cacheElement('zmg_view_content').style.width = (width - 258) + "px";
-        var lGrid = ZMG.Shared.get('liveGrid');
-        if (lGrid) {
-            var gridWidth = (width - 278);
-            lGrid.gridWidth = gridWidth;
-            lGrid.body.style.width = lGrid.options.editpanel.style.width = (gridWidth - 4) + "px";
-            lGrid.options.editpanel.style.left = (gridWidth + 4) + "px"; 
-        }
+        ZMG.GUI.updateProportions();
     };
     
     function onError() {
@@ -291,8 +216,6 @@ ZMG.ClientEvents = (function() {
     };
     
     return {
-        onShowLoader: onShowLoader,
-        onHideLoader: onHideLoader,
         onLiveGridBodySlide: onLiveGridBodySlide,
         onLiveGridEditSlide: onLiveGridEditSlide,
         onLiveGridPager: onLiveGridPager,
