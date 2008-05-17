@@ -3,7 +3,7 @@ if (!window.ZMG) window.ZMG = {};
 (function() {
     ZMG.Dispatches = {
         stdDispatch:  function(options) {
-            ZMG.ClientEvents.onShowLoader();
+            ZMG.GUI.showLoader();
             window.setTimeout(function() {
                 new XHR({
                     onSuccess: options.onSuccess || ZMG.ServerEvents.onDispatchResult,

@@ -514,6 +514,8 @@ class zmgFileHelper
      */
     function chmodRecursive($path, $filemode = 0644, $dirmode = 0777) {
         $ret = true;
+        
+        $zoom = & zmgFactory::getZoom();
 
         if (is_dir($path)) {
             $dh = opendir($path);

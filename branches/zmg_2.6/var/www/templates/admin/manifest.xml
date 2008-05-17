@@ -58,6 +58,9 @@
             <file href="zmg_events_server.js"/>
         </resource>
         <resource name="javascript" xml:base="js/">
+            <file href="zmg_admin_gui.js"/>
+        </resource>
+        <resource name="javascript" xml:base="js/">
             <file href="zmg_toolbar.js"/>
         </resource>
         <resource name="javascript" xml:base="../../shared/js/">
