@@ -103,9 +103,23 @@ if(typeof Shadowbox == 'undefined'){
         /**
          * The path to zoomplayer.swf.
          *
-         * @var     {String}    mp3Player
+         * @var     {String}    audioPlayer
          */
-        mp3Player:          'zoomplayer.swf',
+        audioPlayer:          'zoomplayer.swf',
+        
+        /**
+         * The path to the config XML file of the zoomplayer
+         *
+         * @var     {String}    audioPlayerConfig
+         */
+        audioPlayerConfig:    'config.xml',
+        
+        /**
+         * The path to playlist XML file for the zoomplayer
+         *
+         * @var     {String}    audioPlayerFile
+         */
+        audioPlayerFile:      '',
 
         /**
          * The background color and opacity of the overlay. Note: When viewing
@@ -424,6 +438,7 @@ if(typeof Shadowbox == 'undefined'){
          */
         ext:     {
             img:        ['png', 'jpg', 'jpeg', 'gif', 'bmp'],
+            audio:      ['mp3', 'ogg'],
             qt:         ['dv', 'mov', 'moov', 'movie', 'mp4'],
             wmp:        ['asf', 'wm', 'wmv'],
             qtwmp:      ['avi', 'mpg', 'mpeg'],
@@ -463,7 +478,6 @@ if(typeof Shadowbox == 'undefined'){
         overlay:        /(img|iframe|html|inline)/, // content types to not use an overlay image for on FF Mac
         swf:            /\.swf\s*$/i, // swf file extension
         flv:            /\.flv\s*$/i, // flv file extension
-        mp3:            /\.mp3\s*$/i, // mp3 file extension
         domain:         /:\/\/(.*?)[:\/]/, // domain prefix
         inline:         /#(.+)$/, // inline element id
         rel:            /^(light|shadow)box/i, // rel attribute format
@@ -945,7 +959,7 @@ if(typeof Shadowbox == 'undefined'){
         if(q_index > -1) url = url.substring(0, q_index); // strip query string for player detection purposes
         if(RE.swf.test(url)) return plugins.fla ? 'swf' : 'unsupported-swf';
         if(RE.flv.test(url)) return plugins.fla ? 'flv' : 'unsupported-flv';
-        if(RE.mp3.test(url)) return plugins.fla ? 'mp3' : 'unsupported-mp3';
+        if(RE.audio.test(url)) return plugins.fla ? 'audio' : 'unsupported-audio';
         if(RE.qt.test(url)) return plugins.qt ? 'qt' : 'unsupported-qt';
         if(RE.wmp.test(url)){
             if(plugins.wmp){
@@ -1059,7 +1073,7 @@ if(typeof Shadowbox == 'undefined'){
                                 options.errors.f4m.url, options.errors.f4m.name);
                         break;
                         default:
-                            if(match[1] == 'swf' || match[1] == 'flv' || match[1] == 'mp3') match[1] = 'fla';
+                            if(match[1] == 'swf' || match[1] == 'flv' || match[1] == 'audio') match[1] = 'fla';
                             m = String.format(options.text.errors.single,
                                 options.errors[match[1]].url, options.errors[match[1]].name);
                     }
@@ -1346,7 +1360,7 @@ if(typeof Shadowbox == 'undefined'){
             case 'flv':
             case 'qt':
             case 'wmp':
-            case 'mp3'://ZMG!
+            case 'audio'://ZMG!
                 var markup = Shadowbox.movieMarkup(obj);
                 resizeContent(markup.height, markup.width, function(){
                     showBars(function(){
@@ -1934,6 +1948,7 @@ if(typeof Shadowbox == 'undefined'){
 
         // compile file type regular expressions here for speed
         RE.img = new RegExp('\.(' + options.ext.img.join('|') + ')\s*$', 'i');
+        RE.audio = new RegExp('\.(' + options.ext.audio.join('|') + ')\s*$', 'i');
         RE.qt = new RegExp('\.(' + options.ext.qt.join('|') + ')\s*$', 'i');
         RE.wmp = new RegExp('\.(' + options.ext.wmp.join('|') + ')\s*$', 'i');
         RE.qtwmp = new RegExp('\.(' + options.ext.qtwmp.join('|') + ')\s*$', 'i');
@@ -2368,20 +2383,20 @@ if(typeof Shadowbox == 'undefined'){
                     { tag: 'param', name: 'allowfullscreen', value: 'true' }
                 ];
             break;
-            case 'mp3':
-                autoplay = autoplay ? 'true' : 'false';
+            case 'audio':
+                w = 300;
                 h = 300;
-                w = 20;
                 var flashvars = [
                     'file=' + obj.content,
-                    'height=300',
-                    'width=300',
-                    'autostart=' + autoplay,
+                    'height=' + h,
+                    'width=' + w,
+                    'config=' + options.audioPlayerConfig,
+                    'file=' + options.audioPlayerFile
                 ];
                 markup.type = 'application/x-shockwave-flash';
-                markup.data = options.assetURL + options.mp3Player;
+                markup.data = options.assetURL + options.audioPlayer;
                 markup.children = [
-                    { tag: 'param', name: 'movie', value: options.assetURL + options.flvPlayer },
+                    { tag: 'param', name: 'movie', value: options.assetURL + options.audioPlayer },
                     { tag: 'param', name: 'flashvars', value: flashvars.join('&amp;') },
                     { tag: 'param', name: 'allowfullscreen', value: 'true' }
                 ];

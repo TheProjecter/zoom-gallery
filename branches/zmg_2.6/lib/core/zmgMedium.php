@@ -112,11 +112,14 @@ class zmgMedium extends zmgTable {
         	$file['path'] = $gallery_path; //back to the original
             $file['name'] = $this->filename;
         } else if ($type & ZMG_MEDIUM_VIEWSIZE) {
-        	if ($file['path'] == $gallery_path) {
+        	if (zmgMimeHelper::isAudio($ext)) {
+                $file['path'] = "";
+                $file['name'] = $this->mid . "." . $ext;
+            } else if (zmgMimeHelper::isVideo($ext)) {
+                $file['path'] = $gallery_path;
+                $file['name'] = $this->filename;
+            } else if ($file['path'] == $gallery_path) {
                 //$file['path'] .= "viewsize"; //TODO: more case coverage
-                if (zmgMimeHelper::isAudio($ext) || zmgMimeHelper::isVideo($ext)) {
-                    $file['name'] = $this->filename;
-                }
             }
         } else if ($type & ZMG_MEDIUM_THUMBNAIL) {
         	if ($file['path'] == $gallery_path) {
