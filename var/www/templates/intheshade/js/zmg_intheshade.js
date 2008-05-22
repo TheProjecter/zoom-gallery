@@ -7,17 +7,16 @@ ZMG.ClientEvents = (function() {
     
     function onI18nAvailable() {
         onCheckLocation();
-        
         Shadowbox.init({
             skipSetup: true,
-            assetURL: ZMG.CONST.res_path + "/../../shared/",
+            assetURL: ZMG.CONST.res_path + "/../../shared/" /*,
             text: {
                 cancel:  _('cancel'),
                 loading: _('loading'),
                 close:   _('close'),
                 next:    _('next'),
-                prev:    _('previous'),
-            }
+                prev:    _('previous')
+            }*/
         });
     };
     

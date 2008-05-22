@@ -9,7 +9,6 @@ if (!window.ZMG) window.ZMG = {};
     ZMG.EventHandlers = {
         onGalleryClick: function() {
             var iId = getObjectId(this.id);
-            console.log('gallery selected: ', iId);
             ZMG.ClientEvents.onCheckLocation();
         },
         onGalleryEnter: function(e) {

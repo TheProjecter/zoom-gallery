@@ -112,7 +112,6 @@ ZMG.ServerEvents = (function() {
         
         var medium = o.data.medium;
         var gallery = ZMG.Shared.get('gallery:' + medium.gid);
-        console.log('lala', medium.url_view);
         Shadowbox.open({
             title:      medium.name,
             type:       'img',
