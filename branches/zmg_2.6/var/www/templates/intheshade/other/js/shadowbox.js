@@ -168,7 +168,6 @@ if(typeof Shadowbox == 'undefined'){
          * @var     {Boolean}   showMovieControls
          */
         showMovieControls:  true,
-
         /**
          * The duration of the resizing animations (in seconds).
          *
@@ -2391,7 +2390,7 @@ if(typeof Shadowbox == 'undefined'){
                     'height=' + h,
                     'width=' + w,
                     'config=' + options.audioPlayerConfig,
-                    'file=' + options.audioPlayerFile
+                    'file=' + options.audioPlayerFile + obj.zmgobj.mid
                 ];
                 markup.type = 'application/x-shockwave-flash';
                 markup.data = options.assetURL + options.audioPlayer;

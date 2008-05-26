@@ -32,7 +32,8 @@ if (!window.ZMG) window.ZMG = {};
             console.log('lala', medium.url_view);
             Shadowbox.open({
                 title:      medium.name,
-                type:       'img',
+                zmgobj:     medium,
+                //type:       'img',
                 content:    medium.url_view,
                 gallery:    gallery ? gallery.name : null,
             });

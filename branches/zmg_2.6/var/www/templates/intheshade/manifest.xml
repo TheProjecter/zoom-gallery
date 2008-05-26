@@ -17,6 +17,7 @@
         <view name="medium:edit" inherits="medium:edit:*" />
         <view name="medium:delete" inherits="medium:delete:*" />
         <view name="medium:lightbox" inherits="medium:lightbox:*" />
+        <view name="medium:playlist" inherits="medium:playlist:*" />
         <view name="messagecenter" inherits="messagecenter:*" />
         <view name="zmg:get:i18n" />
         <view name="useradmin" />
@@ -76,6 +77,9 @@
         </resource>
         <resource name="template" type="json" view="medium:show" xml:base="">
             <file href="mediumshow.json.tpl" />
+        </resource>
+        <resource name="template" type="xml" view="medium:playlist" xml:base="">
+            <file href="player_playlist.tpl" />
         </resource>
         <resource name="template" type="json" view="zmg:get:i18n" xml:base="">
             <file href="i18n.json.tpl" />
