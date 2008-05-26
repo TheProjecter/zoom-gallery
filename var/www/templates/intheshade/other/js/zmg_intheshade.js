@@ -9,7 +9,8 @@ ZMG.ClientEvents = (function() {
         onCheckLocation();
         Shadowbox.init({
             skipSetup: true,
-            assetURL: ZMG.CONST.res_path + "/../../shared/" /*,
+            assetURL: ZMG.CONST.res_path + "/../../shared/",
+            audioPlayerFile: ZMG.CONST.req_uri + '&forcetype=xml&view=medium:playlist:' /*,
             text: {
                 cancel:  _('cancel'),
                 loading: _('loading'),
