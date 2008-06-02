@@ -156,7 +156,7 @@ class zmgAPIHelper {
         }
         
         $token = "";
-        switch($which) {
+        switch ($which) {
             case 'first':
                 $token = $tokens[0];
                 break;
@@ -173,6 +173,22 @@ class zmgAPIHelper {
     	$zoom = & zmgFactory::getZoom();
         
         return $zoom->view->getActiveTemplate();
+    }
+    
+    function getMediaFromRequest() {
+        $token  = zmgAPIHelper::getViewToken(); //'last' by default
+        
+        $db     = & zmgDatabase::getDBO();
+        
+        $tokens = explode(',', $token); //will return an array, no matter how many commas
+        $media  = array();
+        foreach ($tokens as $mid) {
+            $medium = new zmgMedium($db);
+            $medium->load($mid);
+            $media[] = $medium; //push
+        }
+        
+        return $media;
     }
 }
 ?>

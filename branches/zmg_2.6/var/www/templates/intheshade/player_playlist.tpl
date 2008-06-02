@@ -2,8 +2,6 @@
     <trackList>
         {foreach name=playeriterator item=medium from=$zmgAPI->getMediaFromRequest()}
             {$medium->toXML('playlist')}
-        {foreachelse}
-        
         {/foreach}
     </trackList>
 </playlist>

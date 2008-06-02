@@ -110,10 +110,10 @@ class Zoom {
      */
     var $plugins = null;
     
-	/**
+    /**
      * The class constructor.
      */
-	function Zoom(&$config) {
+     function Zoom(&$config) {
         zmgimport('org.zoomfactory.lib.helpers.zmgConfigurationHelper');
         zmgimport('org.zoomfactory.lib.helpers.zmgMessageCenter');
         zmgimport('org.zoomfactory.lib.helpers.zmgPluginHelper');
@@ -129,7 +129,7 @@ class Zoom {
         zmgFactory::getSession();
 
         $this->loadEvents(); //TODO: use cached events list
-	}
+    }
     function hasAccess() {
         if (!zmgACL::check_defines())
             return false;
@@ -437,9 +437,9 @@ class Zoom {
         }
         
         if ($type == "xml") {
-    		echo @header("Content-type:text/xml; charset=" . $encoding);
+            echo @header("Content-type:text/xml; charset=" . $encoding);
     	} else if ($type == "plain") {
-    		echo @header("Content-type:text/plain; charset=" . $encoding);
+            echo @header("Content-type:text/plain; charset=" . $encoding);
     	} else if ($type == "js" || $type == "json") {
             echo @header("Content-type:text/javascript; charset=" . $encoding);
         }

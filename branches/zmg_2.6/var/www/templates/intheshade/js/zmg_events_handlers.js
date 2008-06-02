@@ -8,7 +8,6 @@ if (!window.ZMG) window.ZMG = {};
     
     ZMG.EventHandlers = {
         onGalleryClick: function() {
-            var iId = getObjectId(this.id);
             ZMG.ClientEvents.onCheckLocation();
         },
         onGalleryEnter: function(e) {
@@ -35,9 +34,8 @@ if (!window.ZMG) window.ZMG = {};
                 zmgobj:     medium,
                 //type:       'img',
                 content:    medium.url_view,
-                gallery:    gallery ? gallery.name : null,
+                gallery:    gallery ? gallery.name : null
             });
-            //ZMG.ClientEvents.onCheckLocation();
         },
         onMediumEnter: function(e) {
             $(this).addClass('zmg_hover');

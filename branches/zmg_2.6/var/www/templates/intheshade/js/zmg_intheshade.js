@@ -10,7 +10,7 @@ ZMG.ClientEvents = (function() {
         Shadowbox.init({
             skipSetup: true,
             assetURL: ZMG.CONST.res_path + "/../../shared/",
-            audioPlayerFile: ZMG.CONST.req_uri + '&forcetype=xml&view=medium:playlist:' /*,
+            audioPlayerFile: ZMG.CONST.res_path + "/../../shared/mediaplayer.php?q=" /*,
             text: {
                 cancel:  _('cancel'),
                 loading: _('loading'),
@@ -31,16 +31,16 @@ ZMG.ClientEvents = (function() {
         var hash = document.location.hash.replace(/#/, '');
         if (hash != ZMG.CONST.active_view)
             ZMG.Dispatches.selectView(hash);
-            
+
         window.setTimeout(onCheckLocation, iPollTimeout);
     };
     
     function onShowLoader() {
-        ZMG.cacheElement('zmg_loader').setStyle('display', '');
+        ZMG.Shared.cacheElement('zmg_loader').setStyle('display', '');
     };
     
     function onHideLoader() {
-        ZMG.cacheElement('zmg_loader').setStyle('display', 'none');
+        ZMG.Shared.cacheElement('zmg_loader').setStyle('display', 'none');
     };
     
     function onShowMessage(sTitle, sDescr) {
@@ -105,26 +105,5 @@ ZMG.ClientEvents = (function() {
         onActivateView: onActivateView
     };
 })();
-
-/**
- * Add a DOM element to the DOM cache, for easy retrieval throughout
- * the application.
- * @author Mike de Boer (mike AT zoomfactory.org)
- * @param {String} id
- * @param {String} elname Optional.
- * @type DOMElement
- */
-ZMG.nodeCache    = {};
-ZMG.cacheElement = function(id, elname) {
-    if (!this.nodeCache[id] && !this.nodeCache[elname]) {
-        var el = $(id);
-        if (el) {
-            this.nodeCache[elname || id] = el;
-            return el;
-        } else
-            return null;
-    }
-    return this.nodeCache[elname || id] || null;
-};
 
 window.addEvent('domready', function() { ZMG.ClientEvents.onStart(); });

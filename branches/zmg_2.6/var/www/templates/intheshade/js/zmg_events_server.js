@@ -2,7 +2,7 @@ if (!window.ZMG) window.ZMG = {};
 
 ZMG.ServerEvents = (function() {
     function onView(text, xml, data, resp) {
-        var key, view = data.view, o, isJSON = false;
+        var view = data.view, o, isJSON = false;
         console.log('Server#onview: ', view);
         ZMG.Dispatches.lastRequest = null;
         
@@ -39,10 +39,10 @@ ZMG.ServerEvents = (function() {
     function onGalleryList(o) {
         if (o.result !== ZMG.CONST.result_ok) return;
         
-        var gallery, oGalleries = ZMG.cacheElement('zmg_gallery_list');
+        var gallery, oGalleries = ZMG.Shared.cacheElement('zmg_gallery_list');
         
-        var out = [];
-        for (var i = 0; i < o.data.length; i++) {
+        var i, out = [];
+        for (i = 0; i < o.data.length; i++) {
             gallery = ZMG.Shared.register('gallery:' + o.data[i].gallery.gid, o.data[i].gallery); //keep a cache of galleries
 
             out.push(ZMG.GUI.buildGalleryDiv(gallery));
@@ -51,7 +51,7 @@ ZMG.ServerEvents = (function() {
         oGalleries.innerHTML = out.join('');
         
         //grab references and attach event handlers to the galleries
-        for (var i = 0; i < oGalleries.childNodes.length; i++)
+        for (i = 0; i < oGalleries.childNodes.length; i++)
             if (oGalleries.childNodes[i].nodeName == "A"
               &&  oGalleries.childNodes[i].id.indexOf('zmg_gallery_') > -1) {
                 oGalleries.childNodes[i].onclick     = ZMG.EventHandlers.onGalleryClick;
@@ -65,24 +65,24 @@ ZMG.ServerEvents = (function() {
     function onGalleryContent(o) {
         if (o.result !== ZMG.CONST.result_ok) return;
         
-        oList = ZMG.cacheElement('zmg_gallery_content');
+        oList = ZMG.Shared.cacheElement('zmg_gallery_content');
         oList.innerHTML = "";
         
-        var obj, out = [];
+        var i, obj, out = [];
         var iGid = 0;
         
         var oGallery = o.data.shift().gallery;
         ZMG.Shared.register('gallery:' + oGallery.gid, oGallery); //keep this Gallery in cache!
         
-        for (var i = 0; i < o.data.length; i++) {
+        for (i = 0; i < o.data.length; i++) {
             var isGallery = o.data[i].gallery ? true : false;
             obj = isGallery ? o.data[i].gallery : o.data[i].medium;
 
             if (isGallery)
-                obj = ZMG.Shared.register('gallery:' + o.data[i].gallery.gid, o.data[i].gallery); //keep a cache of galleries
+                obj = ZMG.Shared.register('gallery:' + obj.gid, obj); //keep a cache of galleries
             else {
-                obj = ZMG.Shared.register('medium:' + o.data[i].medium.mid, o.data[i].medium); //keep a cache of media
                 if (!iGid) iGid = obj.gid;
+                obj = ZMG.Shared.register('medium:' + obj.mid, obj, iGid); //keep a cache of media
             }
 
             out.push(isGallery ? ZMG.GUI.buildGalleryDiv(obj) : ZMG.GUI.buildMediumDiv(obj));
@@ -90,7 +90,7 @@ ZMG.ServerEvents = (function() {
         oList.innerHTML = out.join('');
         
         //grab references and attach event handlers to the galleries
-        for (var i = 0; i < oList.childNodes.length; i++)
+        for (i = 0; i < oList.childNodes.length; i++)
             if (oList.childNodes[i].nodeName == "DIV"
               &&  oList.childNodes[i].className.indexOf('zmg_medium_thumb_') > -1) {
                 //oList.childNodes[i].onclick     = ZMG.EventHandlers.onMediumClick;
@@ -116,7 +116,7 @@ ZMG.ServerEvents = (function() {
             title:      medium.name,
             type:       'img',
             content:    medium.url_view,
-            gallery:    gallery ? gallery.name : null,
+            gallery:    gallery ? gallery.name : null
         });
     };
     

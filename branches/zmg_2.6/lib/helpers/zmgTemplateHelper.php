@@ -69,34 +69,41 @@ class zmgTemplateHelper extends Smarty {
     function run($view, $subview, $viewtype) {
         //mootools & Ajax preparing stuff
         $this->_type = $viewtype;
-        if (!zmgEnv::isRPC() && $this->_type == "html") {
-            if (ZMG_ADMIN) {
-                $this->_buildAdminToolbar();
-            }
-            zmgEnv::includeMootools();
-            
-            $json = & zmgFactory::getJSON();
-            
-            $lifetime = (zmgEnv::getSessionLifetime() * 60000); //in milliseconds
-            //refresh time is 1 minute less than the lifetime assigned in the CMS configuration
-            $refreshTime =  ($lifetime <= 60000) ? 30000 : $lifetime - 60000;
-            $this->_constants = array_merge($this->_constants, array(
-                "req_uri"     => "ZMG.CONST.site_uri + '".zmgEnv::getAjaxURL()."'",
-                "res_path"    => "ZMG.CONST.site_uri + '/components/com_zoom/var/www/templates/"
-                  . $this->_active_template."'",
-                "base_path"   => "'".zmgGetBasePath()."'",
-                "refreshtime" => $refreshTime,
-                "sessionid"   => $json->encode(zmgEnv::getSessionID()),
-                "sessionname" => $json->encode(zmgEnv::getSessionName())
-            ));
-            zmgEnv::appendPageHeader(zmgHTML::buildConstScript($this->_constants));
-        }
 
-        //put the HTML headers in the head section of the parent (hosting) document
-        $headers = $this->getHTMLHeaders(zmgEnv::getSiteURL()
-          . '/components/com_zoom/var/www/templates', $this->_type);
-        foreach ($headers as $header) {
-            zmgEnv::appendPageHeader($header);
+        if (!zmgEnv::isRPC()) {
+            if ($this->_type == "html") {
+                if (ZMG_ADMIN) {
+                    $this->_buildAdminToolbar();
+                }
+                zmgEnv::includeMootools();
+                
+                $json = & zmgFactory::getJSON();
+                
+                $lifetime = (zmgEnv::getSessionLifetime() * 60000); //in milliseconds
+                //refresh time is 1 minute less than the lifetime assigned in the CMS configuration
+                $refreshTime =  ($lifetime <= 60000) ? 30000 : $lifetime - 60000;
+                $this->_constants = array_merge($this->_constants, array(
+                    "req_uri"     => "ZMG.CONST.site_uri + '".zmgEnv::getAjaxURL()."'",
+                    "res_path"    => "ZMG.CONST.site_uri + '/components/com_zoom/var/www/templates/"
+                      . $this->_active_template."'",
+                    "base_path"   => "'".zmgGetBasePath()."'",
+                    "refreshtime" => $refreshTime,
+                    "sessionid"   => $json->encode(zmgEnv::getSessionID()),
+                    "sessionname" => $json->encode(zmgEnv::getSessionName())
+                ));
+                zmgEnv::appendPageHeader(zmgHTML::buildConstScript($this->_constants));
+            }
+        } else if ($this->_type == "xml") {
+            Zoom::sendHeaders('xml');
+        } 
+        
+        if ($this->_type == "html") {
+            //put the HTML headers in the head section of the parent (hosting) document
+            $headers = $this->getHTMLHeaders(zmgEnv::getSiteURL()
+              . '/components/com_zoom/var/www/templates', $this->_type);
+            foreach ($headers as $header) {
+                zmgEnv::appendPageHeader($header);
+            }
         }
         
         $zoom = & zmgFactory::getZoom();

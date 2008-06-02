@@ -1,16 +1,50 @@
 if (!window.ZMG) window.ZMG = {};
 
 ZMG.Shared = {
-    register: function(name, value) {
-        if (!name) return;
+    CACHE_LIFETIME: 30 * 60 * 1000, //30 minutes in milliseconds.
+    
+    register: function(name, value, childOf, lifetime) {
+        if (!name) return this;
         
         this[name] = value;
+        
+        //register the parent object ID (if provided)
+        this[name]._childOf = childOf || null;
+        
+        //set timestamp for item lifetime
+        this[name]._registeredAt = new Date().valueOf();
+        this[name]._lifetime     = lifetime || this.CACHE_LIFETIME;
         
         return this[name];
     },
     
     get: function(name) {
         return this[name] || null;
+    },
+    
+    validate: function() {
+        var now = new Date().valueOf();
+        for (var i in this) {
+            if (this[i] && this[i]._registeredAt
+              && this[i]._lifetime > 0) {
+                var expires = this[i]._registeredAt + this[i]._lifetime
+                if (expires > now) {
+                    this.purgeChildren(i);
+                    this[i] = null;
+                    delete this[i];
+                }
+            }
+        }
+    },
+    
+    purgeChildren: function(name) {
+        for (var i in this) {
+            if (this[i] && this[i]._childOf === name) {
+                this.purgeChildren(i);
+                this[i] = null;
+                delete this[i];
+            }
+        }
     },
     
     nodeCache: {},
@@ -77,6 +111,20 @@ String.extend({
     });
   } 
 });
+
+ZMG.Crypt = {
+    Simple: {
+        encrypt: function(s) {
+            if (typeof s == "string" && s.indexOf('obfs') < 0) {
+                var convert = [];
+                for (var i = 0; i < s.length; i++)
+                    convert.push(324 - s.charCodeAt(i));
+                return "{obfs:" + convert.join('') + "}";
+            }
+            return s;
+        }
+    }
+};
 
 /**
  * The following code has been derived from work done by the Prototype js team
