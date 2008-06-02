@@ -25,7 +25,7 @@ ZMG.Dispatches = {
     
     selectView: function(view, forcetype) {
         view = view || ZMG.CONST.active_view;
-        if (!view) return;
+        if (!view) return false;
         
         vars = {
             'view': view 
@@ -41,7 +41,7 @@ ZMG.Dispatches = {
                     method: 'get'
                 },
                 onSuccess: ZMG.ServerEvents.onView,
-                onFailure: ZMG.ServerEvents.onError,
+                onFailure: ZMG.ServerEvents.onError
             });
         } else {
             //prevent duplicate requests:

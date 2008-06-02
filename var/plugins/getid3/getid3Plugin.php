@@ -23,13 +23,13 @@ class zmgGetid3Plugin {
                 "embed" => array()
             ),
             "ongetmusicmetadata" => array(
-                "getMusicMetadata" => array('medium')
+                "getMusicMetadata" => array('file')
             ),
-            "ongetviedometadata" => array(
-                "getVideoMetadata" => array('medium')
+            "ongetvideometadata" => array(
+                "getVideoMetadata" => array('file')
             ),
             "onputmusicmetadata" => array(
-                "putMusicMetadata" => array('medium', 'metadata')
+                "putMusicMetadata" => array('file', 'metadata')
             )
         );
     }
@@ -56,7 +56,13 @@ class zmgGetid3Plugin {
     }
     
     function getMusicMetadata($event) {
-    	$medium = $event->getArgument('medium');
+        $file   = $event->getArgument('file');
+        $getid3 = & zmgGetid3Plugin::getId3Instance();
+        return $getid3->analyze($file);
+    }
+    
+    function getVideoMetadata($event) {
+        $medium = $event->getArgument('file');
         //TODO
     }
     

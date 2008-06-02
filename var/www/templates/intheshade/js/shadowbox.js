@@ -105,7 +105,7 @@ if(typeof Shadowbox == 'undefined'){
          *
          * @var     {String}    audioPlayer
          */
-        audioPlayer:          'zoomplayer.swf',
+        audioPlayer:          'mediaplayer.swf',
         
         /**
          * The path to the config XML file of the zoomplayer
@@ -2385,15 +2385,19 @@ if(typeof Shadowbox == 'undefined'){
             case 'audio':
                 w = 300;
                 h = 300;
+                
+                var sMid  = obj.el.id.split('_')[2];
+                var aFile = options.audioPlayerFile + ZMG.Crypt.Simple.encrypt(ZMG.CONST.req_uri
+                    + '&forcetype=xml&view=medium:playlist:' + sMid);
                 var flashvars = [
-                    'file=' + obj.content,
                     'height=' + h,
                     'width=' + w,
-                    'config=' + options.audioPlayerConfig,
-                    'file=' + options.audioPlayerFile + obj.zmgobj.mid
+                    'config=' + options.assetURL + options.audioPlayerConfig,
+                    'file=' + aFile
                 ];
                 markup.type = 'application/x-shockwave-flash';
                 markup.data = options.assetURL + options.audioPlayer;
+                
                 markup.children = [
                     { tag: 'param', name: 'movie', value: options.assetURL + options.audioPlayer },
                     { tag: 'param', name: 'flashvars', value: flashvars.join('&amp;') },

@@ -278,5 +278,27 @@ class zmgMedium extends zmgTable {
             'members'  : ".$json->encode($this->members)."
         }");
     }
+    
+    function toXML($type = 'playlist') {
+        if ($type === "playlist") {
+            $zoom = & zmgFactory::getZoom();
+            
+            $artist = T_('no artist');
+            $title  = T_('no title');
+
+            $id3_data = $zoom->fireEvent('ongetmusicmetadata', false, $this->getAbsPath(ZMG_MEDIUM_ORIGINAL));
+            if (is_array($id3_data) && !empty($id3_data['tags']['id3v1']['artist'][0])) {
+                $artist = $id3_data['tags']['id3v1']['artist'][0];
+            }
+            if (is_array($id3_data) && !empty($id3_data['tags']['id3v1']['title'][0])) {
+                $title  = $id3_data['tags']['id3v1']['title'][0];
+            }
+
+            return ("<track>"
+             . "<title><![CDATA[" . (!($artist == "no artist" && $title == "no title") ? $artist.' - '.$title : $this->name) . "]]></title>"
+             . "<location><![CDATA[" . $this->getRelPath(ZMG_MEDIUM_ORIGINAL) . "]]></location>"
+             . "</track>");
+        }
+    }
 }
 ?>
