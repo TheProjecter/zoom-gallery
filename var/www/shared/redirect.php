@@ -14,7 +14,7 @@ define("ZMG_ABS_PATH", dirname(__FILE__) . "/../../..");
 define("ZMG_ADMIN", 0);
 
 //load all required libraries
-require(ZMG_ABS_PATH . '/lib/zmgFunctions.php');
+include(ZMG_ABS_PATH . '/lib/zmgFunctions.php');
 
 $url = zmgDecrypt(zmgGetParam($_REQUEST, 'q', '', _ZMG_NOFILTER));
 
