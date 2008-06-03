@@ -10,7 +10,7 @@ ZMG.ClientEvents = (function() {
         Shadowbox.init({
             skipSetup: true,
             assetURL: ZMG.CONST.res_path + "/../../shared/",
-            audioPlayerFile: ZMG.CONST.res_path + "/../../shared/mediaplayer.php?q=" /*,
+            audioPlayerFile: ZMG.CONST.res_path + "/../../shared/redirect.php?q=" /*,
             text: {
                 cancel:  _('cancel'),
                 loading: _('loading'),
@@ -45,6 +45,7 @@ ZMG.ClientEvents = (function() {
     
     function onShowMessage(sTitle, sDescr) {
         //TODO
+        console.log('onShowMessage: ', sTitle, sDescr);
     };
     
     var oTooltip, activeMedium, initPos;
