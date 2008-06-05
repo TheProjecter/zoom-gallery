@@ -51,7 +51,9 @@ class zmgMedium extends zmgTable {
     
     var $members = null;
     
-    var $_members = null; 
+    var $_members = null;
+    
+    var $_metadata = null;
     
     function zmgMedium(&$db) {
         $this->zmgTable('#__zmg_media', 'mid', $db);
@@ -257,8 +259,16 @@ class zmgMedium extends zmgTable {
         return $comments;
     }
     
+    function getMetadata() {
+        if ($this->_metadata === null) {
+            $this->_metadata = new zmgMediumMetadata(&$this);
+        }
+        
+        return $this->_metadata;
+    }
+    
     function toJSON() {
-        $json = new zmgJSON();
+        $json = & zmgFactory::getJSON();
         return ("'medium': {
             'mid'      : $this->mid,
             'name'     : ".$json->encode($this->name).",
@@ -286,7 +296,7 @@ class zmgMedium extends zmgTable {
             $artist = T_('no artist');
             $title  = T_('no title');
 
-            $id3_data = $zoom->fireEvent('ongetmusicmetadata', false, $this->getAbsPath(ZMG_MEDIUM_ORIGINAL));
+            $id3_data = $zoom->fireEvent('ongetaudiometadata', false, $this->getAbsPath(ZMG_MEDIUM_ORIGINAL));
             if (is_array($id3_data) && !empty($id3_data['tags']['id3v1']['artist'][0])) {
                 $artist = $id3_data['tags']['id3v1']['artist'][0];
             }
@@ -301,4 +311,101 @@ class zmgMedium extends zmgTable {
         }
     }
 }
+
+class zmgMediumMetadata {
+
+    var $_raw = null;
+    
+    var $_ext = null;
+    
+    var $_mid = null;
+    
+    function zmgMediumMetadata(&$medium) {
+        $zoom = & zmgFactory::getZoom();
+        
+        $this->_mid = $medium->mid;
+        
+        $this->_ext = $medium->getExtension();
+        zmgimport('org.zoomfactory.lib.mime.zmgMimeHelper');
+        
+        $path = $medium->getAbsPath(ZMG_MEDIUM_ORIGINAL. $zoom->getConfig('filesystem/mediapath'));
+        
+        if (zmgMimeHelper::isImage($this->_ext)) {
+            $this->_raw = $zoom->fireEvent('ongetimagemetadata', false, $medium);
+        } else if (zmgMimeHelper::isAudio($this->_ext)) {
+            $this->_raw = $zoom->fireEvent('ongetaudiometadata', false, $path);
+        } else if (zmgMimeHelper::isVideo($this->_ext)) {
+            $this->_raw = $zoom->fireEvent('ongetvideometadata', false, $path);
+        }
+    }
+    
+    function buildJsonBlock($data) {
+        //TODO
+    }
+    
+    function toJSON() {
+        $json = & zmgFactory::getJSON();
+        
+        $out = "'metadata': {
+          'mid': " . $this->_mid;
+        if ($this->_raw === null || empty($this->_raw)) {
+            return $out . ",'title': " . $json->encode(T_('No Metadata available.')) . "}";
+        }
+        
+        zmgimport('org.zoomfactory.lib.mime.zmgMimeHelper');
+        if (zmgMimeHelper::isImage($this->_ext)) {
+            //TODO
+            print_r($this->_raw);
+            $out .= ",'title': " . $json->encode(T_('No Metadata available.')) . "}";
+        } else if (zmgMimeHelper::isAudio($this->_ext)) {
+            $id3_data = $this->_raw;
+            
+            $artist = T_('no artist');
+            $title  = T_('no title');
+            $album  = T_('no album');
+            $year   = T_('no year');
+            $length = T_('not available');
+            $data   = T_('no audio data');
+            
+            if (is_array($id3_data)) {
+                if (!empty($id3_data['tags']['id3v1']['artist'][0])) {
+                    $artist = $id3_data['tags']['id3v1']['artist'][0];
+                }
+                if (!empty($id3_data['tags']['id3v1']['title'][0])) {
+                    $title  = $id3_data['tags']['id3v1']['title'][0];
+                }
+                if (!empty($id3_data['tags']['id3v1']['album'][0])) {
+                    $album  = $id3_data['tags']['id3v1']['album'][0];
+                }
+                if (!empty($id3_data['tags']['id3v1']['year'][0])) {
+                    $year  = $id3_data['tags']['id3v1']['year'][0];
+                }
+                if (!empty($id3_data['playtime_string'])) {
+                    $length = $id3_data['playtime_string'];
+                }
+                if (!empty($id3_data['audio'])) {
+                    $data  = $id3_data['audio']['dataformat'] . ", "
+                     . $id3_data['audio']['sample_rate'] . " Hz, "
+                     . $id3_data['audio']['bitrate'] . " bps " . $id3_data['audio']['channelmode'];
+                }
+            }
+            
+            $out .= ",
+              'title' : " . $json->encode($title) . ","
+              . $json->encode(T_('Artist')) . ": " . $json->encode($artist) . ","
+              . $json->encode(T_('Song'))   . ": " . $json->encode($title)  . ","
+              . $json->encode(T_('Album'))  . ": " . $json->encode($album)  . ","
+              . $json->encode(T_('Year'))   . ": " . $json->encode($year)   . ","
+              . $json->encode(T_('Length')) . ": " . $json->encode($length) . ","
+              . $json->encode(T_('Data'))   . ": " . $json->encode($data)   . "}";
+        } else if (zmgMimeHelper::isVideo($this->_ext)) {
+            //TODO
+            $out .= ",'title': " . $json->encode(T_('No Metadata available.')) . "}";
+        }
+        
+        return $out;
+    }
+
+}
+
 ?>

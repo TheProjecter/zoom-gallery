@@ -147,6 +147,14 @@ class zmgAPIHelper {
         return $zoom->getMedia($gid, $offset, $length, $filter);
     }
     
+    function getMediaMetadata($mid) {
+        $zoom = & zmgFactory::getZoom();
+        
+        $medium = $zoom->getMedium($mid);
+        
+        return array($medium->getMetadata());
+    }
+    
     function getViewToken($which = 'last') {
         $zoom = & zmgFactory::getZoom();
         $tokens = $zoom->view->getViewTokens();

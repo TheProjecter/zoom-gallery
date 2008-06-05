@@ -8,12 +8,14 @@ ZMG.Shared = {
         
         this[name] = value;
         
-        //register the parent object ID (if provided)
-        this[name]._childOf = childOf || null;
-        
-        //set timestamp for item lifetime
-        this[name]._registeredAt = new Date().valueOf();
-        this[name]._lifetime     = lifetime || this.CACHE_LIFETIME;
+        if (value) {
+            //register the parent object ID (if provided)
+            this[name]._childOf = childOf || null;
+
+            //set timestamp for item lifetime
+            this[name]._registeredAt = new Date();
+            this[name]._lifetime     = lifetime || this.CACHE_LIFETIME;
+        }
         
         return this[name];
     },
@@ -23,7 +25,7 @@ ZMG.Shared = {
     },
     
     validate: function() {
-        var now = new Date().valueOf();
+        var now = new Date();
         for (var i in this) {
             if (this[i] && this[i]._registeredAt
               && this[i]._lifetime > 0) {

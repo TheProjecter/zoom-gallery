@@ -22,8 +22,8 @@ class zmgGetid3Plugin {
             "onstartup" => array(
                 "embed" => array()
             ),
-            "ongetmusicmetadata" => array(
-                "getMusicMetadata" => array('file')
+            "ongetaudiometadata" => array(
+                "getAudioMetadata" => array('file')
             ),
             "ongetvideometadata" => array(
                 "getVideoMetadata" => array('file')
@@ -55,7 +55,7 @@ class zmgGetid3Plugin {
         return $getid3_instance;
     }
     
-    function getMusicMetadata($event) {
+    function getAudioMetadata($event) {
         $file   = $event->getArgument('file');
         $getid3 = & zmgGetid3Plugin::getId3Instance();
         return $getid3->analyze($file);

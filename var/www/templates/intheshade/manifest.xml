@@ -18,6 +18,7 @@
         <view name="medium:delete" inherits="medium:delete:*" />
         <view name="medium:lightbox" inherits="medium:lightbox:*" />
         <view name="medium:playlist" inherits="medium:playlist:*" />
+        <view name="medium:metadata" inherits="medium:metadata:*" />
         <view name="messagecenter" inherits="messagecenter:*" />
         <view name="zmg:get:i18n" />
         <view name="useradmin" />
@@ -83,6 +84,9 @@
         </resource>
         <resource name="template" type="json" view="zmg:get:i18n" xml:base="">
             <file href="i18n.json.tpl" />
+        </resource>
+        <resource name="template" type="json" view="medium:metadata" xml:base="">
+            <file href="mediummeta.json.tpl" />
         </resource>
         <resource name="preview" xml:base="images/">
             <file href="intheshade_preview.png" />

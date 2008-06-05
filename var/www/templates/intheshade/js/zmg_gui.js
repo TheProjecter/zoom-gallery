@@ -26,7 +26,7 @@ ZMG.GUI = (function() {
     
     buildMediumDiv: function(medium) {
         return ['<div class="zmg_medium_thumb_cont">\
-          <a href="', medium.url_view, '" id="zmg_medium_', medium.mid, '" class="zmg_medium_thumb">\
+          <a href="', medium.url_view, '" id="zmg_medium_', medium.mid, '" class="zmg_medium_thumb" title="', medium.name,'">\
               <img src="', medium.url_thumb, '" alt="" title=""/>\
           </a>\
           <span class="zmg_medium_name">',

@@ -1,7 +1,7 @@
 if (!window.ZMG) window.ZMG = {};
 
 (function() {
-    function getObjectId(sId) {
+    ZMG.getObjectId = function(sId) {
         var aId = sId.split('_');
         return parseInt(aId[aId.length - 1]);
     };
@@ -13,7 +13,7 @@ if (!window.ZMG) window.ZMG = {};
         onGalleryEnter: function(e) {
             $(this).addClass('zmg_hover');
 
-            var iId = getObjectId(this.id);
+            var iId = ZMG.getObjectId(this.id);
             ZMG.ClientEvents.onMediumTooltip(iId, false, new Event(e || window.event));
         },
         onGalleryLeave: function() {
@@ -22,7 +22,7 @@ if (!window.ZMG) window.ZMG = {};
             ZMG.ClientEvents.onCancelMediumTooltip();
         },
         onMediumClick: function() {
-            var iId = getObjectId(this.getElementsByTagName('a')[0].id);
+            var iId = ZMG.getObjectId(this.getElementsByTagName('a')[0].id);
             console.log('medium selected: ', iId);
             if (o.result !== ZMG.CONST.result_ok) return;
             
@@ -40,7 +40,7 @@ if (!window.ZMG) window.ZMG = {};
         onMediumEnter: function(e) {
             $(this).addClass('zmg_hover');
 
-            var iId = getObjectId(this.getElementsByTagName('a')[0].id);
+            var iId = ZMG.getObjectId(this.getElementsByTagName('a')[0].id);
             ZMG.ClientEvents.onMediumTooltip(iId, true, new Event(e || window.event));
         },
         onMediumLeave: function() {

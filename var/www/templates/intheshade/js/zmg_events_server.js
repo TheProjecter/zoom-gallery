@@ -6,7 +6,9 @@ ZMG.ServerEvents = (function() {
         console.log('Server#onview: ', view);
         ZMG.Dispatches.lastRequest = null;
         
-        ZMG.CONST.active_view = view || "";
+        if (view.indexOf('metadata') == -1)
+            ZMG.CONST.active_view = view || "";
+
         if (view == "gallery:show:home") {
             o = Json.evaluate(text);
             onGalleryList(o);
@@ -19,8 +21,11 @@ ZMG.ServerEvents = (function() {
             o = Json.evaluate(text);
             onMediumContent(o);
             isJSON = true;
-        } else if (view == "zmg:get:i18n") {
-            Json.evaluate(text);
+        } else if (view.indexOf('medium:metadata:') > -1) {
+            console.log(text);
+            o = Json.evaluate(text);
+            console.log('tadaaa2');
+            onMediumMetadata(o);
             isJSON = true;
         }
         
@@ -100,7 +105,18 @@ ZMG.ServerEvents = (function() {
         
         if (oGallery && o.data.length > 0) {
             Shadowbox.setup($$('a.zmg_medium_thumb'), {
-                gallery: oGallery.name
+                gallery: oGallery.name,
+                onFinish: function(oItem) {
+                    var iId = ZMG.getObjectId(oItem.el.id);
+                    console.log('onChange: ', iId);
+
+                    ZMG.Shared.validate();
+                    var oData = ZMG.Shared.get('medium:' + iId + ':metadata');
+                    if (!oData)
+                        ZMG.Dispatches.selectView('medium:metadata:' + iId, 'json');
+                    else
+                        onMediumMetadata(iId);
+                }
             });
         }
         
@@ -118,6 +134,24 @@ ZMG.ServerEvents = (function() {
             content:    medium.url_view,
             gallery:    gallery ? gallery.name : null
         });
+    };
+    
+    function onMediumMetadata(o) {
+        var metadata;
+
+        if (typeof o == "number") {
+            metadata = ZMG.Shared.get('medium:' + o + ':metadata');
+        } else {
+            if (o.result !== ZMG.CONST.result_ok) return;
+            
+            metadata = o.data[0].metadata;
+            ZMG.Shared.register('medium:' + metadata.mid + ':metadata', metadata,
+              'medium:' + metadata.mid);
+            delete metadata.mid; //'mid' not needed anymore
+        }
+        
+        console.dir(metadata);
+        Shadowbox.setContentLeftPane(metadata);
     };
     
     function onError() {
