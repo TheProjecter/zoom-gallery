@@ -51,7 +51,8 @@ ZMG.Dispatches = {
         
         if (valid) {
             this.lastRequest = vars.view;
-            Shadowbox.close();
+            if (view.indexOf('metadata') == -1)
+                Shadowbox.close();
             ZMG.ClientEvents.onShowLoader();
             
             var self = this;

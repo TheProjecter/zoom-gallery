@@ -78,6 +78,44 @@ HTML snapshot:
   color: #fff;
 }
 
+/*___________________________________________________________________  Metabox left-side  */
+/*
+HTML snapshot:
+<div id="shadowbox_meta_left">
+  <div id="shadowbox_meta_left_inner">Data Here</div>
+</div>
+*/
+#shadowbox_pane_left {
+  width: 300px;
+  height: auto;
+  margin: 0 auto;
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+}
+#shadowbox_pane_left_inner {
+  width: 296px;
+  font-size: 12px;
+  line-height: 12px;
+  text-align: left;
+  white-space: nowrap;
+  padding: 5px 0 4px 8px;
+  color: #fff;
+}
+.shadowbox_pane_left_title {
+    font-size: 16px;
+    line-height: 16px;
+    display: block;
+    border-bottom: 1px solid silver;
+    margin-left: 4px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+}
+.shadowbox_pane_left_row {
+    display: block;
+    margin-top: 4px;
+}
+
 /*____________________________________________________________________  Body  */
 /*
 HTML snapsnot:
