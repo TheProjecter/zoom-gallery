@@ -14,64 +14,17 @@ defined('_ZMG_EXEC') or die('Restricted access');
 define('_ZMG_RPC_RESULT_OK', 'OK');
 define('_ZMG_RPC_RESULT_KO', 'KO');
 
-class zmgFactory {
-    function &getZoom(&$config = null) {
-        static $instance;
-        
-        if (!is_object($instance)) {
-            if (!$config) {
-                $config = & zmgFactory::getConfig();
-            }
-
-            $instance = new Zoom($config);
-        }
-
-        return $instance;
-    }
-    
-    function &getJSON() {
-        static $instance_json;
-        
-        if (!is_object($instance_json)) {
-            zmgimport('org.zoomfactory.lib.zmgJson');
-            
-            $instance_json = new zmgJSON();
-        }
-
-        return $instance_json;
-    }
-    
-    function &getConfig() {
-        static $zoom_config;
-        
-        //load the configuration file
-        require(ZMG_ABS_PATH . DS.'etc'.DS.'app.config.php');
-        
-        return $zoom_config;
-    }
-    
-    function &getSession() {
-        static $session;
-        
-        if (!is_object($session)) {
-            $session = new zmgSession();
-        }
-
-        return $session;
-    }
-}
-
 /**
  * Main application class
  * @package zmg
  */
 class Zoom {
-	/**
+    /**
      * Internal variable for the configuration array.
      *
      * @var array
      */
-	var $_config = null;
+    var $_config = null;
     /**
      * Internal variable for storing rpc-results temporarily
      *
@@ -135,10 +88,12 @@ class Zoom {
             return false;
         return true;
     }
+
     function notAuth() {
         //TODO: implement!
         die('Restricted access');
     }
+
     /**
      * Retrieve a specific configuration setting.
      * @param string The name of the setting in the format of a pathname: 'group/setting'
@@ -146,6 +101,7 @@ class Zoom {
     function getConfig($path) {
     	return $this->_config->get($path);
     }
+
     function getTableName($name) {
         $prefix = $this->_config->get('db/prefix');
         $table  = $this->_config->get('db/tables/' . $name);
@@ -155,11 +111,13 @@ class Zoom {
         }
         return null;
     }
+
     function updateConfig($vars, $isPlugin = false) {
         return $this->_config->update($vars, $isPlugin);
     }
+
     function jsonHelper($input, $type = 'encode') {
-        $json = new zmgJSON();
+        $json = & zmgFactory::getJSON();
         if ($type == "decode") {
             return $json->decode($input);
         }
@@ -202,6 +160,7 @@ class Zoom {
         }
         return 0;
     }
+
     function getMediumCount($gid = 0) {
         $db = & zmgDatabase::getDBO();
         $query = "SELECT COUNT(mid) AS total FROM #__zmg_media";
@@ -214,6 +173,7 @@ class Zoom {
         }
         return 0;
     }
+
     function getGalleries($sub_gid = 0, $pos = 0) {
         $ret  = array();
 
@@ -229,6 +189,7 @@ class Zoom {
         }
         return $ret;
     }
+
     /**
      * Create a list of all galleries.
      * @param int $parent
@@ -258,6 +219,7 @@ class Zoom {
         }
         return $this->_gallerylist;
     }
+
     function getMedia($gid = 0, $offset = 0, $length = 0, $filter = 0) {
         $filter = intval($filter);
         if ($filter > 0) {
@@ -299,6 +261,7 @@ class Zoom {
         }
         return $ret;
     }
+
     function getGallery($gid, $ret_type = 'object') {
         if ($gid === "new") {
         	return zmgGallery::getEmpty($ret_type);
@@ -314,6 +277,7 @@ class Zoom {
             return $gallery;
         }
     }
+
     function getMedium($mid, $ret_type = 'object') {
         $mid = intval($mid);
         $medium = new zmgMedium(zmgDatabase::getDBO());
@@ -325,6 +289,7 @@ class Zoom {
         }
         return $medium;
     }
+
     /**
      * Return the method of ordering for galleries.
      * @return string
@@ -336,6 +301,7 @@ class Zoom {
           
         return $methods[intval($this->getConfig('layout/ordering/galleries'))];
     }
+
     /**
      * Return the method of ordering for media.
      * @return string
@@ -347,6 +313,7 @@ class Zoom {
           
         return $methods[intval($this->getConfig('layout/ordering/media'))];
     }
+
     /**
      * Load all available custom events from the /var/events folder.
      */
@@ -365,6 +332,7 @@ class Zoom {
             }
         }
     }
+
     /**
      * Launch all components that are bound to a specific custom event handler.
      * @param string The name of the event that is fired
@@ -393,12 +361,14 @@ class Zoom {
             return $this->plugins->bubbleEvent($event);
         }
     }
+
     function setResult($result = true) {
         if (is_bool($result)) {
             $result = ($result) ? _ZMG_RPC_RESULT_OK : _ZMG_RPC_RESULT_KO;
         }
         $this->_result = $result;
     }
+
     function getResult() {
         if ($this->_result == null) {
             return _ZMG_RPC_RESULT_OK;
@@ -407,6 +377,7 @@ class Zoom {
         $this->_result = null;
         return $res;
     }
+
     /**
      * Send a set of headers to the client (i.e. browser) to tell it how to display
      * the data inside the response body.
@@ -445,4 +416,5 @@ class Zoom {
         }
     }
 }
+
 ?>

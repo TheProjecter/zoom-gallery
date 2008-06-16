@@ -13,6 +13,9 @@ defined('_ZMG_EXEC') or die('Restricted access');
 
 include('zmgFunctions.php');
 
+//make the object factory available for all other classes
+zmgimport('org.zoomfactory.lib.zmgFactory');
+
 //load the error handling base class
 zmgimport('org.zoomfactory.lib.zmgError');
 
@@ -21,9 +24,10 @@ zmgimport('org.zoomfactory.lib.smarty.Smarty');
 
 //initialize the zoom (app) class
 zmgimport('org.zoomfactory.lib.Zoom');
-//we need the events now
-zmgimport('org.zoomfactory.lib.core.zmgEvent');
-zmgimport('org.zoomfactory.lib.core.zmgSession');
+//import other useful stuff
+zmgimport('org.zoomfactory.lib.zmgEvent');
+zmgimport('org.zoomfactory.lib.zmgSession');
+zmgimport('org.zoomfactory.lib.zmgHTML');
 
 $zoom = & zmgFactory::getZoom();
 
@@ -36,11 +40,6 @@ $zoom->fireEvent('onstartup', false);
 $zoom->hasAccess() or die('Restricted access');
 
 $zoom->view->setViewType(zmgEnv::getViewType());
-
-//load core classes
-zmgimport('org.zoomfactory.lib.zmgHTML');
-zmgimport('org.zoomfactory.lib.zmgJson');
-zmgimport('org.zoomfactory.lib.core.*');
 
 //set error handling options
 zmgError::setErrorHandling($zoom->getConfig('app/errors/defaultmode'),

@@ -94,7 +94,7 @@ class zmgComment extends zmgTable {
     }
     
     function toJSON() {
-    	$json = new zmgJSON();
+    	$json = & zmgFactory::getJSON();
         return ("'comment': {
             'cid'      : $this->cid,
             'mid'      : $this->mid,

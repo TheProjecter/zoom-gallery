@@ -112,7 +112,7 @@ function smarty_block_t($params, $text, &$smarty)
 			case 'js':
             case 'json':
 				// javascript escape {12-12-2007, mike: modified for JSON support in ZMG}
-                $json = new zmgJSON();
+                $json = & zmgFactory::getJSON();
 				$text = $json->encode($text);
 				break;
 			case 'url':
