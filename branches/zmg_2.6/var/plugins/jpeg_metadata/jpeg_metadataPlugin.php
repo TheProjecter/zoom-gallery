@@ -102,7 +102,80 @@ class zmgJpeg_metadataPlugin {
             }
         }
         
-        return $data;
+        return zmgJpeg_metadataPlugin::interpretImageData($data, $medium->filename);
+    }
+    
+    function interpretImageData($data, $filename) {
+        //for now, we are only interested in the EXIF data
+        $exif_data = array();
+        if ($data['exif']['Tags Name'] == "TIFF") {
+            $exif_data['title'] = T_("Contains Exchangeable Image File Format (EXIF) Information");
+        } else if ($data['exif']['Tags Name'] == "Meta") {
+            $exif_data['title'] = T_("Contains META Information (APP3)");
+        } else {
+            $exif_data['title'] = T_("Contains Meta Information");
+        }
+        
+        $exif_data['IFD'] = zmgJpeg_metadataPlugin::interpretIFD($data['exif'][0], $data['exif']['Byte_Align']);
+        
+        return $exif_data;
+    }
+    
+    function interpretIFD($ifd_data) {
+        // Check that the IFD array is valid
+        if (($ifd_data === false) || ($ifd_data === null)) {
+            // the IFD array is NOT valid - exit
+            return null;
+        }
+        
+        $ifd_interpreted = array();
+        
+        // Cycle through each tag in the IFD
+        foreach ($ifd_data as $tagid => $exif_tag) {
+            // Ignore the non numeric elements - they aren't tags
+            if (!is_numeric($tagid)) {
+                // Skip Tags Name
+            } else if ($exif_tag['Decoded'] == true) { // Check if the Tag has been decoded successfully
+                // This tag has been successfully decoded
+
+                // Check if the tag is a sub-IFD
+                if ($exif_tag['Type'] == "SubIFD") {
+                    // This is a sub-IFD tag
+                    // Add a sub-heading for the sub-IFD
+                    $ifd_interpreted[$exif_tag['Tag Name']] = array();
+
+                    // Cycle through each sub-IFD in the chain
+                    foreach ($exif_tag['Data'] as $subIFD) {
+                        // Interpret this sub-IFD and add the html to the secondary output
+                        $ifd_interpreted[$exif_tag['Tag Name']][] = zmgJpeg_metadataPlugin::interpretIFD($subIFD, $filename);
+                    }
+                } else if ($exif_tag['Type'] == "Maker Note") { // Check if the tag is a makernote
+                    // This is a Makernote Tag
+
+                    // Interpret the Makernote and add the html to the secondary output
+                    $ifd_interpreted['Makernote'] = Interpret_Makernote_to_HTML($exif_tag, $filename);
+                } else if ($exif_tag['Type'] == "IPTC") { // Check if this is a IPTC/NAA Record within the EXIF IFD
+                    // This is a IPTC/NAA Record, interpret it
+                    $ifd_interpreted['IPTC'] = Interpret_IPTC_to_HTML($exif_tag['Data']);
+                } else if ($exif_tag['Type'] == "XMP") { // Change: Check for embedded XMP as of version 1.11
+                    // Check if this is a XMP Record within the EXIF IFD
+                    // This is a XMP Record, interpret it
+                    $ifd_interpreted['XMP'] = Interpret_XMP_to_HTML($exif_tag['Data']);
+                } else if ($exif_tag['Type'] == "IRB") { // Change: Check for embedded IRB as of version 1.11
+                    // Check if this is a Photoshop IRB Record within the EXIF IFD
+                    // This is a Photoshop IRB Record, interpret it and output to the secondary html
+                    $ifd_interpreted['IRB'] = Interpret_IRB_to_HTML($exif_tag['Data'], $filename);
+                } else if ($exif_tag['Type'] == "Numeric") { // Check if the tag is Numeric
+                    // Numeric Tag - Output text value as is.
+                    $ifd_interpreted[$exif_tag['Tag Name']] = $exif_tag['Text Value'];
+                } else {
+                    // Other tag - Output text as preformatted
+                    //$ifd_interpreted[$exif_tag['Tag Name']] = trim($exif_tag['Text Value']);
+                }
+            }
+        }
+        
+        return $ifd_interpreted;
     }
     
     function putImageMetadata($event) {

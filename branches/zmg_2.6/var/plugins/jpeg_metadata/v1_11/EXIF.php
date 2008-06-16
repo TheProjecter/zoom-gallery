@@ -81,7 +81,7 @@ defined('_ZMG_EXEC') or die('Restricted access');
 ******************************************************************************/
 
 
-if ( !isset( $GLOBALS['HIDE_UNKNOWN_TAGS'] ) )     $GLOBALS['HIDE_UNKNOWN_TAGS']= FALSE;
+if ( !isset( $GLOBALS['HIDE_UNKNOWN_TAGS'] ) )     $GLOBALS['HIDE_UNKNOWN_TAGS']= TRUE;
 if ( !isset( $GLOBALS['SHOW_BINARY_DATA_HEX'] ) )  $GLOBALS['SHOW_BINARY_DATA_HEX'] = FALSE;
 if ( !isset( $GLOBALS['SHOW_BINARY_DATA_TEXT'] ) ) $GLOBALS['SHOW_BINARY_DATA_TEXT'] = FALSE;
 

@@ -217,7 +217,7 @@ class zmgGallery extends zmgTable {
     
     function getEmpty($ret_type = 'json') {
     	if ($ret_type == "json") {
-            $json = new zmgJSON();
+            $json = & zmgFactory::getJSON();
             return ("'gallery': {
                 'name'     : 'New',
                 'descr'    : 'New',
@@ -231,7 +231,7 @@ class zmgGallery extends zmgTable {
     }
     
     function toJSON() {
-        $json = new zmgJSON();
+        $json = & zmgFactory::getJSON();
         return ("'gallery': {
             'gid'         : $this->gid,
             'name'        : ".$json->encode($this->name).",
