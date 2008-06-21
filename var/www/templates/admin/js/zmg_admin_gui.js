@@ -138,6 +138,8 @@ ZMG.GUI = {
                 return content;
             }
         });
+
+        this.updateProportions();
         
         return $('zmg_gallerymanager_newclick')
     },
@@ -393,8 +395,13 @@ ZMG.GUI = {
                 if (!entry.loaded && entry.data)
                     ZMG.ClientEvents.onViewSelect(entry.data[0], entry.data[1]);
                 ZMG.ClientEvents.onSelectSettingsTab(entry.data[0]);
+
+                ZMG.GUI.updateProportions();
             }
         });
+
+        this.updateProportions();
+
         return ZMG.Shared.register('settingsTabs', oSettingsTabs);
     }
 };

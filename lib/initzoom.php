@@ -48,7 +48,7 @@ zmgError::setErrorHandling($zoom->getConfig('app/errors/defaultmode'),
 //load php-gettext (used in zoom in 'fallback mode')
 zmgimport('org.zoomfactory.lib.phpgettext.gettext_inc');
 // gettext setup
-T_setlocale(LC_MESSAGES, $zoom->getConfig('locale/default'));
+T_setlocale(LC_ALL, $zoom->getConfig('locale/default'));
 // Set the text domain as 'messages'
 $domain = $zoom->getConfig('locale/domain');
 T_bindtextdomain($domain, ZMG_ABS_PATH . '/locale');

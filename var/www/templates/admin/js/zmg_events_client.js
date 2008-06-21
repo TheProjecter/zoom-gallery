@@ -19,7 +19,7 @@ ZMG.ClientEvents = (function() {
         ZMG.Shared.register('toolbar', new ZMG.Toolbar())
           .setTitleImage(ZMG.CONST.res_path + "/../../shared/images/zoom_logo_medium.gif");
 
-        window.addEvent('resize', onWindowResize.bind(this));
+        window.addEvent('resize', onWindowResize);
         
         var el = ZMG.Shared.cacheElement('zmg_tree_toolpin');
         el.onmouseover = ZMG.EventHandlers.onPinMouseEnter;
@@ -135,7 +135,7 @@ ZMG.ClientEvents = (function() {
                     method: 'get'
                 },
                 onSuccess: ZMG.ServerEvents.onView.bind(ZMG.ServerEvents),
-                onFailure: ZMG.ServerEvents.onError.bind(ZMG.ServerEvents),
+                onFailure: ZMG.ServerEvents.onError.bind(ZMG.ServerEvents)
             });
         } else {
             //prevent duplicate requests:

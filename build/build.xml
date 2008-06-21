@@ -111,14 +111,14 @@
 
 	<target name="compress.css">
 		<exec executable="java">
-			<arg line=" -jar yuicompressor-2.3.5/build/yuicompressor-2.3.5.jar -o ${file}.tmp ${file}" />
+			<arg line=" -jar yuicompressor-2.3.5/build/yuicompressor-2.3.5.jar -o '${file}.tmp' '${file}'" />
 		</exec>
 		<move file="${file}.tmp" tofile="${file}" />
 	</target>
 
 	<target name="compress.js">
 		<exec executable="java">
-			<arg line=" -jar yuicompressor-2.3.5/build/yuicompressor-2.3.5.jar --charset=UTF-8 -o ${file}.tmp ${file}" />
+			<arg line=" -jar yuicompressor-2.3.5/build/yuicompressor-2.3.5.jar --charset=UTF-8 -o '${file}.tmp' '${file}'" />
 		</exec>
 		<move file="${file}.tmp" tofile="${file}" />
 	</target>

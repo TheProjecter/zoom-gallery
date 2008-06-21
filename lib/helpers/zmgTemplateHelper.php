@@ -366,14 +366,17 @@ class zmgTemplateHelper extends Smarty {
         $path_prefix .= DS.$this->_manifest->documentElement->getAttribute('xml:base');
         foreach ($headers as &$res) {
             $name = $res->getAttribute('name');
-            $dir  = $res->getAttribute('xml:base');
-            $file = $res->firstChild->getAttribute('href');
+            $dir  = rtrim($path_prefix . $res->getAttribute('xml:base'), '/\\');
+            $url  = str_replace('\\', '/', $dir . '/' . $res->firstChild->getAttribute('href'));
+            // Replace spaces
+            $url = preg_replace('/\s/', '%20', $url);
+
             if ($name == "stylesheet") {
-                $ret[] = '<link rel="stylesheet" href="' . $path_prefix.$dir
-                  .$file . '" type="text/css"/>';
+                $ret[] = '<link rel="stylesheet" href="' . $url
+                 . '" type="text/css"/>';
             } else if ($name == "javascript") {
-                $ret[] = '<script src="' . $path_prefix.$dir.$file
-                  . '" type="text/javascript"></script>';
+                $ret[] = '<script src="' . $url
+                 . '" type="text/javascript"></script>';
             }
         }
         return $ret;
