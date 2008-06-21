@@ -48,6 +48,8 @@ class zmgDocumentTool {
      * @return boolean
      */
     function search($file, $searchText) {
+        //FIXME: update this stuff to the new API
+
         global $mosConfig_absolute_path, $zoom;
         if (empty($file->_filename)) {
             $file->getInfo();

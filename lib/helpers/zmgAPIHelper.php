@@ -34,7 +34,7 @@ class zmgAPIHelper {
     
     var $abstract_whitelist = array('zmgHTML');
     
-    function zmgAPIHelper(&$zoom) {
+    function zmgAPIHelper() {
         $config = & zmgFactory::getConfig();
 
         $this->site_url  = zmgEnv::getSiteURL();
@@ -109,7 +109,7 @@ class zmgAPIHelper {
     }
     
     function getResult() {
-        $zoom = & zmgFactory::getZoom();
+        $zoom = & zmgFactory::getEvents()->fire('ongetcore');
         
         return $zoom->getResult();
     }
@@ -127,30 +127,30 @@ class zmgAPIHelper {
     }
     
     function getGallery($gid, $ret_type = 'object') {
-        $zoom = & zmgFactory::getZoom();
+        $zoom = & zmgFactory::getEvents()->fire('ongetcore');
         
         return $zoom->getGallery($gid, $ret_type);
     }
     
     function getGalleries($sub_gid = 0, $pos = 0) {
-        $zoom = & zmgFactory::getZoom();
+        $zoom = & zmgFactory::getEvents()->fire('ongetcore');
         
         return $zoom->getGalleries($sub_gid, $pos);
     }
     
     function getMedium($mid, $ret_type = 'object') {
-        $zoom = & zmgFactory::getZoom();
+        $zoom = & zmgFactory::getEvents()->fire('ongetcore');
         
         return $zoom->getMedium($mid, $ret_type);
     }
     
     function getMedia($gid = 0, $offset = 0, $length = 0, $filter = 0) {
-        $zoom = & zmgFactory::getZoom();
+        $zoom = & zmgFactory::getEvents()->fire('ongetcore');
         return $zoom->getMedia($gid, $offset, $length, $filter);
     }
     
     function getMediaMetadata($mid) {
-        $zoom = & zmgFactory::getZoom();
+        $zoom = & zmgFactory::getEvents()->fire('ongetcore');
         
         $medium = $zoom->getMedium($mid);
         

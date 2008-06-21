@@ -12,7 +12,7 @@
 defined('_ZMG_EXEC') or die('Restricted access');
 
 class zmgMediumStore {
-	function process(&$zoom) {
+	function process() {
 	    $mid     = intval(zmgGetParam($_REQUEST, 'zmg_edit_mid', 0));
 
         $medium  = new zmgMedium(zmgDatabase::getDBO());

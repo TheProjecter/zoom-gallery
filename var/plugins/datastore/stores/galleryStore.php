@@ -12,7 +12,7 @@
 defined('_ZMG_EXEC') or die('Restricted access');
 
 class zmgGalleryStore {
-    function process(&$zoom) {
+    function process() {
     	$gid     = zmgGetParam($_REQUEST, 'zmg_edit_gallery_gid', 0);
 
         $isNew = false;

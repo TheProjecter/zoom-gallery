@@ -135,7 +135,7 @@ class zmgGallery extends zmgTable {
         $db = & zmgDatabase::getDBO();
         if (!is_int($this->cover_img)) {
         	// first, check if the gallery contains any media at all:
-            $zoom = & zmgFactory::getZoom();
+            $zoom = & zmgFactory::getEvents()->fire('ongetcore');
             $db->setQuery("SELECT mid FROM #__zmg_media WHERE gid = " . $this->gid
               . " ORDER BY " . $zoom->getMediaOrdering() . " LIMIT 1");
             $medium = intval($db->loadResult());

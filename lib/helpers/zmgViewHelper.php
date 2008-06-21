@@ -202,7 +202,7 @@ class zmgViewHelper {
             
         
         if (ZMG_ADMIN) {
-            $zoom = & zmgFactory::getZoom();
+            $zoom = & $events->fire('ongetcore');
             $this->_template->appendConstant('mediumcount', $zoom->getMediumCount());
         }
     }

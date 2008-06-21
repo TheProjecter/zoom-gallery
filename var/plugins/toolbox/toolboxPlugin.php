@@ -92,8 +92,6 @@ class zmgToolboxPlugin extends zmgError {
     }
     
     function embed() {
-        $zoom = & zmgFactory::getZoom();
-
         $settings_file = ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS.'toolbox'.DS.'settings.xml';
         if (file_exists($settings_file)) {
             $plugins = & zmgFactory::getPlugins();

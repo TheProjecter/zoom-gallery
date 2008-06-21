@@ -23,8 +23,6 @@ class zmgVideoTool {
     function process(&$medium, &$gallery) {//$file, $size, $filename) {
         zmgimport('org/.zoomfactory.lib.helpers.zmgFileHelper');
         
-        $zoom = & zmgFactory::getZoom();
-        
         //$temp_dir = zmgEnv::getTempDir() . DS.substr(uniqid("zoom_"), 0, 13); //support filesystems which only support 14 char dirnames
         //if (zmgFileHelper::createDir($temp_dir, 0777)) {
             $thumb_file = ereg_replace("(.*)\.([^\.]*)$", "\\1", $medium->filename).".jpg";

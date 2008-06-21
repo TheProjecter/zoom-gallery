@@ -43,7 +43,7 @@ class zmgDatastorePlugin {
     	$aView  = $event->getArgument('view');
         $view   = implode(':', $aView);
         
-        $zoom   = & zmgFactory::getZoom();
+        $zoom   = & zmgFactory::getEvents()->fire('ongetcore');
         $config = & zmgFactory::getConfig();
         $events = & zmgFactory::getEvents();
         
@@ -67,17 +67,17 @@ class zmgDatastorePlugin {
             case "admin:galleryedit:store":
                 zmgimport('org.zoomfactory.var.plugins.datastore.stores.galleryStore');
                 
-                zmgGalleryStore::process($zoom);
+                zmgGalleryStore::process();
                 break;
             case "admin:galleryedit:delete":
                 zmgimport('org.zoomfactory.var.plugins.datastore.stores.galleryStore');
                 
-                zmgGalleryStore::delete($zoom);
+                zmgGalleryStore::delete();
                 break;
             case "admin:mediumedit:store":
                 zmgimport('org.zoomfactory.var.plugins.datastore.stores.mediumStore');
                 
-                zmgMediumStore::process($zoom);
+                zmgMediumStore::process();
                 break;
             case stristr($view, "admin:mediaupload:store"):
                 //SWFUpload needs HTTP headers to signal the user...
