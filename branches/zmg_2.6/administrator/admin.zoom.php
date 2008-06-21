@@ -10,16 +10,15 @@
  */
 //list of global constants:
 define("_ZMG_EXEC", 1);
-define("ZMG_ABS_PATH", str_replace('/administrator', '', dirname(__FILE__)));
+define("ZMG_ABS_PATH", preg_replace('#[/\\\]+administrator#', '', dirname(__FILE__)));
 
 define("ZMG_ADMIN", 1);
 
 //load all required libraries
-require(ZMG_ABS_PATH . '/lib/initzoom.php');
+include(ZMG_ABS_PATH . '/lib/initzoom.php');
 
-$zoom->view->set();
-
-$zoom->view->run();
+$zoom->view->setAndRun();
 
 $zoom->fireEvent('onfinish');
+
 ?>

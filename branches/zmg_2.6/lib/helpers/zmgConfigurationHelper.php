@@ -188,7 +188,8 @@ class zmgConfigurationHelper {
             }
         } else {
             if (is_string($value)) {
-                $value = "\"{$value}\"";
+                $value = '"' . str_replace('"', '\"', $value) . '"';
+                $value = str_replace('\\', '\\\\', $value);
             }
             $block .= "{$prefix}['{$title}'] = {$value};\n";
         }
