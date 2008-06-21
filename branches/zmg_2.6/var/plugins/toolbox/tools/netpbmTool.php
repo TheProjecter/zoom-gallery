@@ -81,10 +81,10 @@ class zmgNetpbmTool {
     }
     
     function getPath() {
-         $zoom = & zmgFactory::getZoom();
+         $config = & zmgFactory::getConfig();
          
-         $path     = trim($zoom->getConfig('plugins/toolbox/netpbm/path'));
-         $override = intval($zoom->getConfig('plugins/toolbox/netpbm/override'));
+         $path     = trim($config->get('plugins/toolbox/netpbm/path'));
+         $override = intval($config->get('plugins/toolbox/netpbm/override'));
          
          if ($path == "auto") {
             $path = zmgNetpbmTool::detectPath();

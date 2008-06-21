@@ -120,10 +120,10 @@ class zmgImagemagickTool {
     }
     
     function getPath() {
-    	 $zoom = & zmgFactory::getZoom();
+    	 $config = & zmgFactory::getConfig();
          
-         $path     = trim($zoom->getConfig('plugins/toolbox/ffmpeg/path'));
-         $override = intval($zoom->getConfig('plugins/toolbox/ffmpeg/override'));
+         $path     = trim($config->get('plugins/toolbox/ffmpeg/path'));
+         $override = intval($config->get('plugins/toolbox/ffmpeg/override'));
          
          if ($path == "auto") {
          	$path = zmgImagemagickTool::detectPath();

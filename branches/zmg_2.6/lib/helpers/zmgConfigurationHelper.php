@@ -34,6 +34,7 @@ class zmgConfigurationHelper {
     }
     /**
      * Retrieve a specific configuration setting.
+     *
      * @param string The name of the setting in the format of a pathname: 'group/setting'
      * @return string
      */
@@ -49,6 +50,7 @@ class zmgConfigurationHelper {
     }
     /**
      * Set a specific configuration setting.
+     *
      * @param string The name of the setting in the format of a pathname: 'group/setting'
      * @param mixed The new value for the setting as defined in the path up.
      * @return boolean
@@ -69,6 +71,7 @@ class zmgConfigurationHelper {
         }
         return false;
     }
+
     function update($vars, $isPlugin = false) {
         $updated = false;
         if (!$isPlugin) {
@@ -91,15 +94,15 @@ class zmgConfigurationHelper {
             }
         }
         
-        $zoom = & zmgFactory::getZoom();
+        $messages = & zmgFactory::getMessages();
         
         if ($updated) {
             if ($this->save()) {
-                $zoom->messages->append(T_('Settings'), T_('Your settings have been saved successfully.'));
+                $messages->append(T_('Settings'), T_('Your settings have been saved successfully.'));
                 return true;
             }
         }
-        $zoom->messages->append(T_('Settings'), T_('Your settings could not be saved.'));
+        $messages->append(T_('Settings'), T_('Your settings could not be saved.'));
         return false;
     }
     
@@ -144,22 +147,27 @@ class zmgConfigurationHelper {
         zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
         return zmgFileHelper::write(ZMG_ABS_PATH .DS.'etc'.DS.'app.config.php', $content);
     }
+
     function _buildMetaBlock() {
         return $this->_generateBlock("\$zoom_config", 'meta',
           $this->_config['meta']);
     }
+
     function _buildLocaleBlock() {
         return $this->_generateBlock("\$zoom_config", 'locale',
           $this->_config['locale']);
     }
+
     function _buildDatabaseBlock() {
         return $this->_generateBlock("\$zoom_config", 'db',
           $this->_config['db']);
     }
+
     function _buildFilesystemBlock() {
         return $this->_generateBlock("\$zoom_config", 'filesystem',
           $this->_config['filesystem']);
     }
+
     function _buildSmartyBlock() {
         return $this->_generateBlock("\$zoom_config", 'smarty',
           $this->_config['smarty']);
@@ -168,15 +176,18 @@ class zmgConfigurationHelper {
         return $this->_generateBlock("\$zoom_config", 'layout',
           $this->_config['layout']);
     }
+
     function _buildAppBlock() {
         //TODO: find a way to process constants - how to put them back in the config file?
         return $this->_generateBlock("\$zoom_config", 'app',
           $this->_config['app']);
     }
+
     function _buildPluginsBlock() {
         return $this->_generateBlock("\$zoom_config", 'plugins',
           $this->_config['plugins']);
     }
+
     function _generateBlock($prefix, $title, $value) {
         $block = "";
         if (is_array($value)) {
@@ -196,4 +207,5 @@ class zmgConfigurationHelper {
         return $block;
     }
 }
+
 ?>

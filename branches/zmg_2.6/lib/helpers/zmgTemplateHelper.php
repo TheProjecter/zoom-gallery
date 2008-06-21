@@ -144,10 +144,9 @@ class zmgTemplateHelper extends Smarty {
         }
             
         $assets = zmgEnv::getToolbarAssets();
-        $zoom   = & zmgFactory::getZoom();
 
         zmgCallAbstract($assets['classHelper'], $assets['commands']['title'],
-          $zoom->getConfig('meta/title'));
+          zmgFactory::getConfig()->get('meta/title'));
         zmgCallAbstract($assets['classHelper'], $assets['commands']['back']);
         zmgCallAbstract($assets['classHelper'], $assets['commands']['spacer']);
         
@@ -447,9 +446,8 @@ class zmgTemplateHelper extends Smarty {
             return $this->throwError('This function may only be called statically!');
         }
         
-        $basePath = ZMG_ABS_PATH . DS.'var'.DS.'www'.DS.'templates';
-        $zoom = & zmgFactory::getZoom();
-        $baseConfig = & $zoom->getConfig('smarty');
+        $basePath   = ZMG_ABS_PATH . DS.'var'.DS.'www'.DS.'templates';
+        $baseConfig = & zmgFactory::getConfig()->get('smarty');
         
         
         zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');

@@ -25,12 +25,12 @@ class zmgDocumentTool {
         //         searched through. The text-file will be placed into the same dir as the
         //         original pdf.
         // Note: support for MS Word, Excel and Powerpoint indexing will be added later.
-        $zoom = & zmgFactory::getZoom();
-
         $file = $medium->getAbsPath();
 
         $filename    = ereg_replace("(.*)\.([^\.]*)$", "\\1", $medium->filename).".txt";
-        $target_file = zmgEnv::getRootPath() .DS.$zoom->getConfig('filesystem/mediapath').$gallery->dir.DS.$filename;
+        $target_file = zmgEnv::getRootPath() . DS
+         . zmgFactory::getConfig()->get('filesystem/mediapath') . $gallery->dir
+         . DS . $filename;
 
         $cmd = zmgDocumentTool::getPath() . "pdftotext \"$file\" \"$target_file\"";
         $output = $retval = null;
@@ -66,10 +66,10 @@ class zmgDocumentTool {
     }
     
     function getPath() {
-         $zoom = & zmgFactory::getZoom();
+         $config = & zmgFactory::getConfig();
          
-         $path     = trim($zoom->getConfig('plugins/toolbox/pdftotext/path'));
-         $override = intval($zoom->getConfig('plugins/toolbox/pdftotext/override'));
+         $path     = trim($config->get('plugins/toolbox/pdftotext/path'));
+         $override = intval($config->get('plugins/toolbox/pdftotext/override'));
          
          if ($path == "auto") {
             $path = zmgDocumentTool::detectPath();

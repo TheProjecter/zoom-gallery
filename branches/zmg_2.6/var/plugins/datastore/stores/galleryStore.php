@@ -23,12 +23,15 @@ class zmgGalleryStore {
 
         $gid     = intval($gid);
 
+        $events   = & zmgFactory::getEvents();
+        $messages = & zmgFactory::getMessages();
+
         $gallery = new zmgGallery(zmgDatabase::getDBO());
         $res     = true;
 
         if ($gid > 0) {
             if (!($res = $gallery->load($gid))) {
-                $zoom->messages->append(T_('Gallery could not be saved') . ': ' . $gallery->getError());
+                $messages->append(T_('Gallery could not be saved') . ': ' . $gallery->getError());
             }
         }
 
@@ -45,25 +48,26 @@ class zmgGalleryStore {
             if ($isNew) {
                 $data['dir'] = zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_edit_gallery_dir', ''));
             }
+
             //do some additional validation of strings
-            $data['name']     = $zoom->fireEvent('onvalidate', false, $data['name']);
-            $data['descr']    = $zoom->fireEvent('onvalidate', false, $data['descr']);
-            $data['keywords'] = $zoom->fireEvent('onvalidate', false, $data['keywords']);
+            $data['name']     = $events->fire('onvalidate', false, $data['name']);
+            $data['descr']    = $events->fire('onvalidate', false, $data['descr']);
+            $data['keywords'] = $events->fire('onvalidate', false, $data['keywords']);
 
             if (!$gallery->bind($data)) {
-                $zoom->messages->append(T_('Gallery could not be saved') . ': ' . $gallery->getError());
+                $messages->append(T_('Gallery could not be saved') . ': ' . $gallery->getError());
             } else {
                 if (!$gallery->store()) {
-                    $zoom->messages->append(T_('Gallery could not be saved') . ': ' . $gallery->getError());
+                    $messages->append(T_('Gallery could not be saved') . ': ' . $gallery->getError());
                 } else {
                     if ($isNew) {
                         $gallery->buildDirStructure();
                     }
-                    $zoom->messages->append(T_('Gallery saved successfully!'));
+                    $messages->append(T_('Gallery saved successfully!'));
                 }
             }
         } else {
-            $zoom->messages->append(T_('Gallery could not be saved') . ': ' . $gid);
+            $messages->append(T_('Gallery could not be saved') . ': ' . $gid);
         }
     }
     

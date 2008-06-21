@@ -35,11 +35,11 @@ class zmgGetid3Plugin {
     }
     
     function embed() {
-        $zoom = & zmgFactory::getZoom();
         $settings_file = ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS.'getid3'.DS.'settings.xml';
         if (file_exists($settings_file)) {
-            $plugin = & $zoom->plugins->get('getid3');
-            $zoom->plugins->embedSettings(&$plugin, $settings_file);
+            $plugins = & zmgFactory::getPlugins();
+            $plugin = & $plugins->get('getid3');
+            $plugins->embedSettings(&$plugin, $settings_file);
         }
     }
     

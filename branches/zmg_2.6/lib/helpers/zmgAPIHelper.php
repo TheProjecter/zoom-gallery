@@ -35,10 +35,12 @@ class zmgAPIHelper {
     var $abstract_whitelist = array('zmgHTML');
     
     function zmgAPIHelper(&$zoom) {
+        $config = & zmgFactory::getConfig();
+
         $this->site_url  = zmgEnv::getSiteURL();
         $this->ajax_url  = zmgEnv::getAjaxURL();
         $this->rpc_url   = zmgEnv::getRpcURL();
-        $this->mediapath = $zoom->getConfig('filesystem/mediapath');
+        $this->mediapath = $config->get('filesystem/mediapath');
         $this->result_ok = _ZMG_RPC_RESULT_OK;
         $this->result_ko = _ZMG_RPC_RESULT_KO;
     }
@@ -63,17 +65,17 @@ class zmgAPIHelper {
     
     /**
      * Retrieve a specific configuration setting.
+     *
      * @param string The name of the setting in the format of a pathname: 'group/setting'
      */
     function getConfig($path) {
-        $zoom = & zmgFactory::getZoom();
-        
-        return $zoom->getConfig($path);
+        return zmgFactory::getConfig()->get($path);
     }
     
     /**
      * Call an abstract/ static function that resides within a static class.
      * Note: particularly useful within templates.
+     *
      * @see zmgCallAbstract
      */
     function callAbstract($klass, $func, $args = array(0)) {
@@ -97,9 +99,13 @@ class zmgAPIHelper {
     }
     
     function jsonHelper($input, $type = 'encode') {
-        $zoom = & zmgFactory::getZoom();
-        
-        return $zoom->jsonHelper($input, $type);
+        $json = & zmgFactory::getJSON();
+
+        if ($type == "decode") {
+            return $json->decode($input);
+        }
+
+        return $json->encode($input);
     }
     
     function getResult() {
@@ -109,15 +115,11 @@ class zmgAPIHelper {
     }
     
     function getMessages() {
-        $zoom = & zmgFactory::getZoom();
-        
-        return $zoom->messages->get();
+        return zmgFactory::getMessages()->get();
     }
     
     function getPluginsHTML() {
-        $zoom = & zmgFactory::getZoom();
-        
-        return $zoom->plugins->embedHTML();
+        return zmgFactory::getPlugins()->embedHTML();
     }
     
     function getTemplates() {
@@ -156,8 +158,7 @@ class zmgAPIHelper {
     }
     
     function getViewToken($which = 'last') {
-        $zoom = & zmgFactory::getZoom();
-        $tokens = $zoom->view->getViewTokens();
+        $tokens = zmgFactory::getView()->getViewTokens();
         
         if (count($tokens) == 0) {
             return zmgError::throwError('No tokens available.');
@@ -178,9 +179,7 @@ class zmgAPIHelper {
     }
     
     function getActiveTemplate() {
-    	$zoom = & zmgFactory::getZoom();
-        
-        return $zoom->view->getActiveTemplate();
+        return zmgFactory::getView()->getActiveTemplate();
     }
     
     function getMediaFromRequest() {
@@ -199,4 +198,5 @@ class zmgAPIHelper {
         return $media;
     }
 }
+
 ?>

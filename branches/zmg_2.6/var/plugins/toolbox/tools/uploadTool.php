@@ -63,22 +63,24 @@ class zmgUploadTool {
         if ($gid === 0) {
         	return zmgToolboxPlugin::registerError(T_('Upload media'), T_('No valid gallery ID provided'));
         }
+
+        $session = & zmgFactory::getSession();
+        $events  = & zmgFactory::getEvents();
+        $config  = & zmgFactory::getConfig();
+        $db      = & zmgDatabase::getDBO();
         
-        $gallery = new zmgGallery(zmgDatabase::getDBO());
+        $gallery = new zmgGallery($db);
         $gallery->load($gid);
         
         //now we got the gallery and its data, retrieve the uploaded media
-        $session = & zmgFactory::getSession();
         $media = $session->get('uploadtool.fancyfiles');
         if (!is_array($media) || count($media) == 0) {
             return zmgToolboxPlugin::registerError(T_('Upload media'), T_('No media have been uploaded; nothing to do.'));
         }
 
         zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
-        $zoom      = & zmgFactory::getZoom();
-        $db        = & zmgDatabase::getDBO();
         $src_path  = ZMG_ABS_PATH . DS."etc".DS."cache".DS;
-        $dest_path = zmgEnv::getRootPath() .DS.$zoom->getConfig('filesystem/mediapath').$gallery->dir.DS;
+        $dest_path = zmgEnv::getRootPath() .DS.$config->get('filesystem/mediapath').$gallery->dir.DS;
         
         foreach ($media as $medium) {
         	$obj  = new zmgMedium($db);
@@ -91,8 +93,8 @@ class zmgUploadTool {
             );
             $obj->setGalleryDir($gallery->dir); //saves a SQL query later on...
             //do some additional validation of strings
-            $data['name']     = $zoom->fireEvent('onvalidate', $data['name'])  || $data['name'];
-            $data['descr']    = $zoom->fireEvent('onvalidate', $data['descr']) || $data['descr'];
+            $data['name']  = $events->fire('onvalidate', $data['name'])  || $data['name'];
+            $data['descr'] = $events->fire('onvalidate', $data['descr']) || $data['descr'];
             
             if (!$obj->bind($data)) {
                 zmgToolboxPlugin::registerError(T_('Upload media'), T_('Medium could not be saved') . ': ' . $obj->getError());
