@@ -82,9 +82,9 @@ class zmgFileHelper
      */
     function tooBig($file) {
         if (zmgFileHelper::exists($file)) {
-            $zoom = & zmgFactory::getZoom();
-            $size = intval((filesize($file) / 1024));
-            if ($size <= intval($zoom->getConfig('filesystem/upload/maxfilesize'))) {
+            $config = & zmgFactory::getZoom();
+            $size   = intval((filesize($file) / 1024));
+            if ($size <= intval($config->get('filesystem/upload/maxfilesize'))) {
                 return false;
             } else {
                 return true;
@@ -115,10 +115,8 @@ class zmgFileHelper
             return false;
         }
 
-        $zoom = & zmgFactory::getZoom();
-        
-        if ($zoom->getConfig('plugins/safemode/general/enable') == 1) {
-            $ret = $zoom->fireEvent('onfilecopy', $src, $dest);
+        if (zmgFactory::getConfig()->get('plugins/safemode/general/enable') == 1) {
+            $ret = zmgFactory::getEvents()->fire('onfilecopy', $src, $dest);
         } else {
             if (!@ copy($src, $dest)) {
                 zmgError::throwError(T_('Copy failed'));
@@ -142,12 +140,7 @@ class zmgFileHelper
             $files[] = $file;
         }
         
-        $zoom = & zmgFactory::getZoom();
-
-        $ftp_enabled = (bool)$zoom->getConfig('plugins/safemode/general/enable');
-        if ($ftp_enabled) {
-            $zoom = & zmgFactory::getZoom();
-        }
+        $ftp_enabled = (bool)zmgFactory::getConfig()->get('plugins/safemode/general/enable');
 
         foreach ($files as $file) {
             $file = zmgFileHelper::cleanPath($file);
@@ -161,7 +154,7 @@ class zmgFileHelper
             if (@unlink($file)) {
                 // Do nothing
             } elseif ($ftp_enabled) {
-                return $zoom->fireEvent('onfiledelete', $file);
+                return zmgFactory::getEvents()->fire('onfiledelete', $file);
             } else {
                 $filename   = basename($file);
                 zmgError::throwError(T_('Delete failed') . ": '$filename'");
@@ -191,10 +184,8 @@ class zmgFileHelper
             return T_('Cannot find source file');
         }
         
-        $zoom = & zmgFactory::getZoom();
-
-        if ($zoom->getConfig('plugins/safemode/general/enable') == 1) {
-            if (!$zoom->fireEvent('onfilemove', $src, $dest)) {
+        if (zmgFactory::getConfig()->get('plugins/safemode/general/enable') == 1) {
+            if (!zmgFactory::getEvents()->fire('onfilemove', $src, $dest)) {
                 zmgError::throwError(T_('Rename failed'));
                 return false;
             }
@@ -260,10 +251,8 @@ class zmgFileHelper
             zmgFileHelper::createDir(dirname($file));
         }
         
-        $zoom = & zmgFactory::getZoom();
-
-        if ($zoom->getConfig('plugins/safemode/general/enable') == 1) {
-            $ret = $zoom->fireEvent('onfilewrite', $file, $buffer);
+        if (zmgFactory::getConfig()->get('plugins/safemode/general/enable') == 1) {
+            $ret = zmgFactory::getEvents()->fire('onfilewrite', $file, $buffer);
         } else {
             $file = zmgFileHelper::cleanPath($file);
             $ret = file_put_contents($file, $buffer);
@@ -290,11 +279,9 @@ class zmgFileHelper
             zmgFileHelper::createDir($baseDir);
         }
         
-        $zoom = & zmgFactory::getZoom();
-
-        if ($zoom->getConfig('plugins/safemode/general/enable') == 1) {
+        if (zmgFactory::getConfig()->get('plugins/safemode/general/enable') == 1) {
             // Connect the FTP client
-            if ($zoom->fireEvent('onfileupload', $src, $dest)) {
+            if (zmgFactory::getEvents()->fire('onfileupload', $src, $dest)) {
                 zmgFileHelper::chmod($dest);
                 $ret = true;
             } else {
@@ -381,11 +368,9 @@ class zmgFileHelper
             return true;
         }
         
-        $zoom = & zmgFactory::getZoom();
-
         // Check for safe mode
-        if ($zoom->getConfig('plugins/safemode/general/enable') == 1) {
-            $ret = $zoom->fireEvent('ondircreate', $path);
+        if (zmgFactory::getConfig()->get('plugins/safemode/general/enable') == 1) {
+            $ret = zmgFactory::getEvents()->fire('ondircreate', $path);
             zmgFileHelper::chmod($path);
         } else {
             // We need to get and explode the open_basedir paths
@@ -448,7 +433,6 @@ class zmgFileHelper
         }
         
         $res  = true;
-        $zoom = & zmgFactory::getZoom();
 
         $current_dir = opendir($path);
         while ($entryname = readdir($current_dir)) {
@@ -460,8 +444,8 @@ class zmgFileHelper
         }
         closedir($current_dir);
 
-        if ($zoom->getConfig('plugins/safemode/general/enable') == 1) {
-            $res = $zoom->fireEvent('ondirdelete', $path);
+        if (zmgFactory::getConfig()->get('plugins/safemode/general/enable') == 1) {
+            $res = zmgFactory::getEvents()->fire('ondirdelete', $path);
         } else {
             $res = rmdir($path);
         }
@@ -515,7 +499,8 @@ class zmgFileHelper
     function chmodRecursive($path, $filemode = 0644, $dirmode = 0777) {
         $ret = true;
         
-        $zoom = & zmgFactory::getZoom();
+        $config = & zmgFactory::getConfig();
+        $events = & zmgFactory::getEvents();
 
         if (is_dir($path)) {
             $dh = opendir($path);
@@ -526,8 +511,8 @@ class zmgFileHelper
                         $ret = zmgFileHelper::chmodRecursive($fullpath, $filemode, $dirmode);
                     } else {
                         if (isset($filemode)) {
-                            if ($zoom->getConfig('plugins/safemode/general/enable') == 1) {
-                                $ret = $zoom->fireEvent('onchmod', $fullpath, $filemode);
+                            if ($config->get('plugins/safemode/general/enable') == 1) {
+                                $ret = $events->fire('onchmod', $fullpath, $filemode);
                             } else {
                                 $ret = (bool) @chmod($fullpath, $filemode);
                             }
@@ -537,15 +522,15 @@ class zmgFileHelper
             }
             closedir($dh);
             if (isset($dirmode)) {
-                if ($zoom->getConfig('plugins/safemode/general/enable') == 1) {
-                    $ret = $zoom->fireEvent('onchmod', $path, $dirmode);
+                if ($config->get('plugins/safemode/general/enable') == 1) {
+                    $ret = $events->fire('onchmod', $path, $dirmode);
                 } else {
                     $ret = (bool) @chmod($path, $dirmode);
                 }
             }
         } else if (isset($filemode)) {
-            if ($zoom->getConfig('plugins/safemode/general/enable') == 1) {
-                $ret = $zoom->fireEvent('onchmod', $path, $filemode);
+            if ($config->get('plugins/safemode/general/enable') == 1) {
+                $ret = $events->fire('onchmod', $path, $filemode);
             } else {
                 $ret = (bool) @chmod($path, $filemode);
             }
@@ -560,9 +545,9 @@ class zmgFileHelper
      * @return TRUE=all succeeded FALSE=one or more chmods failed
      */
     function chmod($path) {
-        $zoom = & zmgFactory::getZoom();
-        $fileperms = octdec($zoom->getConfig('filesystem/fileperms'));
-        $dirperms  = octdec($zoom->getConfig('filesystem/dirperms'));
+        $config = & zmgFactory::getConfig();
+        $fileperms = octdec($config->get('filesystem/fileperms'));
+        $dirperms  = octdec($config->get('filesystem/dirperms'));
 
         if (isset($fileperms) || isset($dirperms)) {
             return zmgFileHelper::chmodRecursive($path, $fileperms, $dirperms);

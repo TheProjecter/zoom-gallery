@@ -40,14 +40,16 @@ class zmgDatastorePlugin {
     }
     
     function storeDelegate(&$event) {
-    	$aView = $event->getArgument('view');
-        $view  = implode(':', $aView);
+    	$aView  = $event->getArgument('view');
+        $view   = implode(':', $aView);
         
-        $zoom = & zmgFactory::getZoom();
+        $zoom   = & zmgFactory::getZoom();
+        $config = & zmgFactory::getConfig();
+        $events = & zmgFactory::getEvents();
         
         switch ($view) {
             case "admin:settings:store":
-                $zoom->setResult($zoom->updateConfig($_POST));
+                $zoom->setResult($config->update($_POST, false));
                 break;
             case stristr($view, "admin:settings:plugins:autodetect"):
                 $tool = trim($aView[count($aView) - 1]);
@@ -56,7 +58,7 @@ class zmgDatastorePlugin {
                 } else {
                     $tool = array($tool);
                 }
-                $zoom->fireEvent('onautodetect', false, $tool);
+                $events->fire('onautodetect', false, $tool);
                 break;
             case stristr($view, "admin:update:mediacount"):
                 $filter = intval(array_pop($aView));
@@ -80,12 +82,12 @@ class zmgDatastorePlugin {
             case stristr($view, "admin:mediaupload:store"):
                 //SWFUpload needs HTTP headers to signal the user...
                 $method = stristr($view, "jupload") ? "jupload" : "swfupload";
-                $zoom->fireEvent('onupload', false, $method);
+                $events->fire('onupload', false, $method);
                 //exit;
                 break;
             case stristr($view, "admin:mediaupload:update"):
                 $gid = array_pop($aView);
-                $zoom->fireEvent('onuploadupdate', false, $gid);
+                $events->fire('onuploadupdate', false, $gid);
                 break;
             case stristr($view, "admin:update:mediacount"):
                 $gid = intval(array_pop($aView));
@@ -96,4 +98,5 @@ class zmgDatastorePlugin {
         }
     }
 }
+
 ?>

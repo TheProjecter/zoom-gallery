@@ -12,15 +12,11 @@
 defined('_ZMG_EXEC') or die('Restricted access');
 
 class zmgFactory {
-    function &getZoom(&$config = null) {
+    function &getZoom() {
         static $instance;
         
         if (!is_object($instance)) {
-            if (!$config) {
-                $config = & zmgFactory::getConfig();
-            }
-
-            $instance = new Zoom($config);
+            $instance = new zmgCore();
         }
 
         return $instance;
@@ -39,18 +35,92 @@ class zmgFactory {
     }
     
     function &getConfig() {
-        static $zoom_config;
-        
-        //load the configuration file
-        require(ZMG_ABS_PATH . DS.'etc'.DS.'app.config.php');
-        
-        return $zoom_config;
+        static $zoom_config, $instance_config;
+
+        if (!is_object($instance_config)) {
+            //load the configuration file
+            include(ZMG_ABS_PATH . DS.'etc'.DS.'app.config.php');
+            zmgimport('org.zoomfactory.lib.helpers.zmgConfigurationHelper');
+
+            $instance_config = new zmgConfigurationHelper($zoom_config);
+        }
+
+        return $instance_config;
+    }
+
+    /**
+     * Public variable, containing the zmgViewHelper - helping ZMG with controlling
+     * the views on the different models that the Core exposes.
+     *
+     * @return zmgViewHelper
+     */
+    function &getView() {
+        static $instance_view;
+
+        if (!is_object($instance_view)) {
+            zmgimport('org.zoomfactory.lib.helpers.zmgViewHelper');
+
+            $config = & zmgFactory::getConfig();
+
+            $instance_view = new zmgViewHelper($config->get('smarty'),
+              $config->get('app/secret'));
+        }
+
+        return $instance_view;
+    }
+
+    /**
+     * Public variable, containing the plugin system of ZMG.
+     * 
+     * @return zmgPluginHelper
+     */
+    function &getPlugins() {
+        static $instance_plugins;
+
+        if (!is_object($instance_plugins)) {
+            zmgimport('org.zoomfactory.lib.helpers.zmgPluginHelper');
+
+            $instance_plugins = new zmgPluginHelper();
+        }
+
+        return $instance_plugins;
+    }
+
+    /**
+     * Public variable, containing the messaging center of ZMG.
+     * 
+     * @return zmgMessageCenter
+     */
+    function &getMessages() {
+        static $instance_messages;
+
+        if (!is_object($instance_messages)) {
+            zmgimport('org.zoomfactory.lib.helpers.zmgMessageCenter');
+
+            $instance_messages = new zmgMessageCenter();
+        }
+
+        return $instance_messages;
+    }
+
+    function &getEvents() {
+        static $instance_events;
+
+        if (!is_object($instance_events)) {
+            zmgimport('org.zoomfactory.lib.helpers.zmgEventsHelper');
+
+            $instance_events = new zmgEventsHelper();
+        }
+
+        return $instance_events;
     }
     
     function &getSession() {
         static $session;
         
         if (!is_object($session)) {
+            zmgimport('org.zoomfactory.lib.zmgSession');
+
             $session = new zmgSession();
         }
 

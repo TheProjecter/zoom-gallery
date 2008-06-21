@@ -96,8 +96,9 @@ class zmgToolboxPlugin extends zmgError {
 
         $settings_file = ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS.'toolbox'.DS.'settings.xml';
         if (file_exists($settings_file)) {
-            $plugin = & $zoom->plugins->get('toolbox');
-            $zoom->plugins->embedSettings(&$plugin, $settings_file);
+            $plugins = & zmgFactory::getPlugins();
+            $plugin = & $plugins->get('toolbox');
+            $plugins->embedSettings(&$plugin, $settings_file);
         }
     }
     
@@ -121,7 +122,6 @@ class zmgToolboxPlugin extends zmgError {
         	$selection = "all";
         }
 
-        $zoom       = & zmgFactory::getZoom();
         $tools      = & zmgToolboxConstants::getTools();
         $imagetools = & zmgToolboxConstants::getImageTools();
         
@@ -131,7 +131,7 @@ class zmgToolboxPlugin extends zmgError {
             $selection = $tools;
         }
 
-        $toolkey   = intval($zoom->getConfig('plugins/toolbox/general/conversiontool'));
+        $toolkey   = intval(zmgFactory::getConfig()->get('plugins/toolbox/general/conversiontool'));
         $imagetool = $imagetools[$toolkey - 1];
         if ($getall) {
             //auto-detect currently selected imagetool first
@@ -216,13 +216,12 @@ class zmgToolboxPlugin extends zmgError {
     function throwErrors() {
         $errors = & zmgToolboxPlugin::getErrors();
         
-        $zoom = & zmgFactory::getZoom();
-        
         for ($i = 0; $i < count($errors); $i++) {
-            $zoom->messages->append($errors[$i]['title'],
+            zmgFactory::getMessages()->append($errors[$i]['title'],
               $errors[$i]['description']);
         }
-        //reset the process of collecting of errors
+
+        //reset the process of collecting errors
         $errors = null;
     }
     

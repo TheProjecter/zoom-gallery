@@ -32,11 +32,11 @@ class zmgJpeg_metadataPlugin {
     }
     
     function embed() {
-        $zoom = & zmgFactory::getZoom();
         $settings_file = ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS.'jpeg_metadata'.DS.'settings.xml';
         if (file_exists($settings_file)) {
-            $plugin = & $zoom->plugins->get('jpeg_metadata');
-            $zoom->plugins->embedSettings(&$plugin, $settings_file);
+            $plugins = & zmgFactory::getPlugins();
+            $plugin = & $plugins->get('jpeg_metadata');
+            $plugins->embedSettings(&$plugin, $settings_file);
         }
     }
     
@@ -51,11 +51,9 @@ class zmgJpeg_metadataPlugin {
             'finfo'   => null
         );
         
-        $zoom = & zmgFactory::getZoom();
-        
         $ext  = $medium->getExtension();
         $file = $medium->getAbsPath();
-        if ($zoom->getConfig('plugins/jpeg_metadata/general/readwrite')
+        if (zmgFactory::getConfig()->get('plugins/jpeg_metadata/general/readwrite')
           && ($ext == "jpg" || $ext == "jpeg") && !ZMG_SAFEMODE_ON) {
         	//import libs first (duh ;) )
             $jmt_dir = "v".str_replace('.', '_', ZMG_JMT_VERSION);

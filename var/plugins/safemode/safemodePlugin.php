@@ -48,18 +48,16 @@ class zmgSafemodePlugin extends zmgError {
     }
     
     function embed() {
-        $zoom = & zmgFactory::getZoom();
         $settings_file = ZMG_ABS_PATH . DS.'var'.DS.'plugins'.DS.'safemode'.DS.'settings.xml';
         if (file_exists($settings_file)) {
-            $plugin = & $zoom->plugins->get('safemode');
-            $zoom->plugins->embedSettings(&$plugin, $settings_file);
+            $plugins = & zmgFactory::getPlugins();
+            $plugin = & $plugins->get('safemode');
+            $plugins->embedSettings(&$plugin, $settings_file);
         }
     }
     
     function &getFTPClient() {
-        $zoom = & zmgFactory::getZoom();
-        
-        $cfg = $zoom->getConfig('plugins/safemode/credentials');
+        $cfg = zmgFactory::getConfig()->get('plugins/safemode/credentials');
         
         zmgimport('org.zoomfactory.var.plugins.ftp.zmgFTP');
         

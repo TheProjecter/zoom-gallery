@@ -136,8 +136,6 @@ class zmgPluginHelper {
             return zmgError::throwError('Invalid plugin settings file.');
         }
         
-        $zoom = & zmgFactory::getZoom();
-        
         $plugin['settings'] = array();
         if ($xmldoc->documentElement->hasAttribute('plugin')) {
             $plugin['settings_name'] = $xmldoc->documentElement->getAttribute('plugin');
@@ -211,7 +209,7 @@ class zmgPluginHelper {
         }
         
         //TODO: access fromXML with a public API call
-        $zoom->_config->fromPlugin($plugin);
+        zmgFactory::getConfig()->fromPlugin($plugin);
     }
     
     function prettifyName($name) {
@@ -224,7 +222,7 @@ class zmgPluginHelper {
     }
     
     function embedHTML() {
-        $zoom = & zmgFactory::getZoom();
+        $config = & zmgFactory::getConfig();
         
         $out  = "<div id=\"zmg_plugins_accordion\" class=\"zmg_halfsize\">\n";
         
@@ -244,7 +242,7 @@ class zmgPluginHelper {
                      . "</tr>\n";
                     foreach ($sub_settings as $setting => $data) {
                         $setting_parts = array('plugins', $plugin['name'], $cat, $setting);
-                        $setting_value = $zoom->getConfig(implode('/', $setting_parts));
+                        $setting_value = $config->get(implode('/', $setting_parts));
                         $input_name    = "zmg_" . implode('_', $setting_parts);
                         
                         $out .= "<tr>\n";

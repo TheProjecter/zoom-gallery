@@ -18,13 +18,7 @@ define('_ZMG_RPC_RESULT_KO', 'KO');
  * Main application class
  * @package zmg
  */
-class Zoom {
-    /**
-     * Internal variable for the configuration array.
-     *
-     * @var array
-     */
-    var $_config = null;
+class zmgCore {
     /**
      * Internal variable for storing rpc-results temporarily
      *
@@ -38,51 +32,20 @@ class Zoom {
      */
     var $_gallerylist = null;
     /**
-     * Public variable, containing the zmgViewHelper - helping ZMG with controlling
-     * the views on the different models that the Core exposes.
-     *
-     * @var zmgViewHelper
-     */
-    var $view = null;
-    /**
      * Public variable, containing the current user.
      * 
      * @var zmgUser
      */
     var $user = null;
-    /**
-     * Public variable, containing the messaging center of ZMG.
-     * 
-     * @var zmgMessageCenter()
-     */
-    var $messages = null;
-    /**
-     * Public variable, containing the plugin system of ZMG.
-     * 
-     * @var zmgPluginHelper()
-     */
-    var $plugins = null;
     
     /**
      * The class constructor.
      */
-     function Zoom(&$config) {
-        zmgimport('org.zoomfactory.lib.helpers.zmgConfigurationHelper');
-        zmgimport('org.zoomfactory.lib.helpers.zmgMessageCenter');
-        zmgimport('org.zoomfactory.lib.helpers.zmgPluginHelper');
-        zmgimport('org.zoomfactory.lib.helpers.zmgViewHelper');
-        
-        $this->_config  = new zmgConfigurationHelper($config);
-        $this->view     = new zmgViewHelper($this->getConfig('smarty'),
-          $this->getConfig('app/secret'));
-        $this->messages = new zmgMessageCenter();
-        $this->plugins  = new zmgPluginHelper();
-        
+     function zmgCore() {
         //just make sure the session initializes:
         zmgFactory::getSession();
-
-        $this->loadEvents(); //TODO: use cached events list
     }
+
     function hasAccess() {
         if (!zmgACL::check_defines())
             return false;
@@ -94,34 +57,15 @@ class Zoom {
         die('Restricted access');
     }
 
-    /**
-     * Retrieve a specific configuration setting.
-     * @param string The name of the setting in the format of a pathname: 'group/setting'
-     */
-    function getConfig($path) {
-    	return $this->_config->get($path);
-    }
-
     function getTableName($name) {
-        $prefix = $this->_config->get('db/prefix');
-        $table  = $this->_config->get('db/tables/' . $name);
+        $config = & zmgFactory::getConfig();
+        $prefix = $config->get('db/prefix');
+        $table  = $config->get('db/tables/' . $name);
         
         if (!empty($prefix) && !empty($table)) {
             return "#__" . $prefix . $table;
         }
         return null;
-    }
-
-    function updateConfig($vars, $isPlugin = false) {
-        return $this->_config->update($vars, $isPlugin);
-    }
-
-    function jsonHelper($input, $type = 'encode') {
-        $json = & zmgFactory::getJSON();
-        if ($type == "decode") {
-            return $json->decode($input);
-        }
-        return $json->encode($input);
     }
     
     /**
@@ -142,8 +86,8 @@ class Zoom {
                 // the filename will be changed accordingly:
                 // if a filename exists, add the suffix _{number} incrementally,
                 // thus 'afile_1.jpg' will become 'afile_2.jpg' and so on...
-                return $this->checkDuplicate(preg_replace( "/^(.+?)(_?)(\d*)(\.[^.]+)?$/e", "'\$1_'.(\$3+1).'\$4'",
-                  $checkThis));
+                return $this->checkDuplicate(preg_replace( "/^(.+?)(_?)(\d*)(\.[^.]+)?$/e",
+                  "'\$1_'.(\$3+1).'\$4'", $checkThis));
             } else {
                 return $checkThis;
             }
@@ -299,7 +243,7 @@ class Zoom {
         $methods = array("", "ordering, gid ASC", "ordering, gid DESC",
           "ordering, name ASC", "ordering, name DESC");
           
-        return $methods[intval($this->getConfig('layout/ordering/galleries'))];
+        return $methods[intval(zmgFactory::getConfig()->get('layout/ordering/galleries'))];
     }
 
     /**
@@ -311,55 +255,7 @@ class Zoom {
         $methods = array("", "date_add ASC", "date_add DESC", "filename ASC",
           "filename DESC", "name ASC", "name DESC");
           
-        return $methods[intval($this->getConfig('layout/ordering/media'))];
-    }
-
-    /**
-     * Load all available custom events from the /var/events folder.
-     */
-    function loadEvents() {
-        zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
-        
-        //TODO: move reading directory stuff to zmgConfigurationHelper class
-        $event_cats = zmgFileHelper::readDir(ZMG_ABS_PATH . DS.'var'.DS.'events', '[^index\.html]');
-        $this->events = array();
-        foreach ($event_cats as $cat) {
-            if ($cat != "shared") {
-                $events = zmgFileHelper::readDir(ZMG_ABS_PATH . DS.'var'.DS.'events'.DS . $cat, '[^index\.html]');
-                if (count($events) > 0) {
-                    $this->events[$cat] = $events;
-                }
-            }
-        }
-    }
-
-    /**
-     * Launch all components that are bound to a specific custom event handler.
-     * @param string The name of the event that is fired
-     * @param bool The event may or may not bubble down
-     */
-    function fireEvent($type, $nobubble = false) {
-        $event = new zmgEvent($type);
-        
-        $args = func_get_args();
-        $newArgs = array_splice($args, 2, count($args));
-        if (count($newArgs) == 1) {
-        	$newArgs = $newArgs[0];
-        }
-        $event->pass($newArgs);
-        /*if (!empty($this->events[$event])) {
-            foreach ($this->events[$event] as $cmp) {
-                zmgimport('org.zoomfactory.var.events.'.$event.'.'.$cmp.'.'.$cmp);
-                if (class_exists($cmp)) { 
-                    eval($cmp . '::start(&$this);');
-                }
-            }
-        }*/
-        
-        //bubble through to plugins:
-        if (!(bool)$nobubble) {
-            return $this->plugins->bubbleEvent($event);
-        }
+        return $methods[intval(zmgFactory::getConfig()->get('layout/ordering/media'))];
     }
 
     function setResult($result = true) {
@@ -395,9 +291,9 @@ class Zoom {
         //HTTP/1.0
         echo @header("Pragma: no-cache");
         
-        $encoding = "UTF-8";
-        if (method_exists($this, 'getConfig')) {
-            $encoding = $this->getConfig('locale/encoding');
+        $encoding = zmgFactory::getConfig()->get('locale/encoding');
+        if (empty($encoding)) {
+            $encoding = "UTF-8";
         }
         
         if ($error) {

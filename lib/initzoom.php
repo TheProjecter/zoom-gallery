@@ -22,41 +22,39 @@ zmgimport('org.zoomfactory.lib.zmgError');
 //initialize Smarty template engine
 zmgimport('org.zoomfactory.lib.smarty.Smarty');
 
-//initialize the zoom (app) class
-zmgimport('org.zoomfactory.lib.Zoom');
 //import other useful stuff
-zmgimport('org.zoomfactory.lib.zmgEvent');
-zmgimport('org.zoomfactory.lib.zmgSession');
 zmgimport('org.zoomfactory.lib.zmgHTML');
-
-$zoom = & zmgFactory::getZoom();
 
 if (!class_exists('InputFilter')) {
     zmgimport('org.zoomfactory.lib.phpinputfilter.inputfilter');
 }
 
-$zoom->fireEvent('onstartup', false);
+$config = & zmgFactory::getConfig();
+$events = & zmgFactory::getEvents();
+$view   = & zmgFactory::getView();
+
+$events->fire('onstartup');
+
+$zoom   = & zmgFactory::getZoom();
 
 $zoom->hasAccess() or die('Restricted access');
 
-$zoom->view->setViewType(zmgEnv::getViewType());
+$view->setViewType(zmgEnv::getViewType());
 
 //set error handling options
-zmgError::setErrorHandling($zoom->getConfig('app/errors/defaultmode'),
-  $zoom->getConfig('app/errors/defaultoption'));
+zmgError::setErrorHandling($config->get('app/errors/defaultmode'),
+  $config->get('app/errors/defaultoption'));
 
 //load php-gettext (used in zoom in 'fallback mode')
 zmgimport('org.zoomfactory.lib.phpgettext.gettext_inc');
 // gettext setup
-T_setlocale(LC_ALL, $zoom->getConfig('locale/default'));
+T_setlocale(LC_ALL, $config->get('locale/default'));
 // Set the text domain as 'messages'
-$domain = $zoom->getConfig('locale/domain');
+$domain = $config->get('locale/domain');
 T_bindtextdomain($domain, ZMG_ABS_PATH . '/locale');
-T_bind_textdomain_codeset($domain, $zoom->getConfig('locale/encoding'));
+T_bind_textdomain_codeset($domain, $config->get('locale/encoding'));
 T_textdomain($domain);
 
-$zoom->fireEvent('oncontentstart');
-
-$zoom->fireEvent('oncontent');
+$events->fire('oncontent');
 
 ?>

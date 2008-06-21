@@ -18,9 +18,12 @@ class zmgMediumStore {
         $medium  = new zmgMedium(zmgDatabase::getDBO());
         $res     = true;
 
+        $events   = & zmgFactory::getEvents();
+        $messages = & zmgFactory::getMessages();
+
         if ($mid > 0) {
             if (!($res = $medium->load($mid))) {
-                $zoom->messages->append(T_('Medium could not be saved') . ': ' . $medium->getError());
+                $messages->append(T_('Medium could not be saved') . ': ' . $medium->getError());
             }
         }
 
@@ -34,35 +37,35 @@ class zmgMediumStore {
               'uid'       => intval(zmgGetParam($_REQUEST, 'zmg_edit_acl_gid', $medium->uid))
             );
             //do some additional validation of strings
-            $data['name']     = $zoom->fireEvent('onvalidate', false, $data['name']);
-            $data['descr']    = $zoom->fireEvent('onvalidate', false, $data['descr']);
-            $data['keywords'] = $zoom->fireEvent('onvalidate', false, $data['keywords']);
+            $data['name']     = $events->fire('onvalidate', false, $data['name']);
+            $data['descr']    = $events->fire('onvalidate', false, $data['descr']);
+            $data['keywords'] = $events->fire('onvalidate', false, $data['keywords']);
             
             if (!$medium->bind($data)) {
-                $zoom->messages->append(T_('Medium could not be saved') . ': ' . $medium->getError());
+                $messages->append(T_('Medium could not be saved') . ': ' . $medium->getError());
             } else {
                 if (!$medium->store()) {
-                    $zoom->messages->append(T_('Medium could not be saved') . ': ' . $medium->getError());
+                    $messages->append(T_('Medium could not be saved') . ': ' . $medium->getError());
                 } else {
                     $isGalleryImg = (intval(zmgGetParam($_REQUEST, 'zmg_edit_gimg', 0)) === 1);
                     $isParentImg  = (intval(zmgGetParam($_REQUEST, 'zmg_edit_pimg', 0)) === 1);
                     
                     if (!($isGalleryImg && $medium->setAsGalleryImage())) {
-                        $zoom->messages->append(T_('Medium could not be saved') . ': ' . T_('unable to set as image of gallery'));
+                        $messages->append(T_('Medium could not be saved') . ': ' . T_('unable to set as image of gallery'));
                         $res = false;
                     }
                     if (!($isParentImg && $medium->setAsGalleryImage(true))) {
-                        $zoom->messages->append(T_('Medium could not be saved') . ': ' . T_('unable to set as image of parent gallery'));
+                        $messages->append(T_('Medium could not be saved') . ': ' . T_('unable to set as image of parent gallery'));
                         $res = false;
                     }
                     
                     if ($res) {
-                        $zoom->messages->append(T_('Medium saved successfully!'));
+                        $messages->append(T_('Medium saved successfully!'));
                     }
                 }
             }
         } else {
-            $zoom->messages->append(T_('Medium could not be saved') . ': ' . $mid);
+            $messages->append(T_('Medium could not be saved') . ': ' . $mid);
         }
 	}
 }

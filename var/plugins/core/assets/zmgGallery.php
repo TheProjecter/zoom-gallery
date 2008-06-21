@@ -180,8 +180,9 @@ class zmgGallery extends zmgTable {
         for ($acc = 1; $acc <= 6; $acc++) {
             $newdir .= chr(rand (0,25) + 65);
         }
-        $zoom = & zmgFactory::getZoom();
-        $path = zmgEnv::getRootPath() .DS.$zoom->getConfig('filesystem/mediapath') . $newdir;
+
+        $path = zmgEnv::getRootPath() . DS
+         . zmgFactory::getConfig()->get('filesystem/mediapath') . $newdir;
         if (is_dir($path)) {
         	return zmgGallery::generateDir();
         }
@@ -194,8 +195,7 @@ class zmgGallery extends zmgTable {
         $html_file = "<html><body bgcolor=\"#FFFFFF\"></body></html>";
         
         $root = zmgEnv::getRootPath();
-        $zoom = & zmgFactory::getZoom();
-        $mediapath = $root .DS.$zoom->getConfig('filesystem/mediapath');
+        $mediapath = $root .DS.zmgFactory::getConfig()->get('filesystem/mediapath');
         $dirs = array(
           $mediapath . $this->dir,
           $mediapath . $this->dir .DS.'thumbs',

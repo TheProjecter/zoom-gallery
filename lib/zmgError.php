@@ -242,8 +242,7 @@ class zmgError {
  */
 function zmgErrorCallback($error) {
     if (zmgEnv::isRPC()) {
-        $zoom = & zmgFactory::getZoom();
-        $zoom->messages->append($error['message'], $error['backtrace']);
+        zmgFactory::getMessages()->append($error['message'], $error['backtrace']);
         return;
     }
     zmgBacktrace();

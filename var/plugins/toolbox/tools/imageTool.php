@@ -15,10 +15,11 @@ class zmgImageTool {
     function process(&$medium, &$gallery) {
     	$ok = true; //innocent, until proven guilty ;)
         
-        $zoom      = & zmgFactory::getZoom();
+        $events     = & zmgFactory::getEvents();
+        $config     = & zmgFactory::getConfig();
         $imagetools = & zmgToolboxConstants::getImageTools();
-        $toolkey   = intval($zoom->getConfig('plugins/toolbox/general/conversiontool'));
-        $imagetool = $imagetools[$toolkey - 1];
+        $toolkey    = intval($config->get('plugins/toolbox/general/conversiontool'));
+        $imagetool  = $imagetools[$toolkey - 1];
         
         zmgimport('org.zoomfactory.var.plugins.toolbox.tools.'.$imagetool.'Tool');
         $klass = 'zmg' . ucfirst($imagetool) . 'Tool';
@@ -26,7 +27,7 @@ class zmgImageTool {
         $file = $medium->getAbsPath();
         $size = getimagesize($file);
         
-        $metadata = $zoom->fireEvent('ongetimagemetadata', false, $medium);
+        $metadata = $events->fire('ongetimagemetadata', false, $medium);
         
         //rotate image
         //TODO
@@ -35,23 +36,23 @@ class zmgImageTool {
         if ($ok && !file_exists($medium->getAbsPath(ZMG_MEDIUM_THUMBNAIL))) {
             $ok = call_user_func_array(array($klass, 'resize'), array($file, 
               $medium->getAbsPath(ZMG_MEDIUM_THUMBNAIL),
-              intval($zoom->getConfig('plugins/toolbox/general/imagesizethumbnail'))));
+              intval($config->get('plugins/toolbox/general/imagesizethumbnail'))));
         }
         
         //resize to viewsize format
-        $maxSize = intval($zoom->getConfig('plugins/toolbox/general/imagesizemax'));
+        $maxSize = intval($config->get('plugins/toolbox/general/imagesizemax'));
         if ($ok && !file_exists($medium->getAbsPath(ZMG_MEDIUM_VIEWSIZE))
           && ($size[0] > $maxSize || $size[1] > $maxSize)) {
         	$ok = call_user_func_array(array($klass, 'resize'), array($file, 
               $medium->getAbsPath(ZMG_MEDIUM_VIEWSIZE),
-              intval($zoom->getConfig('plugins/toolbox/general/imagesizethumbnail'))));
+              intval($config->get('plugins/toolbox/general/imagesizethumbnail'))));
         }
         
         //apply watermarks
         //TODO
         
         if ($ok) {
-        	$ok = $zoom->fireEvent('onputimagemetadata', false, $medium, $metadata);
+        	$ok = $events->fire('onputimagemetadata', false, $medium, $metadata);
         }
         
         return $ok;

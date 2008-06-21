@@ -58,13 +58,13 @@ class zmgViewHelper {
         $this->_active_view = $view;
         $this->_view_tokens = split(':', $view);
         
-        $zoom = & zmgFactory::getZoom();
+        $events = & zmgFactory::getEvents();
 
         //check for dispatches that 'put' data (in contrary to 'get' requests)
-        $isDataStore = $zoom->fireEvent('onisdatastore', false, $this->_view_tokens);
+        $isDataStore = $events->fire('onisdatastore', false, $this->_view_tokens);
         
         if ((bool)$isDataStore) {
-        	$zoom->fireEvent('ondatastore', false, $this->_view_tokens);
+        	$events->fire('ondatastore', false, $this->_view_tokens);
             
             $this->_active_view = (ZMG_ADMIN ? "admin:dispatchresult" : "dispatchresult")
              . ":" . str_replace(':', '_', str_replace('admin:', '', $view));
@@ -202,6 +202,7 @@ class zmgViewHelper {
             
         
         if (ZMG_ADMIN) {
+            $zoom = & zmgFactory::getZoom();
             $this->_template->appendConstant('mediumcount', $zoom->getMediumCount());
         }
     }

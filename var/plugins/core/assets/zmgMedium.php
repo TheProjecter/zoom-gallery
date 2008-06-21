@@ -67,8 +67,7 @@ class zmgMedium extends zmgTable {
         $path = zmgEnv::getRootPath() . DS;
         
         if (empty($mediapath)) {
-            $zoom = & zmgFactory::getZoom();
-            $mediapath = $zoom->getConfig('filesystem/mediapath');
+            $mediapath = zmgFactory::getConfig()->get('filesystem/mediapath');
         }
         $path .= $mediapath . $this->getGalleryDir() . DS;
         
@@ -88,10 +87,8 @@ class zmgMedium extends zmgTable {
             zmgError::throwError('zmgMedium: medium data not loaded yet');
         }
         
-        $zoom = & zmgFactory::getZoom();
-        
         if (empty($mediapath)) {
-            $mediapath = $zoom->getConfig('filesystem/mediapath');
+            $mediapath = zmgFactory::getConfig()->get('filesystem/mediapath');
         }
         
         //TODO: add hotlinking protection
@@ -138,10 +135,8 @@ class zmgMedium extends zmgTable {
             'name' => null
         );
         
-        $zoom = & zmgFactory::getZoom();
-        
         $template_path = zmgEnv::getSiteURL() . "/components/com_zoom/var/www/templates/"
-          . $zoom->view->getActiveTemplate() . "/images/mimetypes";
+          . zmgFactory::getView()->getActiveTemplate() . "/images/mimetypes";
         if ($smallthumb) {
             $template_path .= "/small";
         }
@@ -291,12 +286,12 @@ class zmgMedium extends zmgTable {
     
     function toXML($type = 'playlist') {
         if ($type === "playlist") {
-            $zoom = & zmgFactory::getZoom();
+            $events = & zmgFactory::getEvents();
             
             $artist = T_('no artist');
             $title  = T_('no title');
 
-            $id3_data = $zoom->fireEvent('ongetaudiometadata', false, $this->getAbsPath(ZMG_MEDIUM_ORIGINAL));
+            $id3_data = $events->fire('ongetaudiometadata', false, $this->getAbsPath(ZMG_MEDIUM_ORIGINAL));
             if (is_array($id3_data) && !empty($id3_data['tags']['id3v1']['artist'][0])) {
                 $artist = $id3_data['tags']['id3v1']['artist'][0];
             }
@@ -321,21 +316,22 @@ class zmgMediumMetadata {
     var $_mid = null;
     
     function zmgMediumMetadata(&$medium) {
-        $zoom = & zmgFactory::getZoom();
+        $config = & zmgFactory::getConfig();
+        $events = & zmgFactory::getEvents();
         
         $this->_mid = $medium->mid;
         
         $this->_ext = $medium->getExtension();
         zmgimport('org.zoomfactory.lib.mime.zmgMimeHelper');
         
-        $path = $medium->getAbsPath(ZMG_MEDIUM_ORIGINAL. $zoom->getConfig('filesystem/mediapath'));
+        $path = $medium->getAbsPath(ZMG_MEDIUM_ORIGINAL. $config->get('filesystem/mediapath'));
         
         if (zmgMimeHelper::isImage($this->_ext)) {
-            $this->_raw = $zoom->fireEvent('ongetimagemetadata', false, $medium);
+            $this->_raw = $events->fire('ongetimagemetadata', false, $medium);
         } else if (zmgMimeHelper::isAudio($this->_ext)) {
-            $this->_raw = $zoom->fireEvent('ongetaudiometadata', false, $path);
+            $this->_raw = $events->fire('ongetaudiometadata', false, $path);
         } else if (zmgMimeHelper::isVideo($this->_ext)) {
-            $this->_raw = $zoom->fireEvent('ongetvideometadata', false, $path);
+            $this->_raw = $events->fire('ongetvideometadata', false, $path);
         }
     }
     
