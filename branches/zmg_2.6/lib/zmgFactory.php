@@ -12,16 +12,6 @@
 defined('_ZMG_EXEC') or die('Restricted access');
 
 class zmgFactory {
-    function &getZoom() {
-        static $instance;
-        
-        if (!is_object($instance)) {
-            $instance = new zmgCore();
-        }
-
-        return $instance;
-    }
-    
     function &getJSON() {
         static $instance_json;
         

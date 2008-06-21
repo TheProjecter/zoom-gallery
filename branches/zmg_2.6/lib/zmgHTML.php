@@ -44,7 +44,7 @@ class zmgHTML {
         }
         $html .= ">\n\t<option value=\"0\">---&nbsp;".T_('Select a Gallery')."&nbsp;---</option>\n";
 
-        $zoom      = & zmgFactory::getZoom();
+        $zoom      = & zmgFactory::getEvents()->fire('ongetcore');
         $galleries = & $zoom->getGalleryList();
         
         if (isset($galleries)) {

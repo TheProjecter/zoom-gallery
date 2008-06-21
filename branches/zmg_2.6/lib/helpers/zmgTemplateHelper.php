@@ -106,15 +106,13 @@ class zmgTemplateHelper extends Smarty {
             }
         }
         
-        $zoom = & zmgFactory::getZoom();
-        
         //get template file that belongs to the active view:
         $res = & $this->_getResource('template', $view, $this->_type);
         if ($res) {
             $tpl_file = trim($res->firstChild->getAttribute('href'));
 
             zmgimport('org.zoomfactory.lib.helpers.zmgAPIHelper');
-            $api = new zmgAPIHelper($zoom);
+            $api = new zmgAPIHelper();
 
             $api->setParam('subview', $subview);
             

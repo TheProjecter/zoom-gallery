@@ -13,7 +13,7 @@ defined('_ZMG_EXEC') or die('Restricted access');
 
 class zmgUploadTool {
     function upload($method) {
-        $zoom = & zmgFactory::getZoom();
+        $zoom = & zmgFactory::getEvents()->fire('ongetcore');
         
         zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
         zmgimport('org.zoomfactory.lib.mime.zmgMimeHelper');

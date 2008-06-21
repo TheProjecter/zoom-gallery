@@ -20,12 +20,25 @@ class zmgCorePlugin {
         return array(
             "onstartup" => array(
                 "embed" => array()
+            ),
+            "ongetcore" => array(
+                "getCore" => array()
             )
         );
     }
     
     function embed() {
         zmgimport('org.zoomfactory.var.plugins.core.assets.*');
+    }
+
+    function &getCore() {
+        static $instance;
+
+        if (!is_object($instance)) {
+            $instance = new zmgCore();
+        }
+
+        return $instance;
     }
 }
 ?>

@@ -82,7 +82,7 @@ class zmgFileHelper
      */
     function tooBig($file) {
         if (zmgFileHelper::exists($file)) {
-            $config = & zmgFactory::getZoom();
+            $config = & zmgFactory::getConfig();
             $size   = intval((filesize($file) / 1024));
             if ($size <= intval($config->get('filesystem/upload/maxfilesize'))) {
                 return false;
