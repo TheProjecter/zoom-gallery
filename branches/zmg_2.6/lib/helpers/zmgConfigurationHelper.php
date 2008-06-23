@@ -22,6 +22,14 @@ class zmgConfigurationHelper {
      * @var array
      */
     var $_config = null;
+
+    /**
+     * Internal variable telling us ZMG was installed correctly
+     *
+     * @var boolean
+     */
+    var $_installed = null;
+
     /**
      * The class constructor.
      *
@@ -30,7 +38,72 @@ class zmgConfigurationHelper {
      */
     function zmgConfigurationHelper(&$config) {
         $this->_config = $config;
-        $config = null;
+        $config = null; //clear reference
+
+        //check if this is the first time that ZMG is set up - usually the case
+        //right after install of the component.
+        $this->_installed = (bool) ($this->_config['date_lch'] !== null);
+    }
+
+    function isInstalled() {
+        return $this->_installed;
+    }
+
+    function firstRun() {
+        // do the check again, for safety reasons:
+        if ($this->_config['date_lch'] !== null) {
+            $this->_installed = true;
+            return zmgError::throwError('Illegal way of accessing firstRun');
+        }
+
+        zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
+        if (zmgFileHelper::exists(ZMG_ABS_PATH . DS . 'etc' . DS . 'app.config.php.bak')) {
+            $this->_installed = true;
+            return zmgError::throwError('Illegal access: component already installed.');
+        }
+
+        $messages  = & zmgFactory::getMessages();
+        $html_file = "<html><body bgcolor=\"#FFFFFF\"></body></html>";
+
+        //make all the necessary folders writable for ZMG
+        $config_dir = ZMG_ABS_PATH . DS . "etc";
+        if (!zmgFileHelper::chmodRecursive($config_dir)) {
+            $messages->append('Installation Error!', 'Unable to set directory permissions for: '
+             . $config_dir);
+        }
+        //make sure the configuration file itself is writable
+        if (!zmgFileHelper::chmodRecursive($config_dir . DS . 'app.config.php')) {
+            $messages->append('Installation Error!', 'Unable to set file permissions for: '
+             . $config_dir . DS . 'app.config.php');
+        }
+
+        $media_dir = zmgEnv::getRootPath() .DS.$this->get('filesystem/mediapath');
+        if (!is_dir($media_dir)) {
+            if (zmgFileHelper::createDir($media_dir)) {
+                if (!zmgFileHelper::write($media_dir . DS . 'index.html', $html_file)) {
+                    $messages->append('Installation Error!', 'Unable to write to file: '
+                     . $media_dir . DS . 'index.html');
+                }
+            } else {
+                $messages->append('Installation Error!', 'Unable to create directory: '
+                 . $media_dir);
+            }
+        }
+
+        //backup the original config file that came with the distribution package
+        if (!zmgFileHelper::copy('app.config.php', 'app.config.php.bak', ZMG_ABS_PATH . DS . 'etc')) {
+            $messages->append('Installation Error!', 'Unable to copy file: '
+             . ZMG_ABS_PATH . DS . 'etc' . DS . 'app.config.php');
+        }
+
+        $this->_installed = $this->save();
+        if ($this->_installed) {
+            $messages->append('Installation Success!', 'Your component is ready to use now.');
+        } else {
+            $messages->append('Installation Error!', 'Settings could not be saved.');
+        }
+
+        return $this->_installed;
     }
 
     /**
@@ -150,6 +223,7 @@ class zmgConfigurationHelper {
          . " */\n\n"
          . "defined('_ZMG_EXEC') or die('Restricted access');\n\n"
          . "\$zoom_config = array();\n"
+         . "\$zoom_config['date_lch'] = " . time() . ";\n"
          . $this->_buildMetaBlock() . $this->_buildLocaleBlock()
          . $this->_buildDatabaseBlock() . $this->_buildFilesystemBlock()
          . $this->_buildSmartyBlock() . $this->_buildLayoutBlock()

@@ -11,6 +11,7 @@
 defined('_ZMG_EXEC') or die('Restricted access');
 
 $zoom_config = array();
+$zoom_config['date_lch'] = 1214236927;
 $zoom_config['meta'] = array();
 $zoom_config['meta']['title'] = "zOOm Media Gallery";
 $zoom_config['meta']['description'] = "...delivering beautiful content";

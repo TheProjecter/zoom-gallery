@@ -82,12 +82,13 @@
             </fileset>
         </copy>
 		
-		<delete dir="application/${build.label}/com_${app.name}/etc/_old" />
 		<delete dir="application/${build.label}/com_${app.name}/etc/compiled" />
 		<mkdir dir="application/${build.label}/com_${app.name}/etc/compiled" />
 		<delete dir="application/${build.label}/com_${app.name}/lib/_old" />
 		<delete dir="application/${build.label}/com_${app.name}/var/www/_old" />
 		<delete dir="application/${build.label}/com_${app.name}/locale/_old" />
+        <move file="application/${build.label}/com_${app.name}/etc/app.config.php.deploy"
+          tofile="application/${build.label}/com_${app.name}/etc/app.config.php" />
 	</target>
 
 	<target name="compress.all">

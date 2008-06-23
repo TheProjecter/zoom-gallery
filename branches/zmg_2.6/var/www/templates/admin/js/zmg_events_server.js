@@ -3,6 +3,7 @@ if (!window.ZMG) window.ZMG = {};
 ZMG.ServerEvents = (function() {
     function onView(text, xml, data, resp) {
         var key, view = data.view, o, isJSON = false;
+        text = text.trim();
         //console.log('Server#onview: ', view);
         ZMG.Shared.register('lastRequest', null);
         if (view == "admin:gallerymanager") {

@@ -37,6 +37,8 @@ $events->fire('onstartup');
 
 $events->fire('onstarted');
 
+if (!$config->isInstalled()) $config->firstRun();
+
 $view->setViewType(zmgEnv::getViewType());
 
 //set error handling options
