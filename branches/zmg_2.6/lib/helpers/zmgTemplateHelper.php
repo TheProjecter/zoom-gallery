@@ -94,7 +94,7 @@ class zmgTemplateHelper extends Smarty {
                 zmgEnv::appendPageHeader(zmgHTML::buildConstScript($this->_constants));
             }
         } else if ($this->_type == "xml") {
-            Zoom::sendHeaders('xml');
+            zmgFactory::getRequest()->sendHeaders('xml');
         } 
         
         if ($this->_type == "html") {
@@ -427,7 +427,7 @@ class zmgTemplateHelper extends Smarty {
         if (true) {//!zmgEnv::isRPC()) {
             return zmgError::throwError($message);
         } else {
-            return Zoom::sendHeaders($this->_type, true, $message);
+            return zmgFactory::getRequest()->sendHeaders($this->_type, true, $message);
         }
     }
     

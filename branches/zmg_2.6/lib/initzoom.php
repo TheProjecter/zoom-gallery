@@ -35,9 +35,7 @@ $view   = & zmgFactory::getView();
 
 $events->fire('onstartup');
 
-$zoom   = & $events->fire('ongetcore');
-
-$zoom->hasAccess() or die('Restricted access');
+$events->fire('onstarted');
 
 $view->setViewType(zmgEnv::getViewType());
 

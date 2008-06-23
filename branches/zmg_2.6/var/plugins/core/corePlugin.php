@@ -21,8 +21,14 @@ class zmgCorePlugin {
             "onstartup" => array(
                 "embed" => array()
             ),
+            "onstarted" => array(
+                "checkAccess" => array()
+            ),
             "ongetcore" => array(
                 "getCore" => array()
+            ),
+            "onviewset" => array(
+                "prepareAdmin" => array()
             )
         );
     }
@@ -39,6 +45,19 @@ class zmgCorePlugin {
         }
 
         return $instance;
+    }
+
+    function checkAccess() {
+        $zoom   = & zmgCorePlugin::getCore();
+
+        $zoom->hasAccess() or die('Restricted access');
+    }
+
+    function prepareAdmin() {
+        if (ZMG_ADMIN) {
+            $zoom = & zmgCorePlugin::getCore();
+            zmgFactory::getView()->appendConstant('mediumcount', $zoom->getMediumCount());
+        }
     }
 }
 ?>

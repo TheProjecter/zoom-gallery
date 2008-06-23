@@ -200,11 +200,15 @@ class zmgViewHelper {
             }
             */
             
-        
-        if (ZMG_ADMIN) {
-            $zoom = & $events->fire('ongetcore');
-            $this->_template->appendConstant('mediumcount', $zoom->getMediumCount());
+        $events->fire('onviewset');
+    }
+
+    function appendConstant($name, $value) {
+        if (empty($name) || !isset($value)) {
+            return $this->throwError('zmgViewHelper::appendConstant:' . T_('dependencies not met, please check.'));
         }
+
+        $this->_template->appendConstant($name, $value);
     }
     
     function get() {
@@ -233,7 +237,7 @@ class zmgViewHelper {
             return $this->throwError('No active view specified. Unable to run application.');
             
         if (zmgEnv::isRPC() && $this->_active_view == "ping") {
-            Zoom::sendHeaders($this->_viewtype);
+            zmgFactory::getRequest()->sendHeaders($this->_viewtype);
             echo "                                         ";
             return;
         }
@@ -252,7 +256,7 @@ class zmgViewHelper {
         if (true) {//!zmgEnv::isRPC()) {
             return zmgError::throwError($message);
         } else {
-            return Zoom::sendHeaders($this->_viewtype, true, $message);
+            return zmgFactory::getRequest()->sendHeaders($this->_viewtype, true, $message);
         }
     }
 }
