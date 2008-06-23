@@ -32,6 +32,7 @@ class zmgConfigurationHelper {
         $this->_config = $config;
         $config = null;
     }
+
     /**
      * Retrieve a specific configuration setting.
      *
@@ -48,6 +49,19 @@ class zmgConfigurationHelper {
         }
         return $config_val;
     }
+
+    function getTableName($name) {
+        $config = & zmgFactory::getConfig();
+        $prefix = $config->get('db/prefix');
+        $table  = $config->get('db/tables/' . $name);
+
+        if (!empty($prefix) && !empty($table)) {
+            return "#__" . $prefix . $table;
+        }
+
+        return null;
+    }
+
     /**
      * Set a specific configuration setting.
      *

@@ -120,7 +120,8 @@ class zmgGallery extends zmgTable {
     var $_media_count = null;
     
     function zmgGallery(&$db) {
-        $this->zmgTable('#__zmg_galleries', 'gid', $db);
+        $this->zmgTable(zmgFactory::getConfig()->getTableName('galleries'),
+          'gid', $db);
     }
     
     function getCoverImage() {
@@ -133,12 +134,16 @@ class zmgGallery extends zmgTable {
         }
 
         $db = & zmgDatabase::getDBO();
+
         if (!is_int($this->cover_img)) {
         	// first, check if the gallery contains any media at all:
-            $zoom = & zmgFactory::getEvents()->fire('ongetcore');
-            $db->setQuery("SELECT mid FROM #__zmg_media WHERE gid = " . $this->gid
+            $zoom  = & zmgFactory::getEvents()->fire('ongetcore');
+            $table = zmgFactory::getConfig()->getTableName('media');
+
+            $db->setQuery("SELECT mid FROM " . $table . " WHERE gid = " . $this->gid
               . " ORDER BY " . $zoom->getMediaOrdering() . " LIMIT 1");
             $medium = intval($db->loadResult());
+
             if ($medium > 0) {
             	// get the first available medium
                 $this->_obj_cover_img = new zmgMedium($db);
@@ -152,6 +157,7 @@ class zmgGallery extends zmgTable {
 
             return $this->_obj_cover_img->getRelPath();
         }
+
         //TODO: display an 'empty gallery' image...or let the client handle this?
         return "";
     }
@@ -159,8 +165,10 @@ class zmgGallery extends zmgTable {
     function getMediumCount() {
         if ($this->_medium_count === null) {
             $db = & zmgDatabase::getDBO();
-            $db->setQuery("SELECT COUNT(mid) FROM #__zmg_media WHERE gid = " . $this->gid
-             . " LIMIT 1");
+            $table = zmgFactory::getConfig()->getTableName('media');
+
+            $db->setQuery("SELECT COUNT(mid) FROM " . $table . " WHERE gid = "
+             . $this->gid . " LIMIT 1");
             $this->_medium_count = intval($db->loadResult());
         }
         

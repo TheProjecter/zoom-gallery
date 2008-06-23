@@ -17,12 +17,6 @@ defined('_ZMG_EXEC') or die('Restricted access');
  */
 class zmgCore {
     /**
-     * Internal variable for storing rpc-results temporarily
-     *
-     * @var string
-     */
-    var $_result = null;
-    /**
      * Internal variable, a holder for an array of galleries
      *
      * @var array
@@ -54,17 +48,6 @@ class zmgCore {
         die('Restricted access');
     }
 
-    function getTableName($name) {
-        $config = & zmgFactory::getConfig();
-        $prefix = $config->get('db/prefix');
-        $table  = $config->get('db/tables/' . $name);
-        
-        if (!empty($prefix) && !empty($table)) {
-            return "#__" . $prefix . $table;
-        }
-        return null;
-    }
-    
     /**
      * Check if a filename OR gallery-directory already exists and if it does;
      * do something about it!
@@ -76,7 +59,10 @@ class zmgCore {
      */
     function checkDuplicate($checkThis, $checkWhat = 'filename') {
         $db = & zmgDatabase::getDBO();
-        $db->setQuery("SELECT mid FROM #__zoomfiles WHERE filename = '$checkThis' AND gid = '".$this->_gallery->_id."'");
+        $table = zmgFactory::getConfig()->getTableName('media');
+        $db->setQuery("SELECT mid FROM " . $table . " WHERE filename = '"
+         . $checkThis . "' AND gid = '" . $this->_gallery->_id . "'");
+
         if ($this->_result = $db->query()) {
             if (mysql_num_rows($this->_result) > 0) {
                 // filename exists already for this gallery, so change the filename and test again...
@@ -88,14 +74,15 @@ class zmgCore {
             } else {
                 return $checkThis;
             }
-        } else {
-             return $checkThis;
         }
+        return $checkThis;
     }
     
     function getGalleryCount() {
         $db = & zmgDatabase::getDBO();
-        $db->setQuery('SELECT COUNT(gid) AS total FROM #__zmg_galleries');
+        $db->setQuery("SELECT COUNT(gid) AS total FROM "
+         . zmgFactory::getConfig()->getTableName('galleries'));
+
         if ($db->query()) {
             return intval($db->loadResult());
         }
@@ -104,14 +91,17 @@ class zmgCore {
 
     function getMediumCount($gid = 0) {
         $db = & zmgDatabase::getDBO();
-        $query = "SELECT COUNT(mid) AS total FROM #__zmg_media";
+        $query = "SELECT COUNT(mid) AS total FROM "
+         . zmgFactory::getConfig()->getTableName('media');
         if ($gid > 0) {
             $query .= " WHERE gid = $gid";
         }
+
         $db->setQuery($query);
         if ($db->query()) {
             return intval($db->loadResult());
         }
+
         return 0;
     }
 
@@ -119,7 +109,9 @@ class zmgCore {
         $ret  = array();
 
         $db   = & zmgDatabase::getDBO();
-        $db->setQuery("SELECT gid FROM #__zmg_galleries WHERE sub_gid=$sub_gid AND pos=$pos");
+        $db->setQuery("SELECT gid FROM " . zmgFactory::getConfig()->getTableName('media')
+         . " WHERE sub_gid = " . $sub_gid . " AND pos= " . $pos);
+
         $rows = $db->loadRowList();
         if ($rows) {
             foreach ($rows as $row) {
@@ -128,6 +120,7 @@ class zmgCore {
                 $ret[]   = $gallery;
             }
         }
+
         return $ret;
     }
 
@@ -141,8 +134,10 @@ class zmgCore {
     function &getGalleryList($parent = 0, $indent_l1 = '.', $indent_l2 = '.') {
         if (!is_array($this->_gallerylist)) {
             $db   = & zmgDatabase::getDBO();
-            $db->setQuery("SELECT gid FROM #__zmg_galleries WHERE sub_gid=$parent ORDER BY pos, "
+            $db->setQuery("SELECT gid FROM " . zmgFactory::getConfig()->getTableName('galleries')
+             . " WHERE sub_gid= " . $parent . " ORDER BY pos, "
              . $this->getGalleriesOrdering());
+
             $rows = $db->loadRowList();
             if ($rows) {
                 foreach ($rows as $row) {
@@ -158,6 +153,7 @@ class zmgCore {
                 }
             }
         }
+
         return $this->_gallerylist;
     }
 
@@ -167,11 +163,11 @@ class zmgCore {
             $gid = $filter;
         }
         $gid = intval($gid);
-        $ret  = array();
+        $ret = array();
 
-        $db   = & zmgDatabase::getDBO();
+        $db  = & zmgDatabase::getDBO();
         
-        $query = "SELECT mid FROM #__zmg_media";
+        $query = "SELECT mid FROM " . zmgFactory::getConfig()->getTableName('media');
         if ($gid === 0) {
             $query .= " ORDER BY gid, " . $this->getMediaOrdering();
         } else {
@@ -200,6 +196,7 @@ class zmgCore {
                 $ret[] = $medium;
             }
         }
+
         return $ret;
     }
 

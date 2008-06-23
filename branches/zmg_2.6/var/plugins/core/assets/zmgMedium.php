@@ -56,7 +56,7 @@ class zmgMedium extends zmgTable {
     var $_metadata = null;
     
     function zmgMedium(&$db) {
-        $this->zmgTable('#__zmg_media', 'mid', $db);
+        $this->zmgTable(zmgFactory::getConfig()->getTableName('media'), 'mid', $db);
     }
     
     function getAbsPath($type = ZMG_MEDIUM_ORIGINAL, $mediapath = '') {
@@ -180,8 +180,10 @@ class zmgMedium extends zmgTable {
     
     function setGalleryDir($dir = null) {
         if ($dir === null) {
-    		$db = & zmgDatabase::getDBO();
-            $db->setQuery("SELECT dir FROM #__zmg_galleries WHERE gid=".$this->gid);
+    		$db    = & zmgDatabase::getDBO();
+            $table = zmgFactory::getConfig()->getTableName('galleries');
+            $db->setQuery("SELECT dir FROM " . $table . " WHERE gid=".$this->gid);
+
             if ($db->query()) {
                 $dir = trim($db->loadResult());
             }
@@ -241,8 +243,10 @@ class zmgMedium extends zmgTable {
     function getComments() {
         $comments = array();
         
-        $db = & zmgDatabase::getDBO();
-        $db->setQuery('SELECT cid FROM #__zmg_comments WHERE mid = '.$this->mid.' ORDER BY date_added ASC');
+        $db    = & zmgDatabase::getDBO();
+        $table = zmgFactory::getConfig()->getTableName('comments');
+        $db->setQuery("SELECT cid FROM " . $table . " WHERE mid = " . $this->mid
+         . " ORDER BY date_added ASC");
 
         $_result = $db->loadObjectList();
         foreach ($_result as $row) {
