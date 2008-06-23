@@ -71,6 +71,7 @@
             'clear'
         {/if}
         {literal}
-    ]
+    ],
+    {/literal}{$zmgAPI->getMessages()}{literal}
 }
 {/literal}

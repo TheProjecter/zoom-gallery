@@ -51,28 +51,8 @@ class zmgToolboxConstants {
     }
     
 }
-$GLOBALS['_ZMG_TOOLBOX_TOOLS'] = array(
-    'document',
-    'image',
-    'gd1x',
-    'gd2x',
-    'imagemagick',
-    'mime',
-    'audio',
-    'netpbm',
-    'upload',
-    'video',
-    'watermark'
-);
 
-$GLOBALS['_ZMG_TOOLBOX_IMAGETOOLS'] = array(
-    'imagemagick',
-    'netpbm',
-    'gd1x',
-    'gd2x'
-);
-
-class zmgToolboxPlugin extends zmgError {
+class zmgToolboxPlugin {
     function bindEvents() {
         return array(
             "onstartup" => array(

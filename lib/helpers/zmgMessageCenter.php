@@ -52,9 +52,32 @@ class zmgMessageCenter {
             }
             return $out . "  ]\n"
              . "}\n";
-        } else {
+        } else if ($output == "xml") {
             //TODO: convert messages to XML
         }
+
+        // throw-out the object if no output method is given
+        return $messages;
+    }
+
+    function getAll() {
+        return $this->get(0, 'raw');
+    }
+
+    function setAll($messages) {
+        if (empty($messages) || !is_array($messages)) {
+            return zmgError::throwError('Illegal access to zmgMessageCenter::setAll');
+        }
+
+        $this->_messages = $messages;
+    }
+
+    function clear() {
+        $this->_messages = array();
+    }
+
+    function countMessages() {
+        return count($this->_messages);
     }
     
     function _toJSON($msg) {
@@ -64,13 +87,7 @@ class zmgMessageCenter {
             'descr'    : ".$json->encode($msg[1])."
         }");
     }
-    
-    function clear() {
-        $this->_messages = array();
-    }
-    
-    function countMessages() {
-        return count($this->_messages);
-    }
 }
+
 ?>
+

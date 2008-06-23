@@ -331,8 +331,7 @@ class zmgFileHelper
      * @return boolean True if successful
      * @since 1.5
      */
-    function createDir($path = '', $mode = 0755)
-    {
+    function createDir($path = '', $mode = 0755) {
         // Initialize variables
         //jimport('joomla.client.helper');
         //$FTPOptions = JClientHelper::getCredentials('ftp');
@@ -404,17 +403,17 @@ class zmgFileHelper
             }
 
             // First set umask
-            $origmask = @ umask(0);
+            $origmask = @umask(0);
 
             // Create the path
             if (!$ret = @mkdir($path, $mode)) {
-                @ umask($origmask);
+                @umask($origmask);
                 zmgError::throwError(T_('Could not create directory'));
                 return false;
             }
 
             // Reset umask
-            @ umask($origmask);
+            @umask($origmask);
         }
         return $ret;
     }
@@ -462,7 +461,7 @@ class zmgFileHelper
      */
     function readDir($path, $filter='.', $recurse=false, $fullpath=false) {
         $arr = array();
-        if (!@is_dir( $path )) {
+        if (!@is_dir($path)) {
             return $arr;
         }
         $handle = opendir($path);

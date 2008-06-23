@@ -38,6 +38,14 @@ class zmgCorePlugin {
     
     function embed() {
         zmgimport('org.zoomfactory.var.plugins.core.assets.*');
+
+        $messages = & zmgFactory::getMessages();
+        $session  = & zmgFactory::getSession(); //also restores the session if needed
+
+        $from_session = $session->get('zmg.messagecenter.cache');
+        if (!empty($from_session) && is_array($from_session)) {
+            $messages->setAll($from_session);
+        }
     }
 
     function &getCore() {
@@ -64,7 +72,10 @@ class zmgCorePlugin {
     }
 
     function shutDown() {
-        $session = & zmgFactory::getSession();
+        $messages = & zmgFactory::getMessages();
+        $session  = & zmgFactory::getSession();
+
+        $session->put('zmg.messagecenter.cache', $messages->getAll(), true);
         $session->store();
     }
 }
