@@ -25,23 +25,11 @@ class zmgEventsHelper {
     }
 
     /**
-     * Load all available custom events from the /var/events folder.
+     * Deprecated: Load all available custom events from the /var/events folder.
+     * Now only importing the zmgEvent class
      */
     function _load() {
         zmgimport('org.zoomfactory.lib.zmgEvent'); //will be used later
-        zmgimport('org.zoomfactory.lib.helpers.zmgFileHelper');
-
-        //TODO: move reading directory stuff to zmgConfigurationHelper class
-        $event_cats = zmgFileHelper::readDir(ZMG_ABS_PATH . DS.'var'.DS.'events', '[^index\.html]');
-        $this->_events = array();
-        foreach ($event_cats as $cat) {
-            if ($cat != "shared") {
-                $events = zmgFileHelper::readDir(ZMG_ABS_PATH . DS.'var'.DS.'events'.DS . $cat, '[^index\.html]');
-                if (count($events) > 0) {
-                    $this->_events[$cat] = $events;
-                }
-            }
-        }
     }
 
     /**
@@ -49,6 +37,7 @@ class zmgEventsHelper {
      *
      * @param string The name of the event that is fired
      * @param bool The event may or may not bubble down
+     * @return mixed
      */
     function fire($type, $nobubble = false) {
         $event = new zmgEvent($type);
@@ -59,14 +48,6 @@ class zmgEventsHelper {
         	$newArgs = $newArgs[0];
         }
         $event->pass($newArgs);
-        /*if (!empty($this->events[$event])) {
-            foreach ($this->events[$event] as $cmp) {
-                zmgimport('org.zoomfactory.var.events.'.$event.'.'.$cmp.'.'.$cmp);
-                if (class_exists($cmp)) {
-                    eval($cmp . '::start(&$this);');
-                }
-            }
-        }*/
 
         //bubble through to plugins:
         if (!(bool)$nobubble) {

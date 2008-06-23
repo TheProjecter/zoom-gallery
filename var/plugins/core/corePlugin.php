@@ -24,6 +24,9 @@ class zmgCorePlugin {
             "onstarted" => array(
                 "checkAccess" => array()
             ),
+            "onfinish" => array(
+                "shutDown" => array()
+            ),
             "ongetcore" => array(
                 "getCore" => array()
             ),
@@ -58,6 +61,11 @@ class zmgCorePlugin {
             $zoom = & zmgCorePlugin::getCore();
             zmgFactory::getView()->appendConstant('mediumcount', $zoom->getMediumCount());
         }
+    }
+
+    function shutDown() {
+        $session = & zmgFactory::getSession();
+        $session->store();
     }
 }
 ?>
