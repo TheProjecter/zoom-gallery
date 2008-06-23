@@ -40,7 +40,7 @@ class zmgComment extends zmgTable {
     var $date_added = null;
     
     function zmgComment(&$db) {
-        $this->zmgTable('#__zmg_comments', 'cid', $db);
+        $this->zmgTable(zmgFactory::getConfig()->getTableName('comments'), 'cid', $db);
     }
     
     /**
@@ -161,4 +161,5 @@ class zmgCommentHelper {
         return $smilies;
  	}
 }
+
 ?>

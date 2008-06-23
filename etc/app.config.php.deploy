@@ -34,8 +34,8 @@ $zoom_config['db']['tables']['priviliges']  = "priviliges";
 
 $zoom_config['filesystem'] = array();
 $zoom_config['filesystem']['mediapath']   = "images".DS."zoom".DS;
-$zoom_config['filesystem']['dirperms']    = "";
-$zoom_config['filesystem']['fileperms']   = "";
+$zoom_config['filesystem']['dirperms']    = "0755";
+$zoom_config['filesystem']['fileperms']   = "0644";
 $zoom_config['filesystem']['upload']      = array();
 $zoom_config['filesystem']['upload']['maxfilesize'] = 2048;
 $zoom_config['filesystem']['upload']['tempdescr']   = "Temporary description, please change...";
@@ -47,7 +47,7 @@ $zoom_config['smarty']['templatedir']    = ZMG_ABS_PATH . DS."var".DS."www".DS."
 $zoom_config['smarty']['compiledir']     = ZMG_ABS_PATH . DS."etc".DS."compiled";
 $zoom_config['smarty']['cachedir']       = ZMG_ABS_PATH . DS."etc".DS."cache";
 $zoom_config['smarty']['configdir']      = ZMG_ABS_PATH . DS."etc";
-$zoom_config['smarty']['activetemplate'] = "default";
+$zoom_config['smarty']['activetemplate'] = "intheshade";
 
 $zoom_config['layout'] = array();
 $zoom_config['layout']['columnsno']      = 2;
@@ -95,8 +95,8 @@ $zoom_config['app']['features']['imagezoom']         = 1;
 $zoom_config['app']['features']['slideshow']         = 1;
 $zoom_config['app']['features']['lightbox']          = 1;
 $zoom_config['app']['errors']          = array();
-$zoom_config['app']['errors']['defaultmode']   = ZMG_ERROR_TRIGGER;
-$zoom_config['app']['errors']['defaultoption'] = E_USER_NOTICE; //for live usage: E_USER_NOTICE;
+$zoom_config['app']['errors']['defaultmode']   = ZMG_ERROR_CALLBACK;
+$zoom_config['app']['errors']['defaultoption'] = "zmgErrorCallback";
 
 $zoom_config['events'] = array();
 

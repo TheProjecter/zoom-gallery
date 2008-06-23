@@ -31,6 +31,7 @@ class zmgEditMonitor {
      */
     function set($id, $which, $filename='') {
         $db = & zmgDatabase::getDBO();
+        $table = zmgFactory::getConfig()->getTableName('editmon');
 
         $today = time() + intval(zmgEnv::getSessionLifetime());
         $sid = md5(zmgEnv::getSessionToken());
@@ -38,22 +39,22 @@ class zmgEditMonitor {
         if (!zmgEditMonitor::isEdited($id, $which, $filename)) {
             switch ($which){
                 case 'comment':
-                    $db->setQuery("INSERT INTO #__zmg_editmon (user_session, "
+                    $db->setQuery("INSERT INTO " . $table . " (user_session, "
                      . "comment_time, object_id) VALUES ('$sid', '$today','"
                      . zmgSQLEscape($id) . "')");
                     break;
                 case 'vote':
-                    $db->setQuery("INSERT INTO #__zmg_editmon (user_session, "
+                    $db->setQuery("INSERT INTO " . $table . " (user_session, "
                      . "vote_time, object_id) VALUES ('$sid', '$today', '"
                      . zmgSQLEscape($id) . "')");
                     break;
                 case 'pass':
-                    $db->setQuery("INSERT INTO #__zmg_editmon (user_session, "
+                    $db->setQuery("INSERT INTO " . $table . " (user_session, "
                      . "pass_time, object_id) VALUES ('$sid', '$today', '"
                      . zmgSQLEscape($id) . "')");
                     break;
                 case 'lightbox':
-                    $db->setQuery("INSERT INTO #__zmg_editmon (user_session, "
+                    $db->setQuery("INSERT INTO " . $table . " (user_session, "
                      . "lightbox_time, lightbox_file) VALUES ('$sid', '$today', '"
                      . zmgSQLEscape($filename) . "')");
                     break;
@@ -65,6 +66,7 @@ class zmgEditMonitor {
             }
         }
     }
+
     /**
      * Delete rows of the '#__zmg_editmon' table which are out-of-date.
      *
@@ -73,25 +75,27 @@ class zmgEditMonitor {
      */
     function update() {
         $db = & zmgDatabase::getDBO();
+        $table = zmgFactory::getConfig()->getTableName('editmon');
         
         $now = time();
         
         // first, delete rows containing vote, commment and gallery-pass times...
-        $db->setQuery("DELETE FROM #__zmg_editmon WHERE vote_time < '$now' OR "
+        $db->setQuery("DELETE FROM " . $table . " WHERE vote_time < '$now' OR "
          . "comment_time < '$now' OR pass_time < '$now'");
         @$db->query();
         // second, delete lightbox rows and files...
-        $db->setQuery("SELECT lightbox_file FROM #__zmg_editmon WHERE "
+        $db->setQuery("SELECT lightbox_file FROM " . $table . " WHERE "
          . "lightbox_time < '$now'");
         $result = $db->query();
         if (mysql_num_rows($result) > 0) {
             while ($lightbox = mysql_fetch_object($result)) {
                 @unlink($lightbox->lightbox_file);
-                $db->setQuery("DELETE FROM #__zoom_editmon WHERE lightbox_time < '$now'");
+                $db->setQuery("DELETE FROM " . $table . " WHERE lightbox_time < '$now'");
                 $db->query();
             }
         }
     }
+
     /**
      * When an image or comment has been deleted, its EditMon record should be deleted.
      *
@@ -101,13 +105,15 @@ class zmgEditMonitor {
      */
     function purgeComments($mid, $limit_session = true) {
         $db = & zmgDatabase::getDBO();
+        $table = zmgFactory::getConfig()->getTableName('editmon');
 
         $sid = md5(zmgEnv::getSessionToken());
         
-        $db->setQuery("DELETE FROM #__zoom_editmon WHERE "
+        $db->setQuery("DELETE FROM " . $table . " WHERE "
          . ($limit_session ? "user_session = '$sid' AND " : "") . "object_id = $mid");
         return (bool) @$db->query();
     }
+
     /**
      * Checks if a user has the right to edit a medium, or if he/ she already
      * edited the medium before.
@@ -120,28 +126,29 @@ class zmgEditMonitor {
      */
     function isEdited($id, $which, $filename='') {
         $db = & zmgDatabase::getDBO();
+        $table = zmgFactory::getConfig()->getTableName('editmon');
 
         $today = time() + intval(zmgEnv::getSessionLifetime());
         $sid = md5(zmgEnv::getSessionToken());
         
         switch ($which) {
             case 'comment':
-                $db->setQuery("SELECT edtid FROM #__zmg_editmon WHERE "
+                $db->setQuery("SELECT edtid FROM " . $table . " WHERE "
                  . "user_session = '$sid' AND comment_time > '$now' AND "
                  . "object_id = " . zmgSQLEscape($id));
                 break;
             case 'vote';
-                $db->setQuery("SELECT edtid FROM #__zmg_editmon WHERE "
+                $db->setQuery("SELECT edtid FROM " . $table . " WHERE "
                  . "user_session = '$sid' AND vote_time > '$now' AND "
                  . "object_id = " . zmgSQLEscape($id));
                 break;
             case 'pass':
-                $db->setQuery("SELECT edtid FROM #__zmg_editmon WHERE "
+                $db->setQuery("SELECT edtid FROM " . $table . " WHERE "
                  . "user_session = '$sid' AND pass_time > '$now' AND "
                  . "object_id = " . zmgSQLEscape($id));
                 break;
             case 'lightbox':
-                $db->setQuery("SELECT edtid FROM #__zmg_editmon WHERE "
+                $db->setQuery("SELECT edtid FROM " . $table . " WHERE "
                  . "user_session = '$sid' AND lightbox_time > '$now' AND "
                  . "lightbox_file = '" . zmgSQLEscape($filename) . "'");
                 break;

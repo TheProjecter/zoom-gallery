@@ -22,7 +22,11 @@ define('_ZMG_RPC_RESULT_KO', 'KO');
  * @subpackage helpers
  */
 class zmgRequestHelper {
-
+    /**
+     * Internal variable for storing rpc-results temporarily
+     *
+     * @var string
+     */
     var $_result = null;
 
     function zmgRequestHelper() {

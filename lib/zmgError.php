@@ -8,9 +8,9 @@
  * @copyright Copyright &copy; 2007, Mike de Boer. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GPL
  * 
- * NOTE: the structure and parts of the implementation of the jsyError class
+ * NOTE: the structure and parts of the implementation of the zmgError class
  *       has been derived from the PEAR class (PEAR.php, also available
- *       in this package). Copyrights of that code belongs to their respective
+ *       in this package). Copyright of that code belongs to their respective
  *       owners.
  */
 

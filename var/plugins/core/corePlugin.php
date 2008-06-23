@@ -48,7 +48,7 @@ class zmgCorePlugin {
     }
 
     function checkAccess() {
-        $zoom   = & zmgCorePlugin::getCore();
+        $zoom = & zmgCorePlugin::getCore();
 
         $zoom->hasAccess() or die('Restricted access');
     }
