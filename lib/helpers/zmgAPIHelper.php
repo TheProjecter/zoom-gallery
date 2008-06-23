@@ -109,9 +109,9 @@ class zmgAPIHelper {
     }
     
     function getResult() {
-        $zoom = & zmgFactory::getEvents()->fire('ongetcore');
+        $request = & zmgFactory::getRequest();
         
-        return $zoom->getResult();
+        return $request->getResult();
     }
     
     function getMessages() {

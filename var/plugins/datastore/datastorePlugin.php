@@ -40,16 +40,16 @@ class zmgDatastorePlugin {
     }
     
     function storeDelegate(&$event) {
-    	$aView  = $event->getArgument('view');
-        $view   = implode(':', $aView);
+    	$aView   = $event->getArgument('view');
+        $view    = implode(':', $aView);
         
-        $zoom   = & zmgFactory::getEvents()->fire('ongetcore');
-        $config = & zmgFactory::getConfig();
-        $events = & zmgFactory::getEvents();
+        $config  = & zmgFactory::getConfig();
+        $events  = & zmgFactory::getEvents();
+        $request = & zmgFactory::getRequest();
         
         switch ($view) {
             case "admin:settings:store":
-                $zoom->setResult($config->update($_POST, false));
+                $request->setResult($config->update($_POST, false));
                 break;
             case stristr($view, "admin:settings:plugins:autodetect"):
                 $tool = trim($aView[count($aView) - 1]);
@@ -62,7 +62,8 @@ class zmgDatastorePlugin {
                 break;
             case stristr($view, "admin:update:mediacount"):
                 $filter = intval(array_pop($aView));
-                $zoom->setResult($zoom->getMediumCount($filter));
+                $zoom   = & zmgFactory::getEvents()->fire('ongetcore');
+                $request->setResult($zoom->getMediumCount($filter));
                 break;
             case "admin:galleryedit:store":
                 zmgimport('org.zoomfactory.var.plugins.datastore.stores.galleryStore');
@@ -90,7 +91,8 @@ class zmgDatastorePlugin {
                 $events->fire('onuploadupdate', false, $gid);
                 break;
             case stristr($view, "admin:update:mediacount"):
-                $gid = intval(array_pop($aView));
+                $gid  = intval(array_pop($aView));
+                $zoom = & zmgFactory::getEvents()->fire('ongetcore');
                 echo $zoom->getMediumCount($gid);
                 break;
             default:
