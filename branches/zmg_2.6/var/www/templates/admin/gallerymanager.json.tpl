@@ -9,7 +9,7 @@
 		        'icon': ZMG.CONST.res_path + '/images/admin_treeitems.gif#2',
 		        'openicon': ZMG.CONST.res_path + '/images/admin_treeitems.gif#3',
 		        'open': false,
-		        'load': ZMG.CONST.req_uri + '&view=admin:gallerymanager:getgalleries&sub={$gallery->gid}&pos={$zmgAPI->getRequestParamInt('pos')+1}',
+		        'load': ZMG.CONST.req_uri + '&view=admin:gallerymanager:getgalleries&sub={$gallery->gid}&pos={$zmgAPI->getRequestParamInt('pos')+1}'
             {literal}}{/literal}
             {if !$smarty.foreach.galleryiterator.last},{/if}
         {foreachelse}

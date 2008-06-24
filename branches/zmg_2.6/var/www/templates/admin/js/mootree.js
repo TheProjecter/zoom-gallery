@@ -220,20 +220,17 @@ var MooTreeControl = new Class({
 				var con={text:''}, comment='', node=null, subul=null;
 				var n=0, z=0, se=null, s = c[i].getChildren();
 				for (n=0; n<s.length; n++) {
-					switch (s[n].nodeName) {
-						case 'A':
-							for (z=0; z<s[n].childNodes.length; z++) {
-								se = s[n].childNodes[z];
-								switch (se.nodeName) {
-									case '#text': con.text += se.nodeValue; break;
-									case '#comment': comment += se.nodeValue; break;
-								}
-							}
-							con.data = s[n].getProperties('href','target','title','name');
-						break;
-						case 'UL':
-							subul = s[n];
-						break;
+					if (s[n].nodeName == "A") {
+                        for (z=0; z<s[n].childNodes.length; z++) {
+                            se = s[n].childNodes[z];
+                            if (se.nodeName == "#text")
+                                con.text += se.nodeValue;
+                            else if (se.nodeName == "#comment")
+                                comment += se.nodeValue;
+                        }
+                        con.data = s[n].getProperties('href', 'target', 'title', 'name');
+					} else if (s[n].nodeName == "UL") {
+                        subul = s[n];
 					}
 				}
 				if (con.label != '') {
@@ -367,7 +364,8 @@ var MooTreeNode = new Class({
 		
 		// attach event handler to icon/text:
 		this.div.icon._node = this.div.text._node = this;
-		this.div.icon.onclick = this.div.icon.ondblclick = this.div.text.onclick = this.div.text.ondblclick = function() {
+		this.div.icon.onclick = this.div.icon.ondblclick = this.div.text.onclick
+          = this.div.text.ondblclick = function() {
 			this._node.control.select(this._node);
 		}
 		
@@ -511,7 +509,7 @@ var MooTreeNode = new Class({
 			
 			// update the icon:
 			this.div.icon.innerHTML = this.getImg( this.nodes.length ? ( this.open ? (this.openicon || this.icon || '_open') : (this.icon || '_closed') ) : ( this.icon || (this.control.mode == 'folders' ? '_closed' : '_doc') ) );
-			
+
 			// update the plus/minus gadget:
 			this.div.gadget.innerHTML = this.getImg( ( this.control.grid ? ( this.control.root == this ? (this.nodes.length ? 'R' : '') : (this.last?'L':'T') ) : '') + (this.nodes.length ? (this.open?'minus':'plus') : '') );
 			
@@ -541,7 +539,7 @@ var MooTreeNode = new Class({
 	
 	getImg: function(name) {
 		
-		var html = '<div class="mooTree_img"';
+		var html = ['<div class="mooTree_img"'];
 		
 		if (name != '') {
 			var img = this.control.theme;
@@ -552,12 +550,13 @@ var MooTreeNode = new Class({
 				img = x[0];
 				i = (x.length == 2 ? parseInt(x[1])-1 : 0);
 			}
-			html += ' style="background-image:url(' + img + '); background-position:-' + (i*18) + 'px 0px;"';
+			html.push(' style="background-image:url(', img,
+             '); background-position:-', (i * 18), 'px 0px;"');
 		}
 		
-		html += "></div>";
+		html.push("></div>");
 		
-		return html;
+		return html.join('');
 		
 	},
 	
@@ -633,7 +632,7 @@ var MooTreeNode = new Class({
 		// called on success - import nodes from the root element:
 		this.control.disable();
 		this.clear();
-		if (!xml && text)
+		if (text)
 		    this._importJSON(text);
 		else
 		    this._import(xml.documentElement);
@@ -642,7 +641,7 @@ var MooTreeNode = new Class({
 	},
 	
 	_importJSON: function(json) {
-	    var o = Json.evaluate(json);
+        var o = Json.evaluate(json);
 	    for (var i in o) {
 	        this._importJSONNode(o[i])
 	    }
@@ -664,11 +663,11 @@ var MooTreeNode = new Class({
                     opt.data[j] = node[j];
             }
         }
-        var node = this.insert(opt);
-        if (node.data.load) {
-            node.open = false; // can't have a dynamically loading node that's already open!
-            node.insert(this.control.loader);
-            node.onExpand = function(state) {
+        var oNode = this.insert(opt);
+        if (oNode.data.load) {
+            oNode.open = false; // can't have a dynamically loading node that's already open!
+            oNode.insert(this.control.loader);
+            oNode.onExpand = function(state) {
                 this.load(this.data.load);
                 this.onExpand = new Function();
             }
@@ -676,41 +675,43 @@ var MooTreeNode = new Class({
         // recursively import subnodes of this node:
         if (opt.data.children)
             for (var k in opt.data.children)
-                node._importJSONNode(opt.data.children[k]);
+                oNode._importJSONNode(opt.data.children[k]);
 	},
 	
 	_import: function(e) {
 		// import childnodes from an xml element:
 		var n = e.childNodes;
-		for (var i=0; i<n.length; i++) if (n[i].tagName == 'node') {
-			var opt = {data:{}};
-			var a = n[i].attributes;
-			for (var t=0; t<a.length; t++) {
-				switch (a[t].name) {
-					case 'text':
-					case 'id':
-					case 'icon':
-					case 'openicon':
-					case 'color':
-					case 'open':
-						opt[a[t].name] = a[t].value;
-						break;
-					default:
-						opt.data[a[t].name] = a[t].value;
-				}
-			}
-			var node = this.insert(opt);
-			if (node.data.load) {
-				node.open = false; // can't have a dynamically loading node that's already open!
-				node.insert(this.control.loader);
-				node.onExpand = function(state) {
-					this.load(this.data.load);
-					this.onExpand = new Function();
-				}
-			}
-			// recursively import subnodes of this node:
-			if (n[i].childNodes.length) node._import(n[i]);
-		}
+		for (var i = 0; i < n.length; i++) {
+            if (n[i].tagName == 'node') {
+                var opt = {data:{}};
+                var a = n[i].attributes;
+                for (var t = 0; t < a.length; t++) {
+                    switch (a[t].name) {
+                        case 'text':
+                        case 'id':
+                        case 'icon':
+                        case 'openicon':
+                        case 'color':
+                        case 'open':
+                            opt[a[t].name] = a[t].value;
+                            break;
+                        default:
+                            opt.data[a[t].name] = a[t].value;
+                    }
+                }
+                var node = this.insert(opt);
+                if (node.data.load) {
+                    node.open = false; // can't have a dynamically loading node that's already open!
+                    node.insert(this.control.loader);
+                    node.onExpand = function(state) {
+                        this.load(this.data.load);
+                        this.onExpand = new Function();
+                    }
+                }
+                // recursively import subnodes of this node:
+                if (n[i].childNodes.length) node._import(n[i]);
+            }
+        }
 	},
 	
 	_load_err: function(req) {

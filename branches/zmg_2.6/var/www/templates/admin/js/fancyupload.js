@@ -184,13 +184,16 @@ var FancyUpload = new Class({
 	},
 
 	addFile: function(name, size) {
-		if (!this.options.multiple && this.fileList.length) this.remove(this.fileList[0].name, this.fileList[0].size);
+		if (!this.options.multiple && this.fileList.length)
+            this.remove(this.fileList[0].name, this.fileList[0].size);
 		this.fileList.push({
 			name: name,
 			size: size,
 			status: 0,
 			percentage: 0,
-			element: new Element('li').setHTML('<span class="queue-file">'+ name +'</span><span class="queue-size" title="'+ size +' byte">~'+ Math.ceil(size / 1000) +' kb</span>').injectInside(this.queue)
+			element: new Element('li').setHTML('<span class="queue-file">' + name
+             + '</span><span class="queue-size" title="' + size + ' byte">~'
+             + Math.ceil(size / 1000) + ' kb</span>').injectInside(this.queue)
 		});
 		new Element('a', {
 			href: 'javascript:void(0)',
@@ -217,7 +220,9 @@ var FancyUpload = new Class({
 	},
 
 	highlight: function(index, color) {
-		return this.fileList[index].element.effect('background-color', {duration: this.options.optionFxDuration}).start(color, 'fff');
+		return this.fileList[index].element.effect('background-color', {
+            duration: this.options.optionFxDuration
+        }).start(color, 'fff');
 	},
 
 	cancelFile: function(e, name, size) {
@@ -232,14 +237,18 @@ var FancyUpload = new Class({
 			this.uploader.remove(name, size);
 			this.checkComplete(name, size, 'onCancel');
 		}
-		this.fileList[index].element.effect('opacity', {duration: this.options.optionFxDuration}).start(1, 0).chain(Element.remove.pass([this.fileList[index].element], Element));
+		this.fileList[index].element.effect('opacity', {
+            duration: this.options.optionFxDuration
+        }).start(1, 0).chain(Element.remove.pass([this.fileList[index].element], Element));
 		this.fileList.splice(index, 1);
 		return;
 	},
 
 	findFile: function(name, size) {
 		var l = this.fileList.length, i = -1;
-		while (++i < l) if (this.fileList[i].name == name && this.fileList[i].size == size) return i;
+		while (++i < l)
+            if (this.fileList[i].name == name && this.fileList[i].size == size)
+                return i;
 		return -1;
 	},
 
@@ -251,7 +260,9 @@ var FancyUpload = new Class({
 
 	clearList: function(complete) {
 		var i = -1;
-		while (++i < this.fileList.length) if (complete || this.fileList[i].status == 2) this.remove(0, 0, 0, i--);
+		while (++i < this.fileList.length)
+            if (complete || this.fileList[i].status == 2)
+                this.remove(0, 0, 0, i--);
 	}
 });
 

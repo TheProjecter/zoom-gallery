@@ -13,10 +13,10 @@ ZMG.ClientEvents = (function() {
     var editSlide = null;
     //LiveGrid content filter
     var activeFilter  = null;
-    ZMG.Shared.register('filterSelects', []);
+    ZMG.Shared.register('filterSelects', [], null, 0);
     
     function onStart() {
-        ZMG.Shared.register('toolbar', new ZMG.Toolbar())
+        ZMG.Shared.register('toolbar', new ZMG.Toolbar(), null, 0)
           .setTitleImage(ZMG.CONST.res_path + "/../../shared/images/zoom_logo_medium.gif");
 
         window.addEvent('resize', onWindowResize);
@@ -36,9 +36,7 @@ ZMG.ClientEvents = (function() {
     
     function onShowMessage(title, msg, posTop, posLeft) {
         var oTooltip = ZMG.GUI.displayTooltip(title, msg, posTop, posLeft);
-        
         window.setTimeout(onHideMessages.pass(oTooltip, this), 7500);
-        
         tooltips.push(oTooltip);
     };
     
@@ -198,9 +196,9 @@ ZMG.ClientEvents = (function() {
     };
     
     function onPing() {
-        clearTimeout(ZMG.pingTimer);
+        $clear(ZMG.pingTimer);
         onViewSelect('ping');
-        ZMG.pingTimer = window.setTimeout(onPing, ZMG.CONST.refreshtime);
+        ZMG.pingTimer = window.setTimeout(ZMG.ClientEvents.onPing, ZMG.CONST.refreshtime);
     };
     
     function onWindowResize() {

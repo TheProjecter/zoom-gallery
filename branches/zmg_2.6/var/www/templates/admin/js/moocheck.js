@@ -35,8 +35,9 @@ var FancyForm = {
 		FancyForm.onDeselect = $pick(options['onDeselect'], function(el){});
 		var keeps = new Array();
 		FancyForm.chks = elements.filter(function(chk){
-			if( $type(chk) != 'element' ) return false;
-			if( chk.getTag() == 'input' && (FancyForm.onclasses[chk.getProperty('type')]) ){
+            if( $type(chk) != 'element' ) return false;
+			if( $(chk).getTag() == 'input'
+              && (FancyForm.onclasses[chk.getProperty('type')]) ){
 				var el = chk.getParent();
 				if(el.getElement('input')==chk){
 					el.type = chk.getProperty('type');

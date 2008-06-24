@@ -5,7 +5,7 @@ ZMG.ServerEvents = (function() {
         var key, view = data.view, o, isJSON = false;
         text = text.trim();
         //console.log('Server#onview: ', view);
-        ZMG.Shared.register('lastRequest', null);
+        ZMG.Shared.register('lastRequest', null, null, 0);
         if (view == "admin:gallerymanager") {
             onGalleryManager(text);
         } else if (view.indexOf('admin:gallerymanager:get:') > -1) {
@@ -64,7 +64,7 @@ ZMG.ServerEvents = (function() {
             } else if (o.action == "galleryedit_store") {
                 //update the tree structure
                 var menu = ZMG.Shared.get('menuTree');
-                var node = menu.get('admin:gallerymanager'); 
+                var node = menu.get('admin:gallerymanager');
                 node.open = false;
                 node.load(node.data.load);
             }
@@ -79,14 +79,10 @@ ZMG.ServerEvents = (function() {
     var oNewClick;
     
     function onGalleryManager(html) {
-        var oGM;
-
         if (!ZMG.Shared.cacheElement('zmg_view_gm'))
             oNewClick = ZMG.GUI.buildGalleryManager(html);
-
-        oGM = onActivateView('zmg_view_gm');
-        oGM.firstChild.setStyle('display', 'none');
-
+        var oGM = onActivateView('zmg_view_gm');
+        $(oGM.firstChild).setStyle('display', 'none');
         if (oNewClick) oNewClick.setStyle('display', '');
     };
     
@@ -148,7 +144,7 @@ ZMG.ServerEvents = (function() {
                   node.tabs[i].url, node.tabs[i].data);
                 settingsMap.push(node.tabs[i].data[0]);
             }
-            ZMG.Shared.register('requestingTabs', false);
+            ZMG.Shared.register('requestingTabs', false, null, 0);
         }
         onActivateView('zmg_view_settings');
         ZMG.ClientEvents.onViewSelect('admin:settings:meta', 'html');
@@ -227,7 +223,7 @@ ZMG.ServerEvents = (function() {
         sActiveView = el;
         var oActiveView = ZMG.Shared.cacheElement(el);
         oActiveView.setStyle('display', '');
-        ZMG.Shared.register('activeView', oActiveView);
+        ZMG.Shared.register('activeView', oActiveView, null, 0);
         
         window.setTimeout("ZMG.ClientEvents.onViewSelect('admin:toolbar:"
           + el + "');", 100);

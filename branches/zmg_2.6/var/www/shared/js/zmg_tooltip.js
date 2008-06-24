@@ -2,27 +2,27 @@ if (!window.ZMG) window.ZMG = {};
 
 ZMG.Tooltip = new Class({
     options: {
-        classTip: 'zmg-tip',
-        classTopLeft : 'zmg-tip-tl',
-        classTopRight : 'zmg-tip-tr',
-        classTopCenter : 'zmg-tip-tc',
-        classHeader : 'zmg-tip-header',
-        classHeaderText : 'zmg-tip-header-text',
-        classBodyWrap : 'zmg-tip-bwrap',
-        classMiddleLeft : 'zmg-tip-ml',
-        classMiddleRight : 'zmg-tip-mr',
+        classTip          : 'zmg-tip',
+        classTopLeft      : 'zmg-tip-tl',
+        classTopRight     : 'zmg-tip-tr',
+        classTopCenter    : 'zmg-tip-tc',
+        classHeader       : 'zmg-tip-header',
+        classHeaderText   : 'zmg-tip-header-text',
+        classBodyWrap     : 'zmg-tip-bwrap',
+        classMiddleLeft   : 'zmg-tip-ml',
+        classMiddleRight  : 'zmg-tip-mr',
         classMiddleCenter : 'zmg-tip-mc',
-        classTipBody: 'zmg-tip-body',
-        classBottomLeft : 'zmg-tip-bl',
-        classBottomRight : 'zmg-tip-br',
+        classTipBody      : 'zmg-tip-body',
+        classBottomLeft   : 'zmg-tip-bl',
+        classBottomRight  : 'zmg-tip-br',
         classBottomCenter : 'zmg-tip-bc',
-        relElement: null,
-        parentNode: null,
-        closeButton: false,
-        zIndex: 20000,
-        initX: 0,
-        initY: 0,
-        initWidth : 240
+        relElement        : null,
+        parentNode        : null,
+        closeButton       : false,
+        zIndex            : 20000,
+        initX             : 0,
+        initY             : 0,
+        initWidth         : 240
     },
     
     initialize: function(id, options) {
@@ -30,8 +30,7 @@ ZMG.Tooltip = new Class({
         ZMG.Tooltip.COUNTER++;
         this.id = id || "zmg_tooltip" + ZMG.Tooltip.COUNTER;
         this.listening = (this.options.relElement != null);
-        this.build();
-        this._attachBehaviors();
+        this.build()._attachBehaviors();
     },
     
     build: function() {
@@ -66,10 +65,12 @@ ZMG.Tooltip = new Class({
         
         this.domHeader = $(this.id + '_headertext');
         this.domBody   = $(this.id + '_tipbody');
+
+        return this;
     },
     
     setContent: function(header, text) {
-        if (!header) return;
+        if (!header) return this;
         if (!text) text = "";
         
         this.domHeader.innerHTML = header;
@@ -119,10 +120,7 @@ ZMG.Tooltip = new Class({
     
     _attachBehaviors: function() {
         //TODO: close button events, animation setup
-        this.setWidth();
-        this.locate();
-        
-        this.hide();
+        this.setWidth().locate().hide();
     }
 });
 

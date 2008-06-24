@@ -17,6 +17,7 @@ ZMG.Toolbar = new Class({
         }
         this.selectSource();
     },
+
     setTitleImage: function(sImg) {
         var oM = $('toolbar');
         if (oM.parentNode) {
@@ -29,6 +30,7 @@ ZMG.Toolbar = new Class({
                 }
         }
     },
+
     selectSource: function() {
         if (this.mode == 0) {
             this.buttonSource = this.node.getElement('.' + this.classButton);
@@ -37,6 +39,7 @@ ZMG.Toolbar = new Class({
         }
         return this;
     },
+
     create: function(name, buttons) {
         if (name == "clear") return;
         if (this.cache[name]) return this.show(name);
@@ -73,6 +76,7 @@ ZMG.Toolbar = new Class({
         });
         return this;
     },
+
     get: function(name) {
         for (var i in this.cache) {
             if (i == name)
@@ -80,6 +84,7 @@ ZMG.Toolbar = new Class({
         }
         return null;
     },
+
     show: function(name) {
         var hideAll = (name == "clear");
         
@@ -100,9 +105,11 @@ ZMG.Toolbar = new Class({
 
         return this;
     },
+
     clear: function() {
         return this.show('clear');
     },
+
     disable: function(toolbar, buttons) {
         if (!buttons.length) return;
         
@@ -125,6 +132,7 @@ ZMG.Toolbar = new Class({
 
         return this;
     },
+
     enable: function(toolbar, buttons) {
         if (!buttons.length) return;
         

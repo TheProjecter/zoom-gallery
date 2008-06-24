@@ -75,22 +75,29 @@
 #zmg_gallerymanager_newclick
 {
 	position: absolute;
-	background: transparent url(../images/toolbar/icon-32-new.png) no-repeat top left;
+	/*background: transparent url(../images/toolbar/icon-32-new.png) no-repeat;
+    background-position: top left !important;
+    background-position: 0px 14px;*/
 	top: 32px;
 	left: 32px;
-	width: 245px;
-	height: 32px;
+	/*width: 245px;
+	height: 32px;*/
+    line-height: 32px;
+    vertical-align: middle;
 	overflow: visible;
-	padding: 0;
+	padding: 0 !important;
+    padding: 16px 0 0 0;
 	z-index: 10000;
 }
 
 #zmg_gallerymanager_newclick a
 {
-	padding: 16px 4px 16px 40px;
+    background: transparent url(../images/toolbar/icon-32-new.png) no-repeat 0px 16px;
+	padding: 22px 4px 14px 40px;
 	height: 32px;
-	line-height: 32px;
-	vertical-align: middle;
+    width: 245px;
+	/*line-height: 32px;
+	vertical-align: middle;*/
 }
 
 #zmg_gallerymanager_newclick a:hover
@@ -247,6 +254,10 @@
 {
     font-family: Verdana, Arial, Helvetica;
     font-size: 10px;
+    height: 18px;
+    padding: 0;
+    margin: 0;
+    vertical-align: top;
     white-space: nowrap;
 }
 
@@ -267,14 +278,14 @@
 
 .mooTree_selected
 {
-    background: #e0f0ff url(../images/item-over-sel.gif) repeat-x top left;
+    background: #fff url(../images/item-over-sel.gif) repeat-x bottom left;
     border-top: 1px solid #b7d0d9;
     font-weight: bold;
 }
 
 .tab-all-container
 {
-    background: #6b869f;
+    background: #fff;/*#6b869f;*/
     border: 1px solid #abc;
     overflow: hidden;
     margin: 0;
@@ -411,9 +422,10 @@ tab-strip .tab-selected .tab-right span.tab-text
 
 .tab-wrapper
 {
+    position: relative;
     background:#fff;
-    border: 1px solid #abc;
-    border-top: 0;
+    border: 0px;
+    top: 0px;
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -455,23 +467,25 @@ tab-strip .tab-selected .tab-right span.tab-text
     background-image: url(../images/panel/white-top-bottom.gif);
     border: 1px solid #abc;
     padding: 5px 3px 4px 5px;
+    height: 24px;
     margin: 0;
     color: #fafafa;
     font-family: tahoma,arial,verdana,sans-serif;
     font-size: 11px;
-    font-size-adjust: none;
-    font-stretch: normal;
     font-style: normal;
     font-variant: normal;
     font-weight: bold;
     line-height: 16px;
     overflow: hidden;
+    font-size-adjust: none;
+    font-stretch: normal;
 }
 
 .lgrid-nav
 {
     position: relative;
     float: right;
+    display: inline;
     padding: 0;
     margin: 0 20px 0 0;
 }
@@ -480,6 +494,7 @@ tab-strip .tab-selected .tab-right span.tab-text
 {
     position: relative;
     float: left;
+    display: inline;
     padding: 0;
     margin: 0;
 }
