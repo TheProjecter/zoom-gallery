@@ -109,7 +109,7 @@ class zmgCore {
         $ret  = array();
 
         $db   = & zmgDatabase::getDBO();
-        $db->setQuery("SELECT gid FROM " . zmgFactory::getConfig()->getTableName('media')
+        $db->setQuery("SELECT gid FROM " . zmgFactory::getConfig()->getTableName('galleries')
          . " WHERE sub_gid = " . $sub_gid . " AND pos= " . $pos);
 
         $rows = $db->loadRowList();

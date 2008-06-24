@@ -13,8 +13,10 @@ ZMG.Shared = {
             this[name]._childOf = childOf || null;
 
             //set timestamp for item lifetime
+            if (isNaN(lifetime))
+                lifetime = this.CACHE_LIFETIME;
             this[name]._registeredAt = new Date();
-            this[name]._lifetime     = lifetime || this.CACHE_LIFETIME;
+            this[name]._lifetime     = lifetime;
         }
         
         return this[name];

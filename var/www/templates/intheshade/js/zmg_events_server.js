@@ -75,13 +75,17 @@ ZMG.ServerEvents = (function() {
         
         var i, obj, out = [];
         var iGid = 0;
-        
+
         var oGallery = o.data.shift().gallery;
         ZMG.Shared.register('gallery:' + oGallery.gid, oGallery); //keep this Gallery in cache!
-        
-        for (i = 0; i < o.data.length; i++) {
-            var isGallery = o.data[i].gallery ? true : false;
-            obj = isGallery ? o.data[i].gallery : o.data[i].medium;
+
+        var data = o.data.filter(function(val) {
+            return (typeof val != "undefined");
+        });
+
+        for (i = 0; i < data.length; i++) {
+            var isGallery = (data[i].gallery) ? true : false;
+            obj = isGallery ? data[i].gallery : data[i].medium;
 
             if (isGallery)
                 obj = ZMG.Shared.register('gallery:' + obj.gid, obj); //keep a cache of galleries
@@ -93,17 +97,18 @@ ZMG.ServerEvents = (function() {
             out.push(isGallery ? ZMG.GUI.buildGalleryDiv(obj) : ZMG.GUI.buildMediumDiv(obj));
         }
         oList.innerHTML = out.join('');
-        
+
         //grab references and attach event handlers to the galleries
-        for (i = 0; i < oList.childNodes.length; i++)
-            if (oList.childNodes[i].nodeName == "DIV"
+        for (i = 0; i < oList.childNodes.length; i++) {
+            if (oList.childNodes[i].nodeType == 1 && oList.childNodes[i].nodeName == "DIV"
               &&  oList.childNodes[i].className.indexOf('zmg_medium_thumb_') > -1) {
                 //oList.childNodes[i].onclick     = ZMG.EventHandlers.onMediumClick;
                 oList.childNodes[i].onmouseover = ZMG.EventHandlers.onMediumEnter;
                 oList.childNodes[i].onmouseout  = ZMG.EventHandlers.onMediumLeave;
             }
-        
-        if (oGallery && o.data.length > 0) {
+        }
+
+        if (oGallery && data.length > 0) {
             Shadowbox.setup($$('a.zmg_medium_thumb'), {
                 gallery: oGallery.name,
                 onFinish: function(oItem) {
@@ -119,7 +124,7 @@ ZMG.ServerEvents = (function() {
                 }
             });
         }
-        
+
         ZMG.ClientEvents.onActivateView('zmg_gallery_content');
     };
     

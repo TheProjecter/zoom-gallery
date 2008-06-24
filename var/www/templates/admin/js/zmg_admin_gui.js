@@ -45,7 +45,7 @@ ZMG.GUI = {
     },
     
     buildMenuTree: function() {
-        return new MooTreeControl({
+        var oMenuTree = new MooTreeControl({
             div     : ZMG.Shared.cacheElement('zmg_tree_body'),
             mode    : 'files',
             grid    : true,
@@ -87,7 +87,7 @@ ZMG.GUI = {
             open: true
         });
 
-        ZMG.Shared.register('menuTree', oMenuTree);
+        return ZMG.Shared.register('menuTree', oMenuTree, null, 0);
     },
     
     updateToolbar: function(sView) {
@@ -254,7 +254,7 @@ ZMG.GUI = {
             },
             requestData: {big: '1'}
         });
-        ZMG.Shared.register('liveGrid', oLiveGrid);
+        ZMG.Shared.register('liveGrid', oLiveGrid, null, 0);
         
         //setup the tabs for Medium property editing:
         new SimpleTabs($('zmg_edit_medium_tabs'), {
@@ -334,7 +334,7 @@ ZMG.GUI = {
             types: {'All Files (*.*)': '*.*'},
             onAllComplete: ZMG.EventHandlers.onMmUploadCompleted
         });
-        ZMG.Shared.register('uploader', oUploader);
+        ZMG.Shared.register('uploader', oUploader, null, 0);
     },
     
     updateMediumForm: function(oData) {
@@ -402,7 +402,7 @@ ZMG.GUI = {
 
         this.updateProportions();
 
-        return ZMG.Shared.register('settingsTabs', oSettingsTabs);
+        return ZMG.Shared.register('settingsTabs', oSettingsTabs, null, 0);
     }
 };
 

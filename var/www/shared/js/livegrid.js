@@ -124,7 +124,7 @@ var LiveGrid = new Class({
 		if (diff < this.pageChecks.up / 2 || diff > this.pageChecks.down / 2) {
 			this.lastCheck = this.scroller.scrollTop;
 			time = 5;
-		};
+		}
 		this.scrollTimer = this.checkScroll.delay(time, this);
 	},
 
@@ -157,7 +157,7 @@ var LiveGrid = new Class({
 				onFailure: this.onFailure.bind(this),
 				onComplete: this.onComplete.bind(this)
 			});
-		};
+		}
 		var data = $merge(this.options.ajaxData);
 		data[this.options.requestVars.offset] = offset;
 		data[this.options.requestVars.length] = length;
