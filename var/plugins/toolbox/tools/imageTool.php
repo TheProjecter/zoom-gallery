@@ -26,6 +26,12 @@ class zmgImageTool {
         
         $file = $medium->getAbsPath();
         $size = getimagesize($file);
+        $img_meta = array(
+            'width'     => $size[0],
+            'height'    => $size[1],
+            'extension' => $medium->getExtension(),
+            'jpeg_qty'  => $config->get('plugins/toolbox/general/jpegquality')
+        );
         
         $metadata = $events->fire('ongetimagemetadata', false, $medium);
         
@@ -36,16 +42,18 @@ class zmgImageTool {
         if ($ok && !file_exists($medium->getAbsPath(ZMG_MEDIUM_THUMBNAIL))) {
             $ok = call_user_func_array(array($klass, 'resize'), array($file, 
               $medium->getAbsPath(ZMG_MEDIUM_THUMBNAIL),
-              intval($config->get('plugins/toolbox/general/imagesizethumbnail'))));
+              intval($config->get('plugins/toolbox/general/imagesizethumbnail')),
+              $img_meta));
         }
         
         //resize to viewsize format
         $maxSize = intval($config->get('plugins/toolbox/general/imagesizemax'));
         if ($ok && !file_exists($medium->getAbsPath(ZMG_MEDIUM_VIEWSIZE))
-          && ($size[0] > $maxSize || $size[1] > $maxSize)) {
+          && ($img_meta['width'] > $maxSize || $img_meta['height'] > $maxSize)) {
         	$ok = call_user_func_array(array($klass, 'resize'), array($file, 
               $medium->getAbsPath(ZMG_MEDIUM_VIEWSIZE),
-              intval($config->get('plugins/toolbox/general/imagesizethumbnail'))));
+              intval($config->get('plugins/toolbox/general/imagesizethumbnail')),
+              $img_meta));
         }
         
         //apply watermarks

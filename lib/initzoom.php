@@ -29,9 +29,10 @@ if (!class_exists('InputFilter')) {
     zmgimport('org.zoomfactory.lib.phpinputfilter.inputfilter');
 }
 
-$config = & zmgFactory::getConfig();
-$events = & zmgFactory::getEvents();
-$view   = & zmgFactory::getView();
+$config  = & zmgFactory::getConfig();
+$events  = & zmgFactory::getEvents();
+$request = & zmgFactory::getRequest();
+$view    = & zmgFactory::getView();
 
 $events->fire('onstartup');
 

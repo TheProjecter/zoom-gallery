@@ -83,18 +83,28 @@ class zmgUploadTool {
         $dest_path = zmgEnv::getRootPath() .DS.$config->get('filesystem/mediapath').$gallery->dir.DS;
         
         foreach ($media as $medium) {
-        	$obj  = new zmgMedium($db);
-            $data = array(
-              'name'      => zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_upload_name', '')),
+        	$obj   = new zmgMedium($db);
+
+            $name  = zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_upload_name', ''));
+            $descr = zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_upload_descr', ''));
+            $data  = array(
+              'name'      => $name,
               'filename'  => $medium,
-              'descr'     => zmgSQLEscape(zmgGetParam($_REQUEST, 'zmg_upload_descr', '')),
+              'descr'     => $descr,
               'published' => 1,
               'gid'       => $gallery->gid
             );
+
             $obj->setGalleryDir($gallery->dir); //saves a SQL query later on...
             //do some additional validation of strings
-            $data['name']  = $events->fire('onvalidate', $data['name'])  || $data['name'];
-            $data['descr'] = $events->fire('onvalidate', $data['descr']) || $data['descr'];
+            $data['name']  = $events->fire('onvalidate', $data['name']);
+            if (!$data['name']) {
+                $data['name'] = $name;
+            }
+            $data['descr'] = $events->fire('onvalidate', $data['descr']);
+            if (!$data['descr']) {
+                $data['descr'] = $descr;
+            }
             
             if (!$obj->bind($data)) {
                 zmgToolboxPlugin::registerError(T_('Upload media'), T_('Medium could not be saved') . ': ' . $obj->getError());

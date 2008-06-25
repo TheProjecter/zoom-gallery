@@ -313,14 +313,19 @@ class zmgMime {
      * @static
      */
     function autoDetect($file, $custom_mime = null, $custom_ext = null, $params = false) {
+        zmgimport('org.zoomfactory.lib.mime.zmgMimeHelper');
+
         $type = false;
         if (function_exists('finfo_open')) {
             // We have fileinfo
             $finfo = finfo_open(FILEINFO_MIME);
-            $type = finfo_file($finfo, $file);
+            $type  = finfo_file($finfo, $file);
             finfo_close($finfo);
         } elseif (function_exists('mime_content_type')) {
             $type = mime_content_type($file);
+            if (empty($type) && !empty($custom_ext)) {
+                $type = zmgMimeHelper::convertExtensionToMime($custom_ext);
+            }
         } elseif (!empty($custom_mime)) {
             $type = $custom_mime;
         } else {
@@ -332,8 +337,6 @@ class zmgMime {
             return $type;
         }
 
-        zmgimport('org.zoomfactory.lib.mime.zmgMimeHelper');
-        
         if ($type == "application/octet-stream" || $type == "application/unknown") {
             if (!empty($custom_mime)) {
                 $type = $custom_mime;
