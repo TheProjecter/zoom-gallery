@@ -60,7 +60,7 @@ class zmgMedium extends zmgTable {
     }
     
     function getAbsPath($type = ZMG_MEDIUM_ORIGINAL, $mediapath = '') {
-        if (!$this->_gallery_dir || !$this->filename) {
+        if (!$this->filename) {
             zmgError::throwError('zmgMedium: medium data not loaded yet;'.$this->_gallery_dir.' '.$this->filename);
         }
         
@@ -83,7 +83,7 @@ class zmgMedium extends zmgTable {
     }
     
     function getRelPath($type = ZMG_MEDIUM_THUMBNAIL, $mediapath = '', $smallthumb = true) {
-        if (!$this->_gallery_dir || !$this->filename) {
+        if (!$this->filename) {
             zmgError::throwError('zmgMedium: medium data not loaded yet');
         }
         
@@ -130,6 +130,10 @@ class zmgMedium extends zmgTable {
     }
     
     function getViewableFile($gallery_path, $smallthumb = false) {
+        if (!$this->filename) {
+            zmgError::throwError('zmgMedium: medium data not loaded yet');
+        }
+
         $file = array(
             'path' => $gallery_path,
             'name' => null
@@ -407,12 +411,16 @@ class zmgMediumMetadata {
                 $out .= ",'title': " . $json->encode(T_('No Metadata available.')) . "}";
             } else {
                 $out .= ",
-                  'title' : " . $json->encode($this->_raw['title']) . ",";
-                foreach ($this->_raw['IFD'] as $name => $exif_val) {
-                    $out .= $this->interpretJpegMeta($name, $exif_val);
+                  'title' : " . $json->encode($this->_raw['title']);
+                if (is_array($this->_raw['IFD'])) {
+                    $out .= ",";
+                    foreach ($this->_raw['IFD'] as $name => $exif_val) {
+                        $out .= $this->interpretJpegMeta($name, $exif_val);
+                    }
+                    $out = substr($out, 0, -1);
                 }
-                
-                $out = substr($out, 0, -1) . "}";
+
+                $out .= "}";
             }
         } else if (zmgMimeHelper::isAudio($this->_ext)) {
             list($artist, $title, $album, $year, $length, $data)

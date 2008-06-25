@@ -103,6 +103,7 @@ Shadowbox.lib = {
      * @public
      */
     getTarget: function(e){
+        e = new Event(e);
         return e.target;
     },
 

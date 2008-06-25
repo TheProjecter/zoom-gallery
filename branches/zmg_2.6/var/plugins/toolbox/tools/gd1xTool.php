@@ -21,20 +21,17 @@ class zmgGd1xTool {
      * @param image $imgobj
      * @return boolean
      */
-    function resize($src_file, $dest_file, $new_size, &$imgobj) {
-        if ($imgobj->_size == null) {
-            return zmgToolboxPlugin::registerError($src_file, 'GD 1.x: No correct arguments supplied.');
-        }
-        if (!zmgGd1xTool::isSupportedType($imgobj->_type, $src_file)) {
+    function resize($src_file, $dest_file, $new_size, $img_meta) {
+        if (!zmgGd1xTool::isSupportedType($img_meta['extension'], $src_file)) {
             return false;
         }
         
         // height/width
-        $ratio = max($imgobj->_size[0], $imgobj->_size[1]) / $new_size;
-        $ratio = max($ratio, 1.0);
-        $destWidth = (int)($imgobj->_size[0] / $ratio);
-        $destHeight = (int)($imgobj->_size[1] / $ratio);
-        if ($imgobj->_type == "jpg" || $imgobj->_type == "jpeg") {
+        $ratio      = max($img_meta['width'], $img_meta['height']) / $new_size;
+        $ratio      = max($ratio, 1.0);
+        $destWidth  = (int)($img_meta['width'] / $ratio);
+        $destHeight = (int)($img_meta['height'] / $ratio);
+        if ($img_meta['extension'] == "jpg" || $img_meta['extension'] == "jpeg") {
             $src_img = imagecreatefromjpeg($src_file);
         } else {
             $src_img = imagecreatefrompng($src_file);
@@ -43,12 +40,15 @@ class zmgGd1xTool {
             return zmgToolboxPlugin::registerError($src_file, 'GD 1.x: Could not convert image.');
         }
         $dst_img = imagecreate($destWidth, $destHeight);
-        imagecopyresized($dst_img, $src_img, 0, 0, 0, 0, $destWidth, (int)$destHeight, $imgobj->_size[0], $imgobj->_size[1]);
-        if ($imgobj->_type == "jpg" || $imgobj->_type == "jpeg") {
-            imagejpeg($dst_img, $dest_file, $this->_JPEG_quality);
+        imagecopyresized($dst_img, $src_img, 0, 0, 0, 0, $destWidth, (int)$destHeight,
+          $img_meta['width'], $img_meta['height']);
+
+        if ($img_meta['extension'] == "jpg" || $img_meta['extension'] == "jpeg") {
+            imagejpeg($dst_img, $dest_file, $img_meta['jpeg_qty']);
         } else {
             imagepng($dst_img, $dest_file);
         }
+
         imagedestroy($src_img);
         imagedestroy($dst_img);
         return true;
@@ -62,12 +62,12 @@ class zmgGd1xTool {
      * @param image $imgobj
      * @return boolean
      */
-    function rotate($src_file, $dest_file, $degrees, &$imgobj) {
-        if (!zmgGd1xTool::isSupportedType($imgobj->_type, $src_file)) {
+    function rotate($src_file, $dest_file, $degrees, $img_meta) {
+        if (!zmgGd1xTool::isSupportedType($img_meta['extension'], $src_file)) {
             return false;
         }
         
-        if ($imgobj->_type == "jpg" || $imgobj->_type == "jpeg") {
+        if ($img_meta['extension'] == "jpg" || $img_meta['extension'] == "jpeg") {
             $src_img = imagecreatefromjpeg($src_file);
         } else {
             $src_img = imagecreatefrompng($src_file);
@@ -75,17 +75,20 @@ class zmgGd1xTool {
         if (!$src_img) {
             return zmgToolboxPlugin::registerError($src_file, 'GD 1.x: Could not rotate image.');
         }
+
         // The rotation routine...
         $dst_img = imagerotate($src_img, $degrees, 0);
         if ($imgobj->_type == "jpg" || $imgobj->_type == "jpeg") {
-            imagejpeg($dst_img, $dest_file, $this->_JPEG_quality);
+            imagejpeg($dst_img, $dest_file, $img_meta['jpeg_qty']);
         } else {
             imagepng($dst_img, $dest_file);
         }
+
         imagedestroy($src_img);
         imagedestroy($dst_img);
         return true;
     }
+
     function isSupportedType($type, $src_file) {
         // GD1 can only handle JPG & PNG images
         if ($type !== "jpg" && $type !== "jpeg" && $type !== "png") {

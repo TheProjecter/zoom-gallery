@@ -16,7 +16,7 @@ defined('_ZMG_EXEC') or die('Restricted access');
 class zmgMimeHelper {
     function getMime($file, $custom_type, $ext) {
         zmgimport('org.zoomfactory.lib.mime.zmgMime');
-        
+
         return zmgMime::autoDetect($file, $custom_type, $ext);
     }
     /**

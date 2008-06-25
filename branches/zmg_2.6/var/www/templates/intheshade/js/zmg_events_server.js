@@ -22,9 +22,7 @@ ZMG.ServerEvents = (function() {
             onMediumContent(o);
             isJSON = true;
         } else if (view.indexOf('medium:metadata:') > -1) {
-            console.log(text);
             o = Json.evaluate(text);
-            console.log('tadaaa2');
             onMediumMetadata(o);
             isJSON = true;
         }
@@ -155,8 +153,7 @@ ZMG.ServerEvents = (function() {
             delete metadata.mid; //'mid' not needed anymore
         }
         
-        console.dir(metadata);
-        Shadowbox.setContentLeftPane(metadata);
+        Shadowbox.setContentInfoPane(metadata);
     };
     
     function onError() {

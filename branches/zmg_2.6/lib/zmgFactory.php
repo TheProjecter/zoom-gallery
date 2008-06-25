@@ -50,6 +50,18 @@ class zmgFactory {
         return $instance_json;
     }
 
+    function &getLogger() {
+        static $instance_logger;
+
+        if (!is_object($instance_logger)) {
+            zmgimport('org.zoomfactory.lib.zmgLogger');
+
+            $instance_logger = new zmgLogger(ZMG_ABS_PATH . DS . "etc" . DS . "cache");
+        }
+
+        return $instance_logger;
+    }
+
     /**
      * Public variable, containing the messaging center of ZMG.
      *

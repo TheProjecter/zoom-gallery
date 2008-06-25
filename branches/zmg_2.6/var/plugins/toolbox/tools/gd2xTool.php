@@ -18,90 +18,95 @@ class zmgGd2xTool {
      * @param string $src_file
      * @param string $dest_file
      * @param int $new_size
-     * @param image $imgobj
+     * @param array $img_meta
      * @return boolean
      */
-    function resize($src_file, $dest_file, $new_size, $imgobj) {
-        if ($imgobj->_size == null) {
-            return false;
-        }
-        if (!zmgGd2xTool::isSupportedType($imgobj->_type, $src_file)) {
+    function resize($src_file, $dest_file, $new_size, $img_meta) {
+        if (!zmgGd2xTool::isSupportedType($img_meta['extension'], $src_file)) {
             return false;
         }
         
         // height/width
-        $ratio = max($imgobj->_size[0], $imgobj->_size[1]) / $new_size;
-        $ratio = max($ratio, 1.0);
-        $destWidth = (int)($imgobj->_size[0] / $ratio);
-        $destHeight = (int)($imgobj->_size[1] / $ratio);
-        if ($imgobj->_type == "jpg" || $imgobj->_type == "jpeg") {
+        $ratio      = max($img_meta['width'], $img_meta['height']) / $new_size;
+        $ratio      = max($ratio, 1.0);
+        $destWidth  = (int)($img_meta['width'] / $ratio);
+        $destHeight = (int)($img_meta['height'] / $ratio);
+
+        if ($img_meta['extension'] == "jpg" || $img_meta['extension'] == "jpeg") {
             $src_img = @imagecreatefromjpeg($src_file);
             $dst_img = imagecreatetruecolor($destWidth, $destHeight);
-        } else if ($imgobj->_type == "png") {
-            $src_img = @imagecreatefrompng($src_file);
-            $dst_img = imagecreatetruecolor($destWidth, $destHeight);
-            $img_white = imagecolorallocate($dst_img, 255, 255, 255); // set background to white
+        } else if ($img_meta['extension'] == "png") {
+            $src_img    = @imagecreatefrompng($src_file);
+            $dst_img    = imagecreatetruecolor($destWidth, $destHeight);
+            $img_white  = imagecolorallocate($dst_img, 255, 255, 255); // set background to white
             $img_return = @imagefill($dst_img, 0, 0, $img_white);
         } else {
-            $src_img = @imagecreatefromgif($src_file);
-            $dst_img = imagecreatetruecolor($destWidth,$destHeight);
-            $img_white = imagecolorallocate($dst_img, 255, 255, 255); // set background to white
+            $src_img    = @imagecreatefromgif($src_file);
+            $dst_img    = imagecreatetruecolor($destWidth,$destHeight);
+            $img_white  = imagecolorallocate($dst_img, 255, 255, 255); // set background to white
             $img_return = @imagefill($dst_img, 0, 0, $img_white);
         }
         if (!$src_img) {
             return zmgToolboxPlugin::registerError($src_file, 'GD 2.x: Could not convert image.');
         }
-        imagecopyresampled($dst_img, $src_img, 0, 0, 0, 0, $destWidth, $destHeight, $imgobj->_size[0], $imgobj->_size[1]);
-        if ($imgobj->_type == "jpg" || $imgobj->_type == "jpeg") {
-            imagejpeg($dst_img, $dest_file, $this->_JPEG_quality);
-        } else if ($imgobj->_type == "png") {
+
+        imagecopyresampled($dst_img, $src_img, 0, 0, 0, 0, $destWidth, $destHeight,
+          $img_meta['width'], $img_meta['height']);
+
+        if ($img_meta['extension'] == "jpg" || $img_meta['extension'] == "jpeg") {
+            imagejpeg($dst_img, $dest_file, $img_meta['jpeg_qty']);
+        } else if ($img_meta['extension'] == "png") {
             imagepng($dst_img, $dest_file);
         } else {
             imagegif($dst_img, $dest_file);
         }
+
         imagedestroy($src_img);
         imagedestroy($dst_img);
         return true;
     }
+
     /**
      * Rotate an image with the prefered number of degrees using the GD2 library.
      *
      * @param string $src_file
      * @param string $dest_file
      * @param int $degrees
-     * @param image $imgobj
+     * @param array $img_meta
      * @return boolean
      */
-    function rotate($src_file, $dest_file, $degrees, $imgobj) {
-        if (!zmgGd2xTool::isSupportedType($imgobj->_type, $src_file)) {
+    function rotate($src_file, $dest_file, $degrees, $img_meta) {
+        if (!zmgGd2xTool::isSupportedType($img_meta['extension'], $src_file)) {
             return false;
         }
         
-        if ($imgobj->_type == "jpg" || $imgobj->_type == "jpeg") {
+        if ($img_meta['extension'] == "jpg" || $img_meta['extension'] == "jpeg") {
             $src_img = @imagecreatefromjpeg($src_file);
-        } else if ($imgobj->_type == "png") {
-            $src_img = @imagecreatefrompng($src_file);
-            $dst_img = imagecreatetruecolor($imgobj->_size[0],$imgobj->_size[1]);
-            $img_white = imagecolorallocate($dst_img, 255, 255, 255); // set background to white
+        } else if ($img_meta['extension'] == "png") {
+            $src_img    = @imagecreatefrompng($src_file);
+            $dst_img    = imagecreatetruecolor($img_meta['width'], $img_meta['height']);
+            $img_white  = imagecolorallocate($dst_img, 255, 255, 255); // set background to white
             $img_return = imagefill($dst_img, 0, 0, $img_white);
-            imagecopyresampled($dst_img, $src_img, 0, 0, 0, 0, $imgobj->_size[0], $imgobj->_size[1], $imgobj->_size[0], $imgobj->_size[1]);
-            $src_img = $dst_img;
+            imagecopyresampled($dst_img, $src_img, 0, 0, 0, 0, $img_meta['width'],
+              $img_meta['height'], $img_meta['width'], $img_meta['height']);
+            $src_img    = $dst_img;
         } else {
-            $src_img = @imagecreatefromgif($src_file);
-            $dst_img = imagecreatetruecolor($imgobj->_size[0],$imgobj->_size[1]);
-            $img_white = imagecolorallocate($dst_img, 255, 255, 255); // set background to white
+            $src_img    = @imagecreatefromgif($src_file);
+            $dst_img    = imagecreatetruecolor($img_meta['width'], $img_meta['height']);
+            $img_white  = imagecolorallocate($dst_img, 255, 255, 255); // set background to white
             $img_return = imagefill($dst_img, 0, 0, $img_white);
-            imagecopyresampled($dst_img, $src_img, 0, 0, 0, 0, $imgobj->_size[0], $imgobj->_size[1], $imgobj->_size[0], $imgobj->_size[1]);
-            $src_img = $dst_img;
+            imagecopyresampled($dst_img, $src_img, 0, 0, 0, 0, $img_meta['width'],
+              $img_meta['height'], $img_meta['width'], $img_meta['height']);
+            $src_img    = $dst_img;
         }
         if (!$src_img) {
             return zmgToolboxPlugin::registerError($src_file, 'GD 2.x: Could not rotate image.');
         }
         // The rotation routine...
         $dst_img = imagerotate($src_img, $degrees, 0);
-        if ($imgobj->_type == "jpg" || $imgobj->_type == "jpeg") {
-            imagejpeg($dst_img, $dest_file, $this->_JPEG_quality);
-        } else if ($imgobj->_type == "png") {
+        if ($img_meta['extension'] == "jpg" || $img_meta['extension'] == "jpeg") {
+            imagejpeg($dst_img, $dest_file, $img_meta['jpeg_qty']);
+        } else if ($img_meta['extension'] == "png") {
             imagepng($dst_img, $dest_file);
         } else {
             imagegif($dst_img, $dest_file);
@@ -110,6 +115,7 @@ class zmgGd2xTool {
         imagedestroy($dst_img);
         return true;
     }
+
     function isSupportedType($type, $src_file) {
         // GD can only handle JPG, PNG & GIF images
         if ($type !== "jpg" && $type !== "jpeg" && $type !== "png" && $type !== "gif") {

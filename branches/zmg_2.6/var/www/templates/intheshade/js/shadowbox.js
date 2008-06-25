@@ -387,7 +387,11 @@ if(typeof Shadowbox == 'undefined'){
          */
         skin:           {
 
-            main:       '<div id="shadowbox_overlay"></div>' +
+            main:       '<div id="shadowbox_overlay">' +
+                            '<div id="shadowbox_pane_info">' +
+                                '<div id="shadowbox_pane_info_inner"></div>' +
+                            '</div>' +
+                        '</div>' +
                         '<div id="shadowbox_container">' +
                             '<div id="shadowbox">' +
                                 '<div id="shadowbox_title">' +
@@ -399,9 +403,6 @@ if(typeof Shadowbox == 'undefined'){
                                 '</div>' +
                                 '<div id="shadowbox_toolbar">' +
                                     '<div id="shadowbox_toolbar_inner"></div>' +
-                                '</div>' +
-                                '<div id="shadowbox_pane_left">' +
-                                    '<div id="shadowbox_pane_left_inner"></div>' +
                                 '</div>' +
                             '</div>' +
                         '</div>',
@@ -1128,7 +1129,7 @@ if(typeof Shadowbox == 'undefined'){
         var tool_i = SL.get('shadowbox_toolbar_inner');
         tool_i.innerHTML = '';
         // empty the side panes
-        var pane_left_i = SL.get('shadowbox_pane_left_inner')
+        var pane_left_i = SL.get('shadowbox_pane_info_inner')
         pane_left_i.innerHTML = '';
 
         // build the nav
@@ -1182,7 +1183,6 @@ if(typeof Shadowbox == 'undefined'){
         var title_m = getComputedHeight(SL.get('shadowbox_title'));
         var tool_m = 0 - getComputedHeight(SL.get('shadowbox_toolbar'));
         var title_i = SL.get('shadowbox_title_inner');
-        var pane_left = SL.get('shadowbox_pane_left');
         var tool_i = SL.get('shadowbox_toolbar_inner');
 
         if(options.animate && callback){
@@ -1190,15 +1190,11 @@ if(typeof Shadowbox == 'undefined'){
             SL.animate(title_i, {
                 marginTop: { to: title_m }
             }, 0.2);
-            SL.animate(pane_left, {
-                left: { to: 0 }
-            }, 0.2);
             SL.animate(tool_i, {
                 marginTop: { to: tool_m }
             }, 0.2, callback);
         }else{
             SL.setStyle(title_i, 'marginTop', title_m + 'px');
-            SL.setStyle(pane_left, 'left', '0px');
             SL.setStyle(tool_i, 'marginTop', tool_m + 'px');
         }
     };
@@ -1213,14 +1209,9 @@ if(typeof Shadowbox == 'undefined'){
      */
     var showBars = function(callback){
         var title_i = SL.get('shadowbox_title_inner');
-        var pane_left = SL.get('shadowbox_pane_left');
-        var pane_left_m = 0 - getComputedWidth(SL.get('shadowbox_pane_left'));
         if(options.animate){
             if(title_i.innerHTML != ''){
                 SL.animate(title_i, { marginTop: { to: 0 } }, 0.35);
-            }
-            if(pane_left.innerHTML != ''){
-                SL.animate(pane_left, { left: { to: pane_left_m } }, 0.35);
             }
             SL.animate(SL.get('shadowbox_toolbar_inner'), {
                 marginTop: { to: 0 }
@@ -1228,9 +1219,6 @@ if(typeof Shadowbox == 'undefined'){
         }else{
             if(title_i.innerHTML != ''){
                 SL.setStyle(title_i, 'margin-top', '0px');
-            }
-            if(pane_left.innerHTML != ''){
-                SL.setStyle(pane_left, 'left', pane_left_m + 'px');
             }
             SL.setStyle(SL.get('shadowbox_toolbar_inner'), 'margin-top', '0px');
             callback();
@@ -1719,10 +1707,6 @@ if(typeof Shadowbox == 'undefined'){
             top += document.documentElement.scrollTop;
         }
 
-        // adjust the top
-        var pane_left_m = SL.get('shadowbox_pane_left');
-        SL.setStyle(pane_left_m, 'margin-top', (0 - height) + 'px');
-        
         var shadowbox = SL.get('shadowbox');
         if(animate && options.animate){
             SL.animate(shadowbox, {
@@ -2519,19 +2503,19 @@ if(typeof Shadowbox == 'undefined'){
         return html;
     };
     
-    Shadowbox.setContentLeftPane = function(obj) {
-        var pane_left_i = SL.get('shadowbox_pane_left_inner');
+    Shadowbox.setContentInfoPane = function(obj) {
+        var pane_left_i = SL.get('shadowbox_pane_info_inner');
         
         if(typeof obj == 'string' && obj){
             pane_left_i.innerHTML = obj;
         }else{
             var html = [];
             if (obj.title)
-                html.push('<span class="shadowbox_pane_left_title">', obj.title,
+                html.push('<span class="shadowbox_pane_info_title">', obj.title,
                   '</span>');
             for(var i in obj){
                 if(i.indexOf('_') !== 0 && i != 'title'){
-                    html.push('<span class="shadowbox_pane_left_row"><em>',
+                    html.push('<span class="shadowbox_pane_info_row"><em>',
                       i + '</em>: ' + obj[i] + '</span>');
                 }
             }
