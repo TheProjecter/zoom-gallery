@@ -286,7 +286,10 @@ class zmgTemplateHelper extends Smarty {
                 }
             }
         }
-        return null;
+
+        $views = null;
+
+        return $views;
     }
     
     function &_getResource($name, $view = null, $type = 'html') {

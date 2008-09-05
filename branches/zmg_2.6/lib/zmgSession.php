@@ -69,7 +69,7 @@ class zmgSession {
         }
         
         $name = trim($name);
-        if ($this->_vars[$this->_var_prefix . $name]) {
+        if (isset($this->_vars[$this->_var_prefix . $name])) {
             return $this->_vars[$this->_var_prefix . $name];
         } else if ($this->_vars[$name]) {
             return $this->_vars[$name];
