@@ -352,9 +352,9 @@ function zmgBackTrace($ret_mask = 0) {
     $out = '';
     if (function_exists( 'debug_backtrace' )) {
         $out .= '<div align="left">';
-        foreach( debug_backtrace() as $back) {
+        foreach(debug_backtrace() as $back) {
             if (@$back['file']) {
-                $out .= '<br />' . str_replace( ABS_PATH, '', $back['file'] ) . ':' . $back['line'];
+                $out .= '<br />' . str_replace(ZMG_ABS_PATH, '', $back['file']) . ':' . $back['line'];
             }
         }
         $out .= '</div>';

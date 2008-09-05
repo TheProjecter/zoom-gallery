@@ -59,7 +59,8 @@ class zmgPluginHelper {
         }
         
         foreach ($events as $event => $functions) {
-            if (!is_array($this->_events[$event])) {
+            if (!array_key_exists($event, $this->_events)
+              || !is_array($this->_events[$event])) {
                 $this->_events[$event] = array();
             }
             $this->_events[$event][$klass] = $functions;
@@ -69,7 +70,7 @@ class zmgPluginHelper {
     function bubbleEvent(&$event) {
         $res = array();
         
-        if (is_array($this->_events[$event->type])) {
+        if (isset($this->_events[$event->type]) && is_array($this->_events[$event->type])) {
             foreach ($this->_events[$event->type] as $klass => $functions) {
                 if (is_string($functions)) {
                     $res[] = zmgCallAbstract($klass, $functions, $event);
