@@ -1,0 +1,1 @@
+zOOm Media Gallery, a multi-gallery component for Joomla!. It's the most feature-rich gallery component, completely integrated into your CMS. For documentation and a detailed list of features, check the zOOm homepage: http://www.zoomfactory.org. This is the latest build of the zOOm Media Gallery package. It has been tested on Joomla! CMS, version 1.0.x (NOT 1.5!).
